@@ -12,6 +12,7 @@ export default function Home() {
           height={38}
           priority
         />
+        lalala
       </main>
       <footer className="row-start-3 flex flex-wrap items-center justify-center gap-6"></footer>
     </div>
