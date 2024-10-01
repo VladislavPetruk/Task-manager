@@ -1,0 +1,28 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript",
+    "prettier",
+    "eslint:recommended"
+  ],
+  "plugins": ["prettier", "simple-import-sort"],
+  "rules": {
+    "prettier/prettier": "error",
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [
+          ["^react$", "^next", "^[a-z]"],
+          ["^@"],
+          ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
+          ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
+          ["^.+\\.s?css$"],
+          ["^\\u0000"]
+        ]
+      }
+    ]
+  },
+  "env": {
+    "jest": true
+  }
+}
