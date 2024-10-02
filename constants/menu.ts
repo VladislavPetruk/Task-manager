@@ -3,7 +3,6 @@ export type MenuItem = {
   label: string;
 };
 
-
 export const MENU_LIST: Array<MenuItem> = [
   {
     link: '/',
