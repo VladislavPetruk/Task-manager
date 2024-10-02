@@ -65,21 +65,21 @@ export const ThemeToglle = () => {
       <DropdownMenuContent>
         <DropdownMenuItem
           onClick={() => setTheme('light')}
-          className="flex items-center gap-x-2 cursor-pointer"
+          className="flex cursor-pointer items-center gap-x-2"
         >
           <Sun />
           Light
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => setTheme('dark')}
-          className="flex items-center gap-x-2 cursor-pointer"
+          className="flex cursor-pointer items-center gap-x-2"
         >
           <Moon />
           Dark
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => setTheme('system')}
-          className="flex items-center gap-x-2 cursor-pointer"
+          className="flex cursor-pointer items-center gap-x-2"
         >
           <MonitorCog />
           System

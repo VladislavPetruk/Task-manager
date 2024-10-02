@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from '@/components/ui/toaster';
 
 import { cn } from '@/lib/utils';
 

@@ -9,7 +9,7 @@ interface SidebarDesktopProps {
 }
 
 export const SidebarDesktop = ({ menu }: SidebarDesktopProps) => {
-  const { toast } = useToast()
+  const { toast } = useToast();
   return (
     <div className="fixed inset-0 z-10 hidden h-full w-80 border-r bg-muted/40 p-8 md:block">
       <div className="mb-6 text-3xl">Dashboard</div>
@@ -23,7 +23,7 @@ export const SidebarDesktop = ({ menu }: SidebarDesktopProps) => {
               toast({
                 title: item.label,
                 description: item.label,
-              })
+              });
             }}
           >
             {item.label}
