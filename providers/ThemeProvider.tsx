@@ -26,7 +26,7 @@ export default function ThemeProvider({
   ...props
 }: NextThemesProviderProps) {
   return (
-    <NextThemesProvider enableColorScheme {...props}>
+    <NextThemesProvider enableColorScheme enableSystem {...props}>
       <ThemeProviderHelper />
       {children || null}
     </NextThemesProvider>

@@ -27,7 +27,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const theme = cookies().get('theme')?.value || 'light';
+  const theme = cookies().get('theme')?.value || 'system';
 
   return (
     <html lang="en" suppressHydrationWarning>
