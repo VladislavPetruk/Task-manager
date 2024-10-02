@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
+import { Toaster } from "@/components/ui/toaster"
 
 import { cn } from '@/lib/utils';
 
@@ -38,6 +39,7 @@ export default function RootLayout({
         <AppThemeProvider attribute="class" defaultTheme={theme}>
           <div></div>
         </AppThemeProvider>
+        <Toaster />
         {children}
       </body>
     </html>

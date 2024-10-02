@@ -9,7 +9,7 @@ import { ThemeToglle } from '../ThemeToggle';
 export function Header() {
   const { theme } = useTheme();
   return (
-    <header className="p-3 text-center">
+    <header className="p-3 text-right">
       <ThemeProvider attribute="class" defaultTheme={theme}>
         <ThemeToglle />
       </ThemeProvider>

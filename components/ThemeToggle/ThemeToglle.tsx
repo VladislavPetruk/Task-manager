@@ -27,6 +27,7 @@ import { useTheme } from 'next-themes';
 //   );
 // };
 import { Button } from '@/components/ui/button';
+import { SunMoon, Sun, Moon, MonitorCog } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,6 +35,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useIsMounted } from '@/hooks/useIsMounted';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+  TooltipArrow,
+} from '../ui/tooltip';
 
 export const ThemeToglle = () => {
   const { theme, setTheme } = useTheme();
@@ -44,17 +52,36 @@ export const ThemeToglle = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button>{theme} 1</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')}>
+      <TooltipProvider delayDuration={300}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger>
+              <SunMoon />
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent>Toogle theme</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <DropdownMenuContent>
+        <DropdownMenuItem
+          onClick={() => setTheme('light')}
+          className="flex items-center gap-x-2 cursor-pointer"
+        >
+          <Sun />
           Light
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>
+        <DropdownMenuItem
+          onClick={() => setTheme('dark')}
+          className="flex items-center gap-x-2 cursor-pointer"
+        >
+          <Moon />
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>
+        <DropdownMenuItem
+          onClick={() => setTheme('system')}
+          className="flex items-center gap-x-2 cursor-pointer"
+        >
+          <MonitorCog />
           System
         </DropdownMenuItem>
       </DropdownMenuContent>
