@@ -1,6 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
+import { MonitorCog, Moon, Sun, SunMoon } from 'lucide-react';
 
 // import { Switch } from '../ui/switch';
 // export const ThemeToglle = () => {
@@ -26,8 +27,7 @@ import { useTheme } from 'next-themes';
 //     ></Switch>
 //   );
 // };
-import { Button } from '@/components/ui/button';
-import { SunMoon, Sun, Moon, MonitorCog } from 'lucide-react';
+// import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,17 +35,19 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useIsMounted } from '@/hooks/useIsMounted';
+
 import {
   Tooltip,
+  // TooltipArrow,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-  TooltipArrow,
 } from '../ui/tooltip';
 
 export const ThemeToglle = () => {
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
   const isMounted = useIsMounted();
+
   if (!isMounted) {
     return null;
   }

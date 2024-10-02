@@ -3,8 +3,9 @@ import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
-import { Toaster } from '@/components/ui/toaster';
 
+import { DefaultLayout } from '@/components/Layouts';
+import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 
 import './globals.css';
@@ -19,8 +20,8 @@ const AppThemeProvider = dynamic(() => import('@/providers/ThemeProvider'), {
 });
 
 export const metadata: Metadata = {
-  title: 'Your metadata title',
-  description: 'Your metadata description',
+  title: 'Task manager',
+  description: 'Task manager description',
 };
 
 export default function RootLayout({
@@ -40,7 +41,7 @@ export default function RootLayout({
           <div></div>
         </AppThemeProvider>
         <Toaster />
-        {children}
+        <DefaultLayout>{children}</DefaultLayout>
       </body>
     </html>
   );
