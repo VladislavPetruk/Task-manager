@@ -66,10 +66,10 @@ export const TASKS: Array<TASK_TYPE> = [
     history: false,
     future: false,
   },
-]
+];
 
 export const PRIORITY_COLORS = {
   low: '#40A737',
   medium: '#FEA946',
-  high: '#FF2473'
-}
+  high: '#FF2473',
+};

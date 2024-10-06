@@ -1,5 +1,9 @@
 'use client';
 
+import { useState } from 'react';
+import { format } from 'date-fns';
+import { CalendarIcon, Plus } from 'lucide-react';
+
 import { TaskCard } from '@/components/TaskCard';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -9,7 +13,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,13 +27,10 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from '@/components/ui/select';
 import { PRIORITY_COLORS, TASKS } from '@/constants/task';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
-import { CalendarIcon, Plus } from 'lucide-react';
-import { useState } from 'react';
 // import { createSwapy } from 'swapy';
 // import { useEffect } from 'react';
 
