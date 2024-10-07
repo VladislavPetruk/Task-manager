@@ -4,11 +4,11 @@ import dynamic from 'next/dynamic';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
 
-import { DefaultLayout } from '@/components/Layouts';
+import { DashboardLayout } from '@/components/Layouts';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 
-import './globals.css';
+import '@/app/globals.css';
 
 const inter = Inter({
   weight: ['400', '500', '700'],
@@ -41,7 +41,7 @@ export default function RootLayout({
           <div></div>
         </AppThemeProvider>
         <Toaster />
-        <DefaultLayout>{children}</DefaultLayout>
+        <DashboardLayout>{children}</DashboardLayout>
       </body>
     </html>
   );

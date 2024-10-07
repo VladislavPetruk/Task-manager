@@ -16,4 +16,8 @@ export const MENU_LIST: Array<MenuItem> = [
     link: '/history',
     label: 'History',
   },
+  // {
+  //   link: '/login',
+  //   label: 'Login',
+  // },
 ];
