@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
+import axios from 'axios';
 import { format } from 'date-fns';
 import { CalendarIcon, Plus } from 'lucide-react';
 
@@ -44,6 +45,11 @@ const DONE_TASKS = filterTasks('done');
 
 export default function Home() {
   const [date, setDate] = useState<Date>();
+  const [title] = useState('Test title');
+  const [description] = useState('Test descr');
+  const [tag] = useState('som tag');
+  const [priority] = useState('low');
+  const [status] = useState('to_do');
   // useEffect(() => {
   //   const container = document.querySelector('.container1')!;
   //   const swapy = createSwapy(container, {});
@@ -54,6 +60,60 @@ export default function Home() {
   //     swapy.destroy();
   //   };
   // }, []);
+
+  const handleSubmit = async (e: SyntheticEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    const task = {
+      title,
+      description,
+      // date,
+      tag,
+      priority,
+      status,
+    };
+
+    try {
+      const res = await axios.post('/api/tasks', task);
+
+      console.log(res.data);
+
+      // if (res.data.error) {
+      //   toast.error(res.data.error);
+      // }
+
+      // if (!res.data.error) {
+      //   toast.success("Task created successfully.");
+      //   allTasks();
+      //   closeModal();
+      // }
+    } catch (error) {
+      // toast.error("Something went wrong.");
+      console.log(error);
+    }
+  };
+
+  const handleGet = async (e: SyntheticEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      const res = await axios.get('/api/tasks');
+
+      console.log(res.data);
+
+      // if (res.data.error) {
+      //   toast.error(res.data.error);
+      // }
+
+      // if (!res.data.error) {
+      //   toast.success("Task created successfully.");
+      //   allTasks();
+      //   closeModal();
+      // }
+    } catch (error) {
+      // toast.error("Something went wrong.");
+      console.log(error);
+    }
+  };
 
   return (
     <div className="container1 grid grid-cols-3 gap-x-6">
@@ -155,8 +215,11 @@ export default function Home() {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button type="submit" className="pl-3">
+                  <Button type="submit" className="pl-3" onClick={handleSubmit}>
                     <Plus className="mr-1" size={20} /> Create a task
+                  </Button>
+                  <Button type="submit" className="pl-3" onClick={handleGet}>
+                    <Plus className="mr-1" size={20} /> Get tasks
                   </Button>
                 </DialogFooter>
               </DialogContent>
