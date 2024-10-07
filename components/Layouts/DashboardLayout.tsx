@@ -1,6 +1,8 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
+// import { useRouter } from 'next/navigation';
+import axios, { AxiosError } from 'axios';
 
 // import {
 //   ImperativePanelGroupHandle,
@@ -19,7 +21,32 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
+interface UserResponse {
+  username?: string;
+  error?: AxiosError;
+}
+
+async function getUser(): Promise<UserResponse> {
+  try {
+    const { data } = await axios.get('/api/me');
+
+    return {
+      username: data.username,
+    };
+  } catch (e) {
+    const error = e as AxiosError;
+
+    return {
+      error,
+    };
+  }
+}
+
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+  console.log(47747447);
+
+  const [user, setUser] = useState<string>('');
+
   // const [isCollapsed, setIsCollapsed] = useState(false);
   // const panelLeftRef = useRef<ImperativePanelHandle>(null);
 
@@ -30,8 +57,37 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   //     panelLeftRef.current?.collapse();
   //   }
   // };
+  console.log(user);
 
   // To do in future
+
+  // const { push } = useRouter();
+
+  useEffect(() => {
+    // if(!!user.length) return;
+    const fetchData = async () => {
+      const { username, error } = await getUser();
+
+      if (error || !username) {
+        // push("/login");
+        return;
+      }
+      setUser(username);
+    };
+
+    // call the function
+    fetchData();
+
+    // (async () => {
+    //   const { user, error } = await getUser();
+    //   console.log(user, error);
+
+    // if (error) {
+    //   push("/login");
+    //   return;
+    // }
+    // })();
+  }, []);
 
   return (
     <div className="grid overflow-hidden">

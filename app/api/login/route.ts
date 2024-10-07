@@ -13,15 +13,15 @@ export async function POST(request: Request) {
   const { username, password } = body;
 
   if (
-    username !== process.env.ADMIN_EMAIL ||
+    username !== process.env.ADMIN_EMAIL &&
     password !== process.env.ADMIN_PASSWORD
   ) {
     return NextResponse.json(
       {
-        message: 'Unauthorized',
+        message: 'Invalid username or password',
       },
       {
-        status: 401,
+        status: 400,
       }
     );
   }
