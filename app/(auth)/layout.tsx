@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import { DefaultLayout } from '@/components/Layouts';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
+import { ReactQueryClientProvider } from '@/providers/ReactQueryClientProvider';
 
 import '@/app/globals.css';
 
@@ -19,8 +20,10 @@ export default function LoginLayout({ children }: { children: ReactNode }) {
         className={cn(`${inter.className} antialiased`)}
         suppressHydrationWarning
       >
-        <DefaultLayout>{children}</DefaultLayout>
-        <Toaster />
+        <ReactQueryClientProvider>
+          <DefaultLayout>{children}</DefaultLayout>
+          <Toaster />
+        </ReactQueryClientProvider>
       </body>
     </html>
   );

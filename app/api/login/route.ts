@@ -11,11 +11,17 @@ export async function POST(request: Request) {
   const body = await request.json();
 
   const { username, password } = body;
+  // Перевірка першого користувача
+  const isAdminValid =
+    username === process.env.ADMIN_EMAIL &&
+    password === process.env.ADMIN_PASSWORD;
 
-  if (
-    username !== process.env.ADMIN_EMAIL &&
-    password !== process.env.ADMIN_PASSWORD
-  ) {
+  // Перевірка другого користувача
+  const isUserValid =
+    username === process.env.USER_EMAIL &&
+    password === process.env.USER_PASSWORD;
+
+  if (!isAdminValid && !isUserValid) {
     return NextResponse.json(
       {
         message: 'Invalid username or password',

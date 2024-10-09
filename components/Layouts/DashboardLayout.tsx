@@ -1,8 +1,11 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
-// import { useRouter } from 'next/navigation';
-import axios, { AxiosError } from 'axios';
+import { ReactNode, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+// import { AxiosError } from 'axios';
+import { useGetUser } from '@/app/api/getUser';
+import { useLogout } from '@/app/api/logout';
 
 // import {
 //   ImperativePanelGroupHandle,
@@ -21,31 +24,26 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-interface UserResponse {
-  username?: string;
-  error?: AxiosError;
-}
+// async function getUser(): Promise<UserResponse> {
+//   try {
+//     const { data } = await axios.get('/api/getUser');
 
-async function getUser(): Promise<UserResponse> {
-  try {
-    const { data } = await axios.get('/api/me');
+//     return {
+//       username: data.username,
+//     };
+//   } catch (e) {
+//     const error = e as AxiosError;
 
-    return {
-      username: data.username,
-    };
-  } catch (e) {
-    const error = e as AxiosError;
-
-    return {
-      error,
-    };
-  }
-}
+//     return {
+//       error,
+//     };
+//   }
+// }
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
-  console.log(47747447);
+  // console.log(47747447);
 
-  const [user, setUser] = useState<string>('');
+  // const [user, setUser] = useState<string>('');
 
   // const [isCollapsed, setIsCollapsed] = useState(false);
   // const panelLeftRef = useRef<ImperativePanelHandle>(null);
@@ -57,37 +55,49 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   //     panelLeftRef.current?.collapse();
   //   }
   // };
-  console.log(user);
+  // console.log(user);
 
   // To do in future
 
-  // const { push } = useRouter();
+  const { push } = useRouter();
+
+  const { isLoading, isError } = useGetUser();
+  const { mutate } = useLogout();
 
   useEffect(() => {
-    // if(!!user.length) return;
-    const fetchData = async () => {
-      const { username, error } = await getUser();
+    if (isError) {
+      mutate(null);
+      push('/login');
+    }
+  }, [isError]);
 
-      if (error || !username) {
-        // push("/login");
-        return;
-      }
-      setUser(username);
-    };
+  // useEffect(() => {
+  //   // if(!!user.length) return;
+  //   const fetchData = async () => {
+  //     const { username, error } = await getUser();
 
-    // call the function
-    fetchData();
+  //     if (error || !username) {
+  //       push("/login");
+  //       return;
+  //     }
+  //     setUser(username);
+  //   };
 
-    // (async () => {
-    //   const { user, error } = await getUser();
-    //   console.log(user, error);
+  //   // call the function
+  //   fetchData();
 
-    // if (error) {
-    //   push("/login");
-    //   return;
-    // }
-    // })();
-  }, []);
+  //   // (async () => {
+  //   //   const { user, error } = await getUser();
+  //   //   console.log(user, error);
+
+  //   // if (error) {
+  //   //   push("/login");
+  //   //   return;
+  //   // }
+  //   // })();
+  // }, []);
+
+  if (isLoading) return null;
 
   return (
     <div className="grid overflow-hidden">
