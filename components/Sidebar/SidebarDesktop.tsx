@@ -28,10 +28,10 @@ interface SidebarDesktopProps {
 // }
 
 export const SidebarDesktop = ({ menu }: SidebarDesktopProps) => {
-  const { push } = useRouter();
+  const router = useRouter();
   const { mutate } = useLogout({
     onMutate: () => {
-      push('/login');
+      router.push('/login');
     },
   });
   const handleLogout = () => {

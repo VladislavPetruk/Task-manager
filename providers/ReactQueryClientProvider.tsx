@@ -14,6 +14,7 @@ function createQueryClient() {
         staleTime: 1 * 60 * 1000, // To cache the data for 1 minute
         refetchOnReconnect: false,
         refetchOnWindowFocus: false,
+        retry: false,
       },
     },
   });
@@ -33,9 +34,7 @@ function getQueryClient() {
   }
 }
 
-export function ReactQueryClientProvider({
-  children,
-}: PropsWithChildren<unknown>) {
+export function ReactQueryClientProvider({ children }: PropsWithChildren) {
   const queryClient = getQueryClient();
 
   return (

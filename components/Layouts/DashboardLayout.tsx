@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useGetUser } from '@/app/api/getUser';
 import { useLogout } from '@/app/api/logout';
 
+import { FullScreenLoader } from '../FullScreenLoader';
 // import {
 //   ImperativePanelGroupHandle,
 //   ImperativePanelHandle,
@@ -59,15 +60,15 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
   // To do in future
 
-  const { push } = useRouter();
+  const router = useRouter();
 
-  const { isLoading, isError } = useGetUser();
+  const { data, isLoading, isError } = useGetUser();
   const { mutate } = useLogout();
 
   useEffect(() => {
     if (isError) {
       mutate(null);
-      push('/login');
+      router.push('/login');
     }
   }, [isError]);
 
@@ -97,7 +98,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   //   // })();
   // }, []);
 
-  if (isLoading) return null;
+  if (isLoading || !data) return <FullScreenLoader />;
 
   return (
     <div className="grid overflow-hidden">
