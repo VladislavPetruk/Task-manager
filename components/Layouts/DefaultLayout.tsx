@@ -25,7 +25,7 @@ export const DefaultLayout = ({ children }: LoginLayoutProps) => {
 
   return (
     <div className="grid min-h-screen place-content-center overflow-hidden">
-      <main className="px-8 py-14">{children}</main>
+      <main className="h-full px-8 py-14">{children}</main>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 // import { auth } from "@clerk/nextjs";
 import { NextResponse } from 'next/server';
 
+import { validateToken } from '@/helper/validateToken';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
@@ -44,15 +45,37 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET(req: Request) {
+// export async function GET(req: Request) {    Old
+//   try {
+//     // const { userId } = auth();
+
+//     // if (!userId) {
+//     //   return NextResponse.json({ error: "Unauthorized", status: 401 });
+//     // }
+
+//     console.log(req);
+
+//     const tasks = await prisma.task.findMany({
+//       // where: {
+//       //   userId,
+//       // },
+//     });
+
+//     return NextResponse.json(tasks);
+//   } catch (error) {
+//     console.log('ERROR GETTING TASKS: ', error);
+//     return NextResponse.json({ error: 'Error updating task', status: 500 });
+//   }
+// }
+
+export async function GET() {
   try {
-    // const { userId } = auth();
+    const decodedToken = validateToken();
+    const username = decodedToken?.username;
 
-    // if (!userId) {
-    //   return NextResponse.json({ error: "Unauthorized", status: 401 });
-    // }
-
-    console.log(req);
+    if (!username) {
+      return NextResponse.json({ message: 'Unauthorized', status: 401 });
+    }
 
     const tasks = await prisma.task.findMany({
       // where: {
@@ -62,8 +85,16 @@ export async function GET(req: Request) {
 
     return NextResponse.json(tasks);
   } catch (error) {
-    console.log('ERROR GETTING TASKS: ', error);
-    return NextResponse.json({ error: 'Error updating task', status: 500 });
+    if (error instanceof Error) {
+      if (
+        error.message === 'Unauthorized' ||
+        error.message === 'Invalid token'
+      ) {
+        return NextResponse.json({ message: error.message, status: 401 });
+      }
+    }
+
+    return NextResponse.json({ error: 'Error getting tasks', status: 500 });
   }
 }
 

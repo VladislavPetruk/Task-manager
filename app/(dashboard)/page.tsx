@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Loader } from '@/components/ui/loader';
 import {
   Popover,
   PopoverContent,
@@ -30,20 +31,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { PRIORITY_COLORS, TASKS } from '@/constants/task';
+import { PRIORITY_COLORS, TASK_TYPE } from '@/constants/task';
 import { cn } from '@/lib/utils';
+
+import { useGetTasks } from '../api/tasks';
 // import { createSwapy } from 'swapy';
 // import { useEffect } from 'react';
 
-const filterTasks = (status: string) => {
-  return TASKS.filter((task) => task.status === status);
+const filterTasks = (tasks: Array<TASK_TYPE> | undefined, status: string) => {
+  if (!tasks) return;
+  return tasks.filter((task) => task.status === status);
 };
 
-const TO_DO_TASKS = filterTasks('to do');
-const IN_PROGRESS_TASKS = filterTasks('in progress');
-const DONE_TASKS = filterTasks('done');
+// const TO_DO_TASKS = filterTasks('to do');
+// const IN_PROGRESS_TASKS = filterTasks('in progress');
+// const DONE_TASKS = filterTasks('done');
 
 export default function Home() {
+  const { data, isError, isLoading } = useGetTasks();
   const [date, setDate] = useState<Date>();
   const [title] = useState('Test title');
   const [description] = useState('Test descr');
@@ -60,6 +65,21 @@ export default function Home() {
   //     swapy.destroy();
   //   };
   // }, []);
+
+  // if (!data) return null;
+
+  if (isLoading)
+    return (
+      <div className="grid h-full place-content-center">
+        <Loader />
+      </div>
+    );
+
+  const TO_DO_TASKS = filterTasks(data, 'to_do');
+  const IN_PROGRESS_TASKS = filterTasks(data, 'in_progress');
+  const DONE_TASKS = filterTasks(data, 'done');
+
+  console.log(data, isError);
 
   const handleSubmit = async (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -116,10 +136,12 @@ export default function Home() {
   };
 
   return (
-    <div className="container1 grid grid-cols-3 gap-x-6">
+    <div className="grid gap-6 lg:grid-cols-3">
       <div className="grid grid-rows-[max-content] gap-y-4 rounded-xl bg-gray-200 p-6">
         <div className="flex items-center justify-between font-medium">
-          <p className="text-lg">To do</p>
+          <p className="text-lg">
+            To do {!!TO_DO_TASKS?.length && <span>{TO_DO_TASKS.length}</span>}
+          </p>
           <div>
             <Dialog>
               <DialogTrigger asChild>
@@ -230,21 +252,34 @@ export default function Home() {
             </Button> */}
           </div>
         </div>
-        {TO_DO_TASKS.map((task) => (
+        {TO_DO_TASKS?.map((task) => (
           // <div data-swapy-slot={task.id} key={task.id}>
           <TaskCard task={task} key={task.id} />
           // </div>
         ))}
       </div>
       <div className="grid grid-rows-[max-content] gap-y-4 rounded-xl bg-gray-200 p-6">
-        {IN_PROGRESS_TASKS.map((task) => (
+        <div className="flex items-center justify-between font-medium">
+          <p className="text-lg">
+            In progress{' '}
+            {!!IN_PROGRESS_TASKS?.length && (
+              <span>{IN_PROGRESS_TASKS.length}</span>
+            )}
+          </p>
+        </div>
+        {IN_PROGRESS_TASKS?.map((task) => (
           // <div data-swapy-slot={task.id} key={task.id}>
           <TaskCard task={task} key={task.id} />
           // </div>
         ))}
       </div>
       <div className="grid grid-rows-[max-content] gap-y-4 rounded-xl bg-gray-200 p-6">
-        {DONE_TASKS.map((task) => (
+        <div className="flex items-center justify-between font-medium">
+          <p className="text-lg">
+            Done {!!DONE_TASKS?.length && <span>{DONE_TASKS.length}</span>}
+          </p>
+        </div>
+        {DONE_TASKS?.map((task) => (
           // <div data-swapy-slot={task.id} key={task.id}>
           <TaskCard task={task} key={task.id} />
           // </div>

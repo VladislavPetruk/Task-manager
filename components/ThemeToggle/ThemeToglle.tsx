@@ -36,13 +36,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useIsMounted } from '@/hooks/useIsMounted';
 
-import {
-  Tooltip,
-  // TooltipArrow,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../ui/tooltip';
+import { CstmTooltip } from '../CstmTooltip';
 
 export const ThemeToglle = () => {
   const { setTheme } = useTheme();
@@ -54,16 +48,11 @@ export const ThemeToglle = () => {
 
   return (
     <DropdownMenu>
-      <TooltipProvider delayDuration={300}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <DropdownMenuTrigger>
-              <SunMoon />
-            </DropdownMenuTrigger>
-          </TooltipTrigger>
-          <TooltipContent>Toogle theme</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <CstmTooltip label="Toogle theme">
+        <DropdownMenuTrigger>
+          <SunMoon size={32} />
+        </DropdownMenuTrigger>
+      </CstmTooltip>
       <DropdownMenuContent>
         <DropdownMenuItem
           onClick={() => setTheme('light')}

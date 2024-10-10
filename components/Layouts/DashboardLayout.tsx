@@ -101,35 +101,35 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   if (isLoading || !data) return <FullScreenLoader />;
 
   return (
-    <div className="grid overflow-hidden">
+    <div className="grid h-screen grid-rows-[max-content_1fr] overflow-hidden">
       <Header />
-      <div className="max-h-screen">
-        <ResizablePanelGroup direction="horizontal">
-          <ResizablePanel
-            defaultSize={20}
-            maxSize={50}
-            // collapsible={true}
-            // collapsedSize={0}
-            // ref={panelLeftRef}
-            // onCollapse={() => setIsCollapsed(true)}
-            // onExpand={() => setIsCollapsed(false)}
-          >
-            <Sidebar />
-          </ResizablePanel>
-          <ResizableHandle
-            withHandle
-            // onClick={(e) => {
-            //   e.stopPropagation();
-            //   toggleCollapse();
-            // }}
-          />
-          <ResizablePanel defaultSize={80}>
-            <ScrollArea className="h-screen w-full">
-              <main className="px-8 py-14">{children}</main>
-            </ScrollArea>
-          </ResizablePanel>
-        </ResizablePanelGroup>
-      </div>
+      <ResizablePanelGroup direction="horizontal">
+        <ResizablePanel
+          defaultSize={20}
+          maxSize={50}
+          className="max-md:hidden"
+          // collapsible={true}
+          // collapsedSize={0}
+          // ref={panelLeftRef}
+          // onCollapse={() => setIsCollapsed(true)}
+          // onExpand={() => setIsCollapsed(false)}
+        >
+          <Sidebar />
+        </ResizablePanel>
+        <ResizableHandle
+          withHandle
+          className="max-md:hidden"
+          // onClick={(e) => {
+          //   e.stopPropagation();
+          //   toggleCollapse();
+          // }}
+        />
+        <ResizablePanel defaultSize={80}>
+          <ScrollArea className="w-full">
+            <main className="h-full px-8 py-14">{children}</main>
+          </ScrollArea>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
   );
 };
