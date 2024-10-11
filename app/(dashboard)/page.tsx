@@ -75,6 +75,8 @@ export default function Home() {
       </div>
     );
 
+  if (!data) return null;
+
   const TO_DO_TASKS = filterTasks(data, 'to_do');
   const IN_PROGRESS_TASKS = filterTasks(data, 'in_progress');
   const DONE_TASKS = filterTasks(data, 'done');
@@ -134,6 +136,8 @@ export default function Home() {
       console.log(error);
     }
   };
+
+  if (!TO_DO_TASKS || !IN_PROGRESS_TASKS || !DONE_TASKS) return null;
 
   return (
     <div className="grid gap-6 lg:grid-cols-3">
