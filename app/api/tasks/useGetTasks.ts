@@ -4,11 +4,7 @@ import axios, { AxiosError } from 'axios';
 
 import { TASK_TYPE } from '@/constants/task';
 import { toast } from '@/hooks/useToast';
-import {
-  QueryOptions,
-  useQuery,
-  UseQueryResult,
-} from '@tanstack/react-query';
+import { QueryOptions, useQuery, UseQueryResult } from '@tanstack/react-query';
 
 const GET_TASKS_QUERY_KEY = '@query/getTasks';
 
