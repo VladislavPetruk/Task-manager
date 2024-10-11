@@ -94,7 +94,7 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json({ error: 'Error getting tasks', status: 500 });
+    return NextResponse.json({ error, status: 500 });
   }
 }
 
