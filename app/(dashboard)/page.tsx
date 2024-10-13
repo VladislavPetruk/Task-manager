@@ -68,6 +68,7 @@ export default function Home() {
   // }, []);
 
   // if (!data) return null;
+  // return null;
   return null;
 
   // if (isLoading)
