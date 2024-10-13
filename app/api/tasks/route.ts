@@ -78,7 +78,7 @@ export async function GET() {
     }
 
     const tasks = await prisma.task.findMany({
-      take: 10
+      take: 10,
       // where: {
       //   userId,
       // },
