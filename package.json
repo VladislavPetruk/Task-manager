@@ -11,8 +11,7 @@
     "format": "prettier --write '*/**/*.{js,jsx,json,ts,tsx,scss,css,md}'",
     "test": "jest",
     "prepare": "husky install",
-    "postinstall": "npx prisma generate",
-    "vercel-build": "prisma generate && next build"
+    "postinstall": "npx prisma generate"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^17.0.0",
