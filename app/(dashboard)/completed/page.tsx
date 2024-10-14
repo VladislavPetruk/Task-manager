@@ -1,10 +1,11 @@
 'use client';
 
-import { useGetFutureTasks } from '@/app/api/tasks';
 import { Loader } from '@/components/ui/loader';
 
-export default function Future() {
-  const { data, isLoading } = useGetFutureTasks();
+import { useGetCompletedTasks } from '../../api/tasks';
+
+export default function Completed() {
+  const { data, isLoading } = useGetCompletedTasks();
 
   if (isLoading)
     return (

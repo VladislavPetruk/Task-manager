@@ -35,7 +35,7 @@ import {
 import { PRIORITY_COLORS, TASK_TYPE } from '@/constants/task';
 import { cn } from '@/lib/utils';
 
-import { useGetTasks } from '../api/tasks';
+import { useGetActiveTasks } from '../api/tasks';
 // import { createSwapy } from 'swapy';
 // import { useEffect } from 'react';
 
@@ -49,13 +49,13 @@ const filterTasks = (tasks: Array<TASK_TYPE> | undefined, status: string) => {
 // const DONE_TASKS = filterTasks('done');
 
 export default function Home() {
-  const { data, isError, isLoading } = useGetTasks();
+  const { data, isError, isLoading } = useGetActiveTasks();
   const [date, setDate] = useState<Date>();
-  const [title] = useState('Test title');
-  const [description] = useState('Test descr');
-  const [tag] = useState('som tag');
-  const [priority] = useState('low');
-  const [status] = useState('to_do');
+  const [title] = useState('Test title 222');
+  const [description] = useState('Test descr  2222');
+  const [tag] = useState('hobby');
+  const [priority] = useState('medium');
+  const [status] = useState('in_progress');
   // useEffect(() => {
   //   const container = document.querySelector('.container1')!;
   //   const swapy = createSwapy(container, {});
@@ -239,9 +239,9 @@ export default function Home() {
                   <Button type="submit" className="pl-3" onClick={handleSubmit}>
                     <Plus className="mr-1" size={20} /> Create a task
                   </Button>
-                  <Button type="submit" className="pl-3" onClick={handleGet}>
+                  {/* <Button type="submit" className="pl-3" onClick={handleGet}>
                     <Plus className="mr-1" size={20} /> Get tasks
-                  </Button>
+                  </Button> */}
                 </DialogFooter>
               </DialogContent>
             </Dialog>

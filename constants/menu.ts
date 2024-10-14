@@ -13,8 +13,8 @@ export const MENU_LIST: Array<MenuItem> = [
     label: 'Future',
   },
   {
-    link: '/history',
-    label: 'History',
+    link: '/completed',
+    label: 'Completed',
   },
   // {
   //   link: '/login',

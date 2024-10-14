@@ -1,5 +1,5 @@
 // import { auth } from "@clerk/nextjs";
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 import { validateToken } from '@/helper/validateToken';
 import prisma from '@/lib/prisma';
@@ -68,7 +68,7 @@ export async function POST(req: Request) {
 //   }
 // }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const decodedToken = validateToken();
     const username = decodedToken?.username;
@@ -77,10 +77,23 @@ export async function GET() {
       return NextResponse.json({ message: 'Unauthorized', status: 401 });
     }
 
+    // Get query parameters (optional)
+    const { searchParams } = new URL(request.url);
+    const filter = searchParams.get('filter');
+
+    let whereCondition = {};
+
+    // Set `where` condition based on the filter parameter
+    if (filter === 'future') {
+      whereCondition = { isFutured: true };
+    } else if (filter === 'completed') {
+      whereCondition = { isCompleted: true };
+    } else if (filter === 'active') {
+      whereCondition = { isFutured: false, isCompleted: false };
+    }
+
     const tasks = await prisma.task.findMany({
-      // where: {
-      //   userId,
-      // },
+      where: whereCondition,
     });
 
     return NextResponse.json(tasks);
@@ -97,6 +110,36 @@ export async function GET() {
     return NextResponse.json({ error, status: 500 });
   }
 }
+
+// export async function GET() {
+//   try {
+//     const decodedToken = validateToken();
+//     const username = decodedToken?.username;
+
+//     if (!username) {
+//       return NextResponse.json({ message: 'Unauthorized', status: 401 });
+//     }
+
+//     const tasks = await prisma.task.findMany({
+//       // where: {
+//       //   userId,
+//       // },
+//     });
+
+//     return NextResponse.json(tasks);
+//   } catch (error) {
+//     if (error instanceof Error) {
+//       if (
+//         error.message === 'Unauthorized' ||
+//         error.message === 'Invalid token'
+//       ) {
+//         return NextResponse.json({ message: error.message, status: 401 });
+//       }
+//     }
+
+//     return NextResponse.json({ error, status: 500 });
+//   }
+// }
 
 export async function PUT(req: Request) {
   try {
