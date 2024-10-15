@@ -19,6 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { Loader } from '../ui/loader';
 
 interface TaskCardProps {
   task: TASK_TYPE;
@@ -28,7 +29,7 @@ export const TaskCard = ({ task }: TaskCardProps) => {
   const queryClient = useQueryClient();
   const color = PRIORITY_COLORS[task.priority];
 
-  const { mutate } = useDeleteTask({
+  const { mutate, isPending } = useDeleteTask({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [GET_ACTIVE_TASKS_QUERY_KEY] });
       queryClient.invalidateQueries({ queryKey: [GET_FUTURE_TASKS_QUERY_KEY] });
@@ -48,6 +49,11 @@ export const TaskCard = ({ task }: TaskCardProps) => {
       }
       // data-swapy-item={task.id}
     >
+      {isPending && (
+        <div className="absolute inset-0 grid place-content-center bg-gray-200/40">
+          <Loader />
+        </div>
+      )}
       <CardHeader className="items-center justify-between pb-2">
         <Badge variant={null}>{task.tag}</Badge>
         <DropdownMenu>
@@ -59,8 +65,11 @@ export const TaskCard = ({ task }: TaskCardProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              <Button onClick={() => mutate(task.id)}>Delete</Button>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => mutate(task.id)}
+            >
+              Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

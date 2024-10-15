@@ -11,10 +11,9 @@ type Params = {
 export async function DELETE(req: Request, { params }: { params: Params }) {
   try {
     const decodedToken = validateToken();
-    const username = decodedToken?.username;
 
-    if (!username) {
-      return NextResponse.json({ message: 'Unauthorized', status: 401 });
+    if (!decodedToken?.username) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
     const id = params;
@@ -26,6 +25,6 @@ export async function DELETE(req: Request, { params }: { params: Params }) {
     return NextResponse.json(task);
   } catch (error) {
     console.log('ERROR UPDATING TASK: ', error);
-    return NextResponse.json({ error: 'Error deleting task', status: 500 });
+    return NextResponse.json({ error: 'Error deleting task' }, { status: 500 });
   }
 }

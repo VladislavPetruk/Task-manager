@@ -6,26 +6,30 @@ import prisma from '@/lib/prisma';
 
 export async function POST(req: Request) {
   try {
-    // const { userId } = auth();
+    const decodedToken = validateToken();
 
-    // if (!userId) {
-    //   return NextResponse.json({ error: "Unauthorized", status: 401 });
-    // }
+    if (!decodedToken?.username) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
 
     const { title, description, tag, priority, status } = await req.json();
 
     if (!title || !description) {
-      return NextResponse.json({
-        error: 'Missing required fields',
-        status: 400,
-      });
+      return NextResponse.json(
+        {
+          error: 'Missing required fields, title or description',
+        },
+        { status: 400 }
+      );
     }
 
     if (title.length < 3) {
-      return NextResponse.json({
-        error: 'Title must be at least 3 characters long',
-        status: 400,
-      });
+      return NextResponse.json(
+        {
+          error: 'Title must be at least 3 characters long',
+        },
+        { status: 400 }
+      );
     }
 
     const task = await prisma.task.create({
@@ -40,8 +44,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(task);
   } catch (error) {
-    console.log('ERROR CREATING TASK: ', error);
-    return NextResponse.json({ status: 500, error: error as string });
+    return NextResponse.json({ error: error as string }, { status: 500 });
   }
 }
 
@@ -71,10 +74,9 @@ export async function POST(req: Request) {
 export async function GET(request: NextRequest) {
   try {
     const decodedToken = validateToken();
-    const username = decodedToken?.username;
 
-    if (!username) {
-      return NextResponse.json({ message: 'Unauthorized', status: 401 });
+    if (!decodedToken?.username) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
     // Get query parameters (optional)
@@ -103,11 +105,11 @@ export async function GET(request: NextRequest) {
         error.message === 'Unauthorized' ||
         error.message === 'Invalid token'
       ) {
-        return NextResponse.json({ message: error.message, status: 401 });
+        return NextResponse.json({ message: error.message }, { status: 401 });
       }
     }
 
-    return NextResponse.json({ error, status: 500 });
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
 

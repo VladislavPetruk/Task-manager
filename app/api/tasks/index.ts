@@ -10,3 +10,5 @@ export {
   useGetFutureTasks,
   GET_FUTURE_TASKS_QUERY_KEY,
 } from './useGetFutureTasks';
+
+export { useCreateTask } from './useCreateTask';

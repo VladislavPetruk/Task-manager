@@ -1,40 +1,11 @@
 'use client';
 /* eslint-disable */
 
-import { SyntheticEvent, useState } from 'react';
-import axios from 'axios';
-import { format } from 'date-fns';
-import { CalendarIcon, Plus } from 'lucide-react';
-
 import { TaskCard } from '@/components/TaskCard';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Loader } from '@/components/ui/loader';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { PRIORITY_COLORS, TASK_TYPE } from '@/constants/task';
-import { cn } from '@/lib/utils';
+import { TASK_TYPE } from '@/constants/task';
 
+import { CreateTaskDialog } from '@/components/CreateTaskDialog/CreateTaskDialog';
 import { useGetActiveTasks } from '../api/tasks';
 // import { createSwapy } from 'swapy';
 // import { useEffect } from 'react';
@@ -50,13 +21,12 @@ const filterTasks = (tasks: Array<TASK_TYPE> | undefined, status: string) => {
 
 export default function Home() {
   const { data, isError, isLoading } = useGetActiveTasks();
-  const [date, setDate] = useState<Date>();
-  const [title] = useState('Test title 222');
-  const [description] = useState('Test descr  2222');
-  const [tag] = useState('hobby');
-  const [priority] = useState('medium');
-  const [status] = useState('in_progress');
-  // useEffect(() => {
+
+  // const { mutate } = useCreateTask({
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: [GET_ACTIVE_TASKS_QUERY_KEY] });
+  //   },
+  // });
   //   const container = document.querySelector('.container1')!;
   //   const swapy = createSwapy(container, {});
   //   swapy.onSwap(({ data }) => {
@@ -78,59 +48,20 @@ export default function Home() {
   const IN_PROGRESS_TASKS = filterTasks(data, 'in_progress');
   const DONE_TASKS = filterTasks(data, 'done');
 
-  const handleSubmit = async (e: SyntheticEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  // const handleSubmit = async (e: SyntheticEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
 
-    const task = {
-      title,
-      description,
-      // date,
-      tag,
-      priority,
-      status,
-    };
+  //   const task = {
+  //     title,
+  //     description,
+  //     // date,
+  //     tag,
+  //     priority,
+  //     status,
+  //   };
 
-    try {
-      const res = await axios.post('/api/tasks', task);
-
-      console.log(res.data);
-
-      // if (res.data.error) {
-      //   toast.error(res.data.error);
-      // }
-
-      // if (!res.data.error) {
-      //   toast.success("Task created successfully.");
-      //   allTasks();
-      //   closeModal();
-      // }
-    } catch (error) {
-      // toast.error("Something went wrong.");
-      console.log(error);
-    }
-  };
-
-  const handleGet = async (e: SyntheticEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    try {
-      const res = await axios.get('/api/tasks');
-
-      console.log(res.data);
-
-      // if (res.data.error) {
-      //   toast.error(res.data.error);
-      // }
-
-      // if (!res.data.error) {
-      //   toast.success("Task created successfully.");
-      //   allTasks();
-      //   closeModal();
-      // }
-    } catch (error) {
-      // toast.error("Something went wrong.");
-      console.log(error);
-    }
-  };
+  //   mutate(task)
+  // };
 
   if (!TO_DO_TASKS || !IN_PROGRESS_TASKS || !DONE_TASKS) return null;
 
@@ -141,115 +72,7 @@ export default function Home() {
           <p className="text-lg">
             To do {!!TO_DO_TASKS?.length && <span>{TO_DO_TASKS.length}</span>}
           </p>
-          <div>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button aria-haspopup="true" size="icon" variant="ghost">
-                  <Plus />
-                  <span className="sr-only">Add a new task</span>
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[500px]">
-                <DialogHeader>
-                  <DialogTitle>Add a new task</DialogTitle>
-                </DialogHeader>
-                <div className="grid gap-y-4 py-4">
-                  <div className="grid gap-y-2">
-                    <Label htmlFor="title">Title</Label>
-                    <Input id="title" />
-                  </div>
-                  <div className="grid gap-y-2">
-                    <Label htmlFor="description">Description</Label>
-                    <Input id="description" />
-                  </div>
-                  <div className="grid gap-y-2">
-                    <Label htmlFor="date">Date</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={'outline'}
-                          className={cn(
-                            'justify-start text-left font-normal',
-                            !date && 'text-muted-foreground'
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {date ? (
-                            format(date, 'PPP')
-                          ) : (
-                            <span>Select a date</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={date}
-                          onSelect={setDate}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                  <div className="grid gap-y-2">
-                    <Label htmlFor="priority">Priority</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a task priority" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="low" className="cursor-pointer">
-                          <div className="flex items-center gap-3">
-                            <div
-                              className={cn(`h-4 w-4 rounded-full`)}
-                              style={{
-                                backgroundColor: PRIORITY_COLORS['low'],
-                              }}
-                            ></div>
-                            Low
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="medium" className="cursor-pointer">
-                          <div className="flex items-center gap-3">
-                            <div
-                              className={cn(`h-4 w-4 rounded-full`)}
-                              style={{
-                                backgroundColor: PRIORITY_COLORS['medium'],
-                              }}
-                            ></div>
-                            Medium
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="high" className="cursor-pointer">
-                          <div className="flex items-center gap-3">
-                            <div
-                              className={cn(`h-4 w-4 rounded-full`)}
-                              style={{
-                                backgroundColor: PRIORITY_COLORS['high'],
-                              }}
-                            ></div>
-                            High
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button type="submit" className="pl-3" onClick={handleSubmit}>
-                    <Plus className="mr-1" size={20} /> Create a task
-                  </Button>
-                  {/* <Button type="submit" className="pl-3" onClick={handleGet}>
-                    <Plus className="mr-1" size={20} /> Get tasks
-                  </Button> */}
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-            {/* <Button aria-haspopup="true" size="icon" variant="ghost">
-            <EllipsisVertical />
-              <span className="sr-only">Toggle card handler</span>
-            </Button> */}
-          </div>
+          <CreateTaskDialog />
         </div>
         {TO_DO_TASKS?.map((task) => (
           // <div data-swapy-slot={task.id} key={task.id}>
