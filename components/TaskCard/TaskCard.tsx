@@ -1,8 +1,14 @@
 import { CSSProperties } from 'react';
 import { EllipsisVertical } from 'lucide-react';
 
+import {
+  GET_ACTIVE_TASKS_QUERY_KEY,
+  GET_FUTURE_TASKS_QUERY_KEY,
+} from '@/app/api/tasks';
+import { useDeleteTask } from '@/app/api/tasks/[id]';
 import { PRIORITY_COLORS, TASK_TYPE } from '@/constants/task';
 import { cn } from '@/lib/utils';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
@@ -19,7 +25,15 @@ interface TaskCardProps {
 }
 
 export const TaskCard = ({ task }: TaskCardProps) => {
+  const queryClient = useQueryClient();
   const color = PRIORITY_COLORS[task.priority];
+
+  const { mutate } = useDeleteTask({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [GET_ACTIVE_TASKS_QUERY_KEY] });
+      queryClient.invalidateQueries({ queryKey: [GET_FUTURE_TASKS_QUERY_KEY] });
+    },
+  });
 
   return (
     <Card
@@ -46,7 +60,7 @@ export const TaskCard = ({ task }: TaskCardProps) => {
           <DropdownMenuContent>
             <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer">
-              Delete
+              <Button onClick={() => mutate(task.id)}>Delete</Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

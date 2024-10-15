@@ -6,7 +6,7 @@ import { TASK_TYPE } from '@/constants/task';
 import { toast } from '@/hooks/useToast';
 import { QueryOptions, useQuery, UseQueryResult } from '@tanstack/react-query';
 
-const GET_FUTURE_TASKS_QUERY_KEY = '@query/getFutureTasks';
+export const GET_FUTURE_TASKS_QUERY_KEY = '@query/getFutureTasks';
 
 const queryFn = async (): Promise<TASK_TYPE[]> => {
   try {
