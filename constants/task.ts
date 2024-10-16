@@ -5,9 +5,10 @@ export type TASK_TYPE = {
   tag: string;
   priority: 'low' | 'medium' | 'high';
   createdOn: string;
+  updateOn: string;
   status: 'to_do' | 'in_progress' | 'done' | 'cancel';
-  history: boolean;
-  future: boolean;
+  isCompleted: boolean;
+  isFutured: boolean;
 };
 
 // export const TASKS: Array<TASK_TYPE> = [

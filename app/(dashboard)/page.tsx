@@ -4,9 +4,12 @@
 import { TaskCard } from '@/components/TaskCard';
 import { Loader } from '@/components/ui/loader';
 import { TASK_TYPE } from '@/constants/task';
+import { shallow } from 'zustand/shallow';
 
 import { CreateTaskDialog } from '@/components/CreateTaskDialog/CreateTaskDialog';
 import { useGetActiveTasks } from '../api/tasks';
+import { useTasksStore } from '@/stores/TasksStore';
+import { useEffect } from 'react';
 // import { createSwapy } from 'swapy';
 // import { useEffect } from 'react';
 
@@ -21,6 +24,22 @@ const filterTasks = (tasks: Array<TASK_TYPE> | undefined, status: string) => {
 
 export default function Home() {
   const { data, isError, isLoading } = useGetActiveTasks();
+
+  const { activeTasks, inProgressTasks, doneTasks, setTasks } = useTasksStore(
+    (state) => ({
+      activeTasks: state.activeTasks,
+      inProgressTasks: state.inProgressTasks,
+      doneTasks: state.doneTasks,
+      setTasks: state.setTasks,
+    }),
+    shallow
+  );
+
+  useEffect(() => {
+    if (data) {
+      setTasks(data);
+    }
+  }, [data]);
 
   // const { mutate } = useCreateTask({
   //   onSuccess: () => {
@@ -76,7 +95,7 @@ export default function Home() {
         </div>
         {TO_DO_TASKS?.map((task) => (
           // <div data-swapy-slot={task.id} key={task.id}>
-          <TaskCard task={task} key={task.id} />
+          <TaskCard key={task.id} {...task} />
           // </div>
         ))}
       </div>
@@ -91,7 +110,7 @@ export default function Home() {
         </div>
         {IN_PROGRESS_TASKS?.map((task) => (
           // <div data-swapy-slot={task.id} key={task.id}>
-          <TaskCard task={task} key={task.id} />
+          <TaskCard key={task.id} {...task} />
           // </div>
         ))}
       </div>
@@ -103,7 +122,7 @@ export default function Home() {
         </div>
         {DONE_TASKS?.map((task) => (
           // <div data-swapy-slot={task.id} key={task.id}>
-          <TaskCard task={task} key={task.id} />
+          <TaskCard key={task.id} {...task} />
           // </div>
         ))}
       </div>

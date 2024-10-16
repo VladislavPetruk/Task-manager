@@ -8,6 +8,8 @@ import {
 import { useDeleteTask } from '@/app/api/tasks/[id]';
 import { PRIORITY_COLORS, TASK_TYPE } from '@/constants/task';
 import { cn } from '@/lib/utils';
+// import { UpdateTaskDialog } from '../UpdateTaskDialog/UpdateTaskDialog';
+import { useDialogsStore } from '@/stores/DialogsStore';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { Badge } from '../ui/badge';
@@ -21,11 +23,14 @@ import {
 } from '../ui/dropdown-menu';
 import { Loader } from '../ui/loader';
 
-interface TaskCardProps {
-  task: TASK_TYPE;
-}
+type TaskCardProps = TASK_TYPE;
 
-export const TaskCard = ({ task }: TaskCardProps) => {
+export const TaskCard = (task: TaskCardProps) => {
+  // const showDialog = useDialogsStore((state) => state.showDialog);
+  // const currentTaskId = useDialogsStore((state) => state.currentTaskId);
+  // const toggleDialog = useDialogsStore((state) => state.toggleDialog);
+  const openDialog = useDialogsStore((state) => state.openDialog);
+
   const queryClient = useQueryClient();
   const color = PRIORITY_COLORS[task.priority];
 
@@ -37,10 +42,11 @@ export const TaskCard = ({ task }: TaskCardProps) => {
   });
 
   return (
+    // <UpdateTaskDialog {...task}>
     <Card
       x-chunk="dashboard-01-chunk-0"
       className={cn(
-        `relative h-max overflow-hidden rounded-2xl before:absolute before:h-full before:w-1.5 before:bg-[var(--user-color)] before:content-['']`
+        `relative h-max cursor-pointer overflow-hidden rounded-2xl before:absolute before:h-full before:w-1.5 before:bg-[var(--user-color)] before:content-['']`
       )}
       style={
         {
@@ -48,6 +54,11 @@ export const TaskCard = ({ task }: TaskCardProps) => {
         } as CSSProperties
       }
       // data-swapy-item={task.id}
+      onDoubleClick={(e) => {
+        console.log(e);
+
+        openDialog(task.id, 'update');
+      }}
     >
       {isPending && (
         <div className="absolute inset-0 grid place-content-center bg-gray-200/40">
@@ -64,7 +75,12 @@ export const TaskCard = ({ task }: TaskCardProps) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => openDialog(task.id, 'update')}
+            >
+              Edit
+            </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => mutate(task.id)}
@@ -73,7 +89,6 @@ export const TaskCard = ({ task }: TaskCardProps) => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        {/* <DollarSign className="h-4 w-4 text-muted-foreground" /> */}
       </CardHeader>
       <CardContent>
         <CardTitle className="mb-1 text-2xl font-medium">
@@ -82,5 +97,6 @@ export const TaskCard = ({ task }: TaskCardProps) => {
         <p className="text-muted-foreground">{task.description}</p>
       </CardContent>
     </Card>
+    // </UpdateTaskDialog>
   );
 };

@@ -1,5 +1,6 @@
 'use client';
 
+import { TaskCard } from '@/components/TaskCard';
 import { Loader } from '@/components/ui/loader';
 
 import { useGetCompletedTasks } from '../../api/tasks';
@@ -13,7 +14,15 @@ export default function Completed() {
         <Loader />
       </div>
     );
+
+  if (!data?.length) return <div>You have not completed tasks yet</div>;
   console.log(data);
 
-  return <div className="">333</div>;
+  return (
+    <div className="grid grid-cols-3">
+      {data.map((task) => (
+        <TaskCard key={task.id} {...task} />
+      ))}
+    </div>
+  );
 }

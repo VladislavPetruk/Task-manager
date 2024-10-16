@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 
 // import { AxiosError } from 'axios';
@@ -24,6 +25,13 @@ import { ScrollArea } from '../ui/scroll-area';
 interface DashboardLayoutProps {
   children: ReactNode;
 }
+
+const UpdateTaskDialog = dynamic(
+  () => import('@/components/UpdateTaskDialog/UpdateTaskDialog'),
+  {
+    ssr: false,
+  }
+);
 
 // async function getUser(): Promise<UserResponse> {
 //   try {
@@ -103,6 +111,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
     <div className="grid h-screen grid-rows-[max-content_1fr] overflow-hidden">
       <Header />
+      <UpdateTaskDialog />
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel
           defaultSize={20}
