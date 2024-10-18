@@ -4,6 +4,7 @@ import { FolderPen } from 'lucide-react';
 import {
   GET_ACTIVE_TASKS_QUERY_KEY,
   GET_COMPLETED_TASKS_QUERY_KEY,
+  useCreateTask,
 } from '@/app/api/tasks';
 import { useUpdateTask } from '@/app/api/tasks/[id]';
 import { Button } from '@/components/ui/button';
@@ -35,12 +36,11 @@ import { Loader } from '../ui/loader';
 export default function UpdateTaskDialog() {
   const showDialog = useDialogsStore((state) => state.showDialog);
   const currentTaskId = useDialogsStore((state) => state.currentTaskId);
-  // const dialogType = useDialogsStore((state) => state.dialogType);
+  const dialogType = useDialogsStore((state) => state.dialogType);
   const toggleDialog = useDialogsStore((state) => state.toggleDialog);
   const closeDialog = useDialogsStore((state) => state.closeDialog);
 
-  const tasks = useTasksStore((state) => state.tasks);
-  // const currentTask = tasks.get(currentTaskId) as TASK_TYPE;
+  const allTasksInStore = useTasksStore((state) => state.allTasks);
 
   const [title, setTitle] = useState<TASK_TYPE['title']>('');
   const [description, setDescription] = useState<TASK_TYPE['description']>('');
@@ -54,7 +54,7 @@ export default function UpdateTaskDialog() {
   console.log(isFutured);
 
   useEffect(() => {
-    const currentTask = tasks.get(currentTaskId);
+    const currentTask = allTasksInStore.get(currentTaskId);
     if (currentTask) {
       setTitle(currentTask.title);
       setDescription(currentTask.description);
@@ -65,17 +65,35 @@ export default function UpdateTaskDialog() {
       setIsFutured(currentTask.isFutured);
       setId(currentTask.id);
     }
-  }, [showDialog, currentTaskId, tasks]);
+  }, [currentTaskId, allTasksInStore]);
 
   const queryClient = useQueryClient();
 
-  const { mutate, isPending } = useUpdateTask({
+  const { mutate: mutateUpdateTask, isPending: inPendingUpdateTask } =
+    useUpdateTask({
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: [GET_ACTIVE_TASKS_QUERY_KEY],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [GET_COMPLETED_TASKS_QUERY_KEY],
+        });
+        closeDialog();
+        resetState();
+      },
+      onError: (error) => {
+        toast({
+          title: error.message || 'Something went wrong',
+          variant: 'destructive',
+        });
+      },
+    });
+
+  const { mutate: mutateCreateTask } = useCreateTask({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [GET_ACTIVE_TASKS_QUERY_KEY] });
-      queryClient.invalidateQueries({
-        queryKey: [GET_COMPLETED_TASKS_QUERY_KEY],
-      });
       closeDialog();
+      resetState();
     },
     onError: (error) => {
       toast({
@@ -85,7 +103,21 @@ export default function UpdateTaskDialog() {
     },
   });
 
-  const handleSubmit = async (e: SyntheticEvent<HTMLButtonElement>) => {
+  const onCreateTask = async (e: SyntheticEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    const newTask = {
+      title,
+      description,
+      tag,
+      priority,
+      status,
+    };
+
+    mutateCreateTask(newTask);
+  };
+
+  const onUpdateTask = async (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     const isCompleted = status === 'cancel';
@@ -102,21 +134,35 @@ export default function UpdateTaskDialog() {
       isFutured,
     };
 
-    mutate(updatedTask);
+    mutateUpdateTask(updatedTask);
   };
 
-  console.log(tasks, isCompleted);
+  const resetState = () => {
+    setTitle('');
+    setDescription('')
+    setTag('')
+    setId('')
+  }
 
   return (
     <Dialog open={showDialog} onOpenChange={toggleDialog}>
       <DialogContent className="sm:max-w-[500px]">
-        {isPending && (
+        {inPendingUpdateTask && (
           <div className="absolute inset-0 grid place-content-center bg-gray-200/40">
             <Loader />
           </div>
         )}
         <DialogHeader>
-          <DialogTitle>Update task</DialogTitle>
+          <DialogTitle>
+            {/* {isCompleted ? 'Task info' : 'Update task'} */}
+            {isCompleted
+              ? 'Task info'
+              : dialogType === 'create'
+                ? 'Add a new task'
+                : dialogType === 'update'
+                  ? 'Update a task'
+                  : 'Handler'}
+          </DialogTitle>
         </DialogHeader>
         <div className="grid gap-y-4 py-4">
           <div className="grid gap-y-2">
@@ -125,6 +171,7 @@ export default function UpdateTaskDialog() {
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              disabled={isCompleted}
             />
           </div>
           <div className="grid gap-y-2">
@@ -142,6 +189,7 @@ export default function UpdateTaskDialog() {
               id="tag"
               value={tag}
               onChange={(e) => setTag(e.target.value)}
+              disabled={isCompleted}
             />
           </div>
           <div className="grid gap-y-2">
@@ -149,6 +197,7 @@ export default function UpdateTaskDialog() {
             <Select
               value={priority}
               onValueChange={(e: TASK_TYPE['priority']) => setPriority(e)}
+              disabled={isCompleted}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select a task priority" />
@@ -190,37 +239,57 @@ export default function UpdateTaskDialog() {
               </SelectContent>
             </Select>
           </div>
-          <div className="grid gap-y-2">
-            <Label htmlFor="status">Status</Label>
-            <Select
-              value={status}
-              onValueChange={(e: TASK_TYPE['status']) => setStatus(e)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a task status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="to_do" className="cursor-pointer">
-                  <div className="flex items-center gap-3">To do</div>
-                </SelectItem>
-                <SelectItem value="in_progress" className="cursor-pointer">
-                  <div className="flex items-center gap-3">In progress</div>
-                </SelectItem>
-                <SelectItem value="done" className="cursor-pointer">
-                  <div className="flex items-center gap-3">Done</div>
-                </SelectItem>
-                <SelectItem value="cancel" className="cursor-pointer">
-                  <div className="flex items-center gap-3">Cancel</div>
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {dialogType === 'update' && (
+            <div className="grid gap-y-2">
+              <Label htmlFor="status">Status</Label>
+              <Select
+                value={status}
+                onValueChange={(e: TASK_TYPE['status']) => setStatus(e)}
+                disabled={isCompleted}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a task status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="to_do" className="cursor-pointer">
+                    <div className="flex items-center gap-3">To do</div>
+                  </SelectItem>
+                  <SelectItem value="in_progress" className="cursor-pointer">
+                    <div className="flex items-center gap-3">In progress</div>
+                  </SelectItem>
+                  <SelectItem value="done" className="cursor-pointer">
+                    <div className="flex items-center gap-3">Done</div>
+                  </SelectItem>
+                  <SelectItem value="cancel" className="cursor-pointer">
+                    <div className="flex items-center gap-3">Cancel</div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
-        <DialogFooter>
-          <Button type="submit" className="pl-3" onClick={handleSubmit}>
-            <FolderPen className="mr-1" size={20} /> Update a task
-          </Button>
-        </DialogFooter>
+        {!isCompleted && (
+          <DialogFooter>
+            <Button
+              type="submit"
+              className="pl-3"
+              onClick={
+                dialogType === 'create'
+                  ? onCreateTask
+                  : dialogType === 'update'
+                    ? onUpdateTask
+                    : () => console.log(22)
+              }
+            >
+              <FolderPen className="mr-1" size={20} />
+              {dialogType === 'create'
+                ? 'Create a task'
+                : dialogType === 'update'
+                  ? 'Update a task'
+                  : 'Confirm'}
+            </Button>
+          </DialogFooter>
+        )}
       </DialogContent>
     </Dialog>
   );

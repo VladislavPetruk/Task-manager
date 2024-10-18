@@ -1,5 +1,4 @@
 import React from 'react';
-import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
@@ -19,11 +18,6 @@ const inter = Inter({
 const AppThemeProvider = dynamic(() => import('@/providers/ThemeProvider'), {
   ssr: false,
 });
-
-export const metadata: Metadata = {
-  title: 'Task manager',
-  description: 'Task manager description',
-};
 
 export default function RootLayout({
   children,

@@ -1,28 +1,16 @@
-'use client';
+import { Metadata } from 'next';
 
-import { TaskCard } from '@/components/TaskCard';
-import { Loader } from '@/components/ui/loader';
+import CompletedClient from './page.client';
 
-import { useGetCompletedTasks } from '../../api/tasks';
+export const metadata: Metadata = {
+  title: {
+    template: '%s | Task manager',
+    default: 'Task manager',
+  },
+  description: "Vladyslav's Task manager description",
+  applicationName: 'Task manager',
+};
 
 export default function Completed() {
-  const { data, isLoading } = useGetCompletedTasks();
-
-  if (isLoading)
-    return (
-      <div className="grid h-full place-content-center">
-        <Loader />
-      </div>
-    );
-
-  if (!data?.length) return <div>You have not completed tasks yet</div>;
-  console.log(data);
-
-  return (
-    <div className="grid grid-cols-3">
-      {data.map((task) => (
-        <TaskCard key={task.id} {...task} />
-      ))}
-    </div>
-  );
+  return <CompletedClient />;
 }

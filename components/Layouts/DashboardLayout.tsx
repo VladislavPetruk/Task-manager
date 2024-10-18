@@ -27,7 +27,7 @@ interface DashboardLayoutProps {
 }
 
 const UpdateTaskDialog = dynamic(
-  () => import('@/components/UpdateTaskDialog/UpdateTaskDialog'),
+  () => import('@/components/TaskHandlerDialog/TaskHandlerDialog'),
   {
     ssr: false,
   }

@@ -1,18 +1,16 @@
-'use client';
+import { Metadata } from 'next';
 
-import { useGetFutureTasks } from '@/app/api/tasks';
-import { Loader } from '@/components/ui/loader';
+import FutureClient from './page.client';
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s | Task manager',
+    default: 'Task manager',
+  },
+  description: "Vladyslav's Task manager description",
+  applicationName: 'Task manager',
+};
 
 export default function Future() {
-  const { data, isLoading } = useGetFutureTasks();
-
-  if (isLoading)
-    return (
-      <div className="grid h-full place-content-center">
-        <Loader />
-      </div>
-    );
-  console.log(data);
-
-  return <div className="">333</div>;
+  return <FutureClient />;
 }
