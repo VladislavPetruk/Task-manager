@@ -8,19 +8,14 @@ import { useRouter } from 'next/navigation';
 import { useGetUser } from '@/app/api/getUser';
 import { useLogout } from '@/app/api/logout';
 
+import { DashboardSidebar } from '../DashboardSidebar';
 import { FullScreenLoader } from '../FullScreenLoader';
 // import {
 //   ImperativePanelGroupHandle,
 //   ImperativePanelHandle,
 // } from 'react-resizable-panels';
 import { Header } from '../Header';
-import { Sidebar } from '../Sidebar';
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from '../ui/resizable';
-import { ScrollArea } from '../ui/scroll-area';
+import { SidebarProvider } from '../ui/sidebar';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -109,36 +104,55 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   if (isLoading || !data) return <FullScreenLoader />;
 
   return (
-    <div className="grid h-screen grid-rows-[max-content_1fr] overflow-hidden">
+    <SidebarProvider className="grid h-screen grid-rows-[max-content_1fr] overflow-hidden">
       <Header />
       <UpdateTaskDialog />
-      <ResizablePanelGroup direction="horizontal">
-        <ResizablePanel
-          defaultSize={20}
-          maxSize={50}
-          className="max-md:hidden"
-          // collapsible={true}
-          // collapsedSize={0}
-          // ref={panelLeftRef}
-          // onCollapse={() => setIsCollapsed(true)}
-          // onExpand={() => setIsCollapsed(false)}
-        >
-          <Sidebar />
-        </ResizablePanel>
-        <ResizableHandle
-          withHandle
-          className="max-md:hidden"
-          // onClick={(e) => {
-          //   e.stopPropagation();
-          //   toggleCollapse();
-          // }}
-        />
-        <ResizablePanel defaultSize={80}>
-          <ScrollArea className="w-full">
-            <main className="h-full px-8 py-14">{children}</main>
-          </ScrollArea>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </div>
+      <div className="flex items-start">
+        <DashboardSidebar />
+        <main className="h-full w-full px-8 py-14">{children}</main>
+      </div>
+    </SidebarProvider>
+    // <div className="grid h-screen grid-rows-[max-content_1fr] overflow-hidden">
+    //   <Header />
+    //   <UpdateTaskDialog />
+    //   <div>
+    //     <SidebarProvider>
+    //       <AppSidebar />
+    //     </SidebarProvider>
+    //     <ScrollArea className="w-full">
+    //       <main className="h-full px-8 py-14">{children}</main>
+    //     </ScrollArea>
+    //   </div>
+    //   {/* <ScrollArea className="w-full">
+    //         <main className="h-full px-8 py-14">{children}</main>
+    //       </ScrollArea> */}
+    //   {/* <ResizablePanelGroup direction="horizontal">
+    //       <ResizablePanel
+    //         defaultSize={20}
+    //         maxSize={50}
+    //         className="max-md:hidden"
+    //         // collapsible={true}
+    //         // collapsedSize={0}
+    //         // ref={panelLeftRef}
+    //         // onCollapse={() => setIsCollapsed(true)}
+    //         // onExpand={() => setIsCollapsed(false)}
+    //       >
+    //         <Sidebar />
+    //       </ResizablePanel>
+    //       <ResizableHandle
+    //         withHandle
+    //         className="max-md:hidden"
+    //         // onClick={(e) => {
+    //         //   e.stopPropagation();
+    //         //   toggleCollapse();
+    //         // }}
+    //       />
+    //       <ResizablePanel defaultSize={80}>
+    //         <ScrollArea className="w-full">
+    //           <main className="h-full px-8 py-14">{children}</main>
+    //         </ScrollArea>
+    //       </ResizablePanel>
+    //     </ResizablePanelGroup> */}
+    // </div>
   );
 };

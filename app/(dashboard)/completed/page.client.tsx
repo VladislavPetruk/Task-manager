@@ -38,7 +38,7 @@ export default function CompletedClient() {
   console.log(completedTasks);
 
   return (
-    <div className="grid grid-cols-3">
+    <div className="grid grid-cols-3 gap-3">
       {completedTasks.map((task) => (
         <TaskCard key={task.id} {...task} />
       ))}
