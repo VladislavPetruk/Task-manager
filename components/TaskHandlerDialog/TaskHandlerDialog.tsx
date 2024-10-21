@@ -139,10 +139,10 @@ export default function UpdateTaskDialog() {
 
   const resetState = () => {
     setTitle('');
-    setDescription('')
-    setTag('')
-    setId('')
-  }
+    setDescription('');
+    setTag('');
+    setId('');
+  };
 
   return (
     <Dialog open={showDialog} onOpenChange={toggleDialog}>
