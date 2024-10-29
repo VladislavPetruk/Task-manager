@@ -1,6 +1,6 @@
-// import { auth } from "@clerk/nextjs";
 import { NextRequest, NextResponse } from 'next/server';
 
+import { TaskStatus } from '@/constants/task';
 import { validateToken } from '@/helper/validateToken';
 import prisma from '@/lib/prisma';
 
@@ -12,7 +12,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const { title, description, tag, priority, status } = await req.json();
+    const { title, description, tags, priority, status, comments } =
+      await req.json();
 
     if (!title || !description) {
       return NextResponse.json(
@@ -32,13 +33,27 @@ export async function POST(req: Request) {
       );
     }
 
+    const lastTask = await prisma.task.findFirst({
+      where: { status },
+      orderBy: { position: 'desc' },
+    });
+
+    const position = Math.min(
+      ((lastTask?.position ?? 0) + 1) * 1000,
+      1_000_000
+    );
+
     const task = await prisma.task.create({
       data: {
         title,
         description,
-        tag,
+        tags,
         priority,
         status,
+        position,
+        comments: {
+          create: comments,
+        },
       },
     });
 
@@ -96,6 +111,9 @@ export async function GET(request: NextRequest) {
 
     const tasks = await prisma.task.findMany({
       where: whereCondition,
+      // include: {
+      //   comments: true,
+      // },
     });
 
     return NextResponse.json(tasks);
@@ -143,27 +161,83 @@ export async function GET(request: NextRequest) {
 //   }
 // }
 
+// export async function PUT(req: Request, { params }: { params: { id: string } }) {
+//   try {
+//     const decodedToken = validateToken();
+
+//     if (!decodedToken?.username) {
+//       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+//     }
+
+//     const { position, status } = await req.json();
+//     const { id } = params;
+
+//     const updatedTask = await prisma.task.update({
+//       where: { id },
+//       data: { position, status },
+//     });
+
+//     return NextResponse.json(updatedTask);
+//   } catch (error) {
+//     return NextResponse.json({ error }, { status: 500 });
+//   }
+// }
+
 export async function PUT(req: Request) {
   try {
-    // const { userId } = auth();
-    const { isCompleted, id } = await req.json();
+    const decodedToken = validateToken();
 
-    // if (!userId) {
-    //   return NextResponse.json({ error: "Unauthorized", status: 401 });
-    // }
+    if (!decodedToken?.username) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
 
-    const task = await prisma.task.update({
-      where: {
-        id,
-      },
-      data: {
-        isCompleted,
-      },
-    });
+    const updatesPayload: {
+      id: string;
+      status: TaskStatus;
+      position: number;
+    }[] = await req.json();
 
-    return NextResponse.json(task);
+    // Виконуємо транзакцію для масового оновлення тасок
+    const updateTasks = updatesPayload.map((task) =>
+      prisma.task.update({
+        where: { id: task.id },
+        data: { status: task.status, position: task.position },
+      })
+    );
+
+    console.log(111, updateTasks);
+
+    // Виконуємо всі оновлення в транзакції
+    await prisma.$transaction(updateTasks);
+
+    return NextResponse.json({ message: 'Tasks updated successfully' });
   } catch (error) {
-    console.log('ERROR UPDATING TASK: ', error);
-    return NextResponse.json({ error: 'Error deleting task', status: 500 });
+    console.error('Error updating tasks:', error);
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
+
+// export async function PUT(req: Request) {
+//   try {
+//     // const { userId } = auth();
+//     const { isCompleted, id } = await req.json();
+
+//     // if (!userId) {
+//     //   return NextResponse.json({ error: "Unauthorized", status: 401 });
+//     // }
+
+//     const task = await prisma.task.update({
+//       where: {
+//         id,
+//       },
+//       data: {
+//         isCompleted,
+//       },
+//     });
+
+//     return NextResponse.json(task);
+//   } catch (error) {
+//     console.log('ERROR UPDATING TASK: ', error);
+//     return NextResponse.json({ error: 'Error deleting task', status: 500 });
+//   }
+// }

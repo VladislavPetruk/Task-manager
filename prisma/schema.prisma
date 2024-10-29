@@ -18,13 +18,23 @@ model Task {
   id          String   @id @default(uuid()) @map("_id")
   title       String
   description String
-  tag         String
+  tags        String[]
   priority    Priority
   status      Status
   createdOn   DateTime @default(now())
   updateOn    DateTime? @updatedAt
   isCompleted Boolean  @default(false)
   isFutured   Boolean  @default(false)
+  position    Int
+  comments    Comment[] @relation("TaskComments")
+}
+
+model Comment {
+  id          String   @id @default(uuid()) @map("_id") 
+  content     String   
+  createdOn   DateTime @default(now())
+  taskId      String   // Замість @db.ObjectId
+  task        Task     @relation("TaskComments", fields: [taskId], references: [id])
 }
 
 enum Priority {

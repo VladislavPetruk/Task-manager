@@ -10,10 +10,10 @@ type TasksStoreState = {
   toDoTasks: Map<string, TASK_TYPE>;
   inProgressTasks: Map<string, TASK_TYPE>;
   doneTasks: Map<string, TASK_TYPE>;
-  setActiveTasks: (tasks: Array<TASK_TYPE>) => void;
+  setActiveTasks: (tasks: Map<TASK_TYPE['status'], TASK_TYPE[]>) => void;
   setFutureTasks: (tasks: Array<TASK_TYPE>) => void;
   setCompletedTasks: (tasks: Array<TASK_TYPE>) => void;
-  // setAllTasks: (tasks: Array<TASK_TYPE>) => void;
+  // setAllTasks: (tasks: Map<TASK_TYPE["status"], TASK_TYPE[]>) => void;
 };
 
 export const useTasksStore = create<TasksStoreState>()(
@@ -34,27 +34,44 @@ export const useTasksStore = create<TasksStoreState>()(
         const inProgressTasksMap = new Map<string, TASK_TYPE>();
         const doneTasksMap = new Map<string, TASK_TYPE>();
 
-        tasks.forEach((task) => {
+        tasks.get('to_do')?.forEach((task) => {
+          toDoTasksMap.set(task.id, task);
           activeTasksMap.set(task.id, task);
-          switch (task.status) {
-            case 'to_do':
-              toDoTasksMap.set(task.id, task);
-              break;
-            case 'in_progress':
-              inProgressTasksMap.set(task.id, task);
-              break;
-            case 'done':
-              doneTasksMap.set(task.id, task);
-              break;
-          }
         });
+
+        tasks.get('in_progress')?.forEach((task) => {
+          inProgressTasksMap.set(task.id, task);
+          activeTasksMap.set(task.id, task);
+        });
+
+        tasks.get('done')?.forEach((task) => {
+          doneTasksMap.set(task.id, task);
+          activeTasksMap.set(task.id, task);
+        });
+
+        // console.log(tasks);
+
+        // tasks.forEach((task) => {
+        //   activeTasksMap.set(task.id, task);
+        //   switch (task.status) {
+        //     case 'to_do':
+        //       toDoTasksMap.set(task.id, task);
+        //       break;
+        //     case 'in_progress':
+        //       inProgressTasksMap.set(task.id, task);
+        //       break;
+        //     case 'done':
+        //       doneTasksMap.set(task.id, task);
+        //       break;
+        //   }
+        // });
 
         const futureTasks = get().futureTasks;
         const completedTasks = get().completedTasks;
 
         set({
           activeTasks: activeTasksMap,
-          toDoTasks: activeTasksMap,
+          toDoTasks: toDoTasksMap,
           inProgressTasks: inProgressTasksMap,
           doneTasks: doneTasksMap,
           allTasks: new Map([

@@ -6,9 +6,8 @@ import {
   GET_FUTURE_TASKS_QUERY_KEY,
 } from '@/app/api/tasks';
 import { useDeleteTask } from '@/app/api/tasks/[id]';
-import { PRIORITY_COLORS, TASK_TYPE } from '@/constants/task';
+import { PRIORITY_COLORS, Task } from '@/constants/task';
 import { cn } from '@/lib/utils';
-// import { UpdateTaskDialog } from '../UpdateTaskDialog/UpdateTaskDialog';
 import { useDialogsStore } from '@/stores/DialogsStore';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -23,12 +22,10 @@ import {
 } from '../ui/dropdown-menu';
 import { Loader } from '../ui/loader';
 
-type TaskCardProps = TASK_TYPE;
+type TaskCardProps = Task;
 
-export const TaskCard = (task: TaskCardProps) => {
-  // const showDialog = useDialogsStore((state) => state.showDialog);
-  // const currentTaskId = useDialogsStore((state) => state.currentTaskId);
-  // const toggleDialog = useDialogsStore((state) => state.toggleDialog);
+export const TaskCard = (props: TaskCardProps) => {
+  const task = props;
   const openDialog = useDialogsStore((state) => state.openDialog);
 
   const queryClient = useQueryClient();
@@ -42,21 +39,17 @@ export const TaskCard = (task: TaskCardProps) => {
   });
 
   return (
-    // <UpdateTaskDialog {...task}>
     <Card
       x-chunk="dashboard-01-chunk-0"
       className={cn(
-        `relative h-max cursor-pointer overflow-hidden rounded-2xl before:absolute before:h-full before:w-1.5 before:bg-[var(--user-color)] before:content-['']`
+        `relative mb-4 h-max cursor-pointer overflow-hidden rounded-2xl before:absolute before:h-full before:w-1.5 before:bg-[var(--user-color)] before:content-['']`
       )}
       style={
         {
           '--user-color': color,
         } as CSSProperties
       }
-      // data-swapy-item={task.id}
-      onDoubleClick={(e) => {
-        console.log(e);
-
+      onDoubleClick={() => {
         openDialog(task.id, 'update');
       }}
     >
@@ -66,9 +59,11 @@ export const TaskCard = (task: TaskCardProps) => {
         </div>
       )}
       <CardHeader className="items-center justify-between pb-2">
-        <Badge variant={null}>{task.tag}</Badge>
+        {task.tags.length > 0 && (
+          <Badge variant={null}>{task.tags.toString()}</Badge>
+        )}
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger asChild className="ml-auto">
             <Button aria-haspopup="true" size="icon" variant="ghost">
               <EllipsisVertical />
               <span className="sr-only">Toggle card handler</span>
@@ -97,6 +92,5 @@ export const TaskCard = (task: TaskCardProps) => {
         <p className="text-muted-foreground">{task.description}</p>
       </CardContent>
     </Card>
-    // </UpdateTaskDialog>
   );
 };

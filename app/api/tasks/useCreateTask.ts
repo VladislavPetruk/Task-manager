@@ -15,7 +15,7 @@ export const CREATE_TASK_MUTATION_KEY = '@mutation/createTask';
 type CreateTaskParams = {
   title: TASK_TYPE['title'];
   description: TASK_TYPE['description'];
-  tag: TASK_TYPE['tag'];
+  tags: TASK_TYPE['tags'];
   priority: TASK_TYPE['priority'];
   status: TASK_TYPE['status'];
 };

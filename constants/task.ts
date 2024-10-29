@@ -1,15 +1,60 @@
+export type TASK_STATUSES = 'to_do' | 'in_progress' | 'done' | 'cancel';
+export const TASK_STATUSES_ARRAY = ['to_do', 'in_progress', 'done', 'cancel'];
+
+export type TasksByStatus = Map<TASK_TYPE['status'], Array<TASK_TYPE>>;
+
 export type TASK_TYPE = {
   id: string;
   title: string;
   description: string;
-  tag: string;
+  tags: Array<string>;
   priority: 'low' | 'medium' | 'high';
   createdOn: string;
   updateOn: string;
-  status: 'to_do' | 'in_progress' | 'done' | 'cancel';
+  status: TASK_STATUSES;
   isCompleted: boolean;
   isFutured: boolean;
+  position: number;
 };
+
+export enum TaskStatus {
+  TODO = 'to_do',
+  IN_PROGRESS = 'in_progress',
+  DONE = 'done',
+  CANCEL = 'cancel',
+}
+
+export type Task = {
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+  priority: 'low' | 'medium' | 'high';
+  createdOn: string;
+  updatedOn: string;
+  status: TaskStatus;
+  isCompleted: boolean;
+  isFeatured: boolean;
+  position: number;
+  comments: TaskComment[];
+};
+
+type TaskComment = {
+  content: string;
+  id: string;
+  createdOn: string;
+  taskId: string;
+};
+
+// const board: TaskStatus[] = [
+//   TaskStatus.TODO,
+//   TaskStatus.IN_PROGRESS,
+//   TaskStatus.DONE,
+// ];
+
+// type TasksState = {
+//   [key in TaskStatus]: Task[];
+// };
 
 // export const TASKS: Array<TASK_TYPE> = [
 //   {

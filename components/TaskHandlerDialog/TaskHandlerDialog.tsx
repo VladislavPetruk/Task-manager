@@ -44,21 +44,20 @@ export default function UpdateTaskDialog() {
 
   const [title, setTitle] = useState<TASK_TYPE['title']>('');
   const [description, setDescription] = useState<TASK_TYPE['description']>('');
-  const [tag, setTag] = useState<TASK_TYPE['tag']>('');
+  const [tags, setTags] = useState<TASK_TYPE['tags']>([]);
   const [priority, setPriority] = useState<TASK_TYPE['priority']>('low');
   const [status, setStatus] = useState<TASK_TYPE['status']>('to_do');
   const [isCompleted, setIsCompleted] =
     useState<TASK_TYPE['isCompleted']>(false);
-  const [isFutured, setIsFutured] = useState<TASK_TYPE['isFutured']>(false);
+  const [, setIsFutured] = useState<TASK_TYPE['isFutured']>(false);
   const [id, setId] = useState<TASK_TYPE['id']>('');
-  console.log(isFutured);
 
   useEffect(() => {
     const currentTask = allTasksInStore.get(currentTaskId);
     if (currentTask) {
       setTitle(currentTask.title);
       setDescription(currentTask.description);
-      setTag(currentTask.tag);
+      setTags(currentTask.tags);
       setPriority(currentTask.priority);
       setStatus(currentTask.status);
       setIsCompleted(currentTask.isCompleted);
@@ -109,9 +108,10 @@ export default function UpdateTaskDialog() {
     const newTask = {
       title,
       description,
-      tag,
+      tags,
       priority,
       status,
+      comments: [],
     };
 
     mutateCreateTask(newTask);
@@ -127,7 +127,7 @@ export default function UpdateTaskDialog() {
       id,
       title,
       description,
-      tag,
+      tags,
       priority,
       status,
       isCompleted,
@@ -140,7 +140,7 @@ export default function UpdateTaskDialog() {
   const resetState = () => {
     setTitle('');
     setDescription('');
-    setTag('');
+    setTags([]);
     setId('');
   };
 
@@ -183,15 +183,15 @@ export default function UpdateTaskDialog() {
               disabled={isCompleted}
             />
           </div>
-          <div className="grid gap-y-2">
+          {/* <div className="grid gap-y-2">
             <Label htmlFor="tag">Tag</Label>
             <Input
               id="tag"
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
               disabled={isCompleted}
             />
-          </div>
+          </div> */}
           <div className="grid gap-y-2">
             <Label htmlFor="priority">Priority</Label>
             <Select

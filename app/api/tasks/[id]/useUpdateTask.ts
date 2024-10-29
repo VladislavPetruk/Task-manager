@@ -16,7 +16,7 @@ type UpdateTaskParams = {
   id: TASK_TYPE['id'];
   title: TASK_TYPE['title'];
   description: TASK_TYPE['description'];
-  tag: TASK_TYPE['tag'];
+  tags: TASK_TYPE['tags'];
   priority: TASK_TYPE['priority'];
   status: TASK_TYPE['status'];
   isCompleted: TASK_TYPE['isCompleted'];

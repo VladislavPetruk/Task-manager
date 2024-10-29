@@ -3,62 +3,165 @@
 
 import { TaskCard } from '@/components/TaskCard';
 import { Loader } from '@/components/ui/loader';
-import { TASK_TYPE } from '@/constants/task';
+import { Task, TaskStatus } from '@/constants/task';
 import { shallow } from 'zustand/shallow';
 
 import { Button } from '@/components/ui/button';
 import { useDialogsStore } from '@/stores/DialogsStore';
 import { useTasksStore } from '@/stores/TasksStore';
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from '@hello-pangea/dnd';
+import axios from 'axios';
 import { Plus } from 'lucide-react';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useGetActiveTasks } from '../api/tasks';
-// import { createSwapy } from 'swapy';
-// import { useEffect } from 'react';
 
-const filterTasks = (tasks: Array<TASK_TYPE> | undefined, status: string) => {
-  if (!tasks) return;
-  return tasks.filter((task) => task.status === status);
+const updateTasks = async (updatesPayload: any) => {
+  try {
+    const response = await axios.put('/api/tasks', updatesPayload, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    console.log('Tasks updated successfully:', response.data);
+  } catch (error: any) {
+    if (error.response) {
+      console.error('Server Error:', error.response.data);
+    } else if (error.request) {
+      console.error('No Response:', error.request);
+    } else {
+      console.error('Error:', error.message);
+    }
+  }
 };
 
-// const TO_DO_TASKS = filterTasks('to do');
-// const IN_PROGRESS_TASKS = filterTasks('in progress');
-// const DONE_TASKS = filterTasks('done');
+type TasksState = {
+  [key in TaskStatus]: Task[];
+};
+
+const boards: TaskStatus[] = [
+  TaskStatus.TODO,
+  TaskStatus.IN_PROGRESS,
+  TaskStatus.DONE,
+];
 
 export default function HomeClient() {
-  const { data, isError, isLoading } = useGetActiveTasks();
-  const openDialog = useDialogsStore((state) => state.openDialog);
+  const { setActiveTasks } = useTasksStore(
+    (state) => ({
+      setActiveTasks: state.setActiveTasks,
+    }),
+    shallow
+  );
 
-  const { toDoTasks, inProgressTasks, doneTasks, setActiveTasks } =
-    useTasksStore(
-      (state) => ({
-        toDoTasks: state.toDoTasks,
-        inProgressTasks: state.inProgressTasks,
-        doneTasks: state.doneTasks,
-        setActiveTasks: state.setActiveTasks,
-      }),
-      shallow
-    );
+  const { data, isError, isLoading } = useGetActiveTasks();
+
+  const [tasks, setTasks] = useState<TasksState>({
+    [TaskStatus.TODO]: [],
+    [TaskStatus.IN_PROGRESS]: [],
+    [TaskStatus.DONE]: [],
+    [TaskStatus.CANCEL]: [],
+  });
 
   useEffect(() => {
     if (data) {
-      setActiveTasks(data);
+      const newTasks: TasksState = {
+        [TaskStatus.TODO]: [],
+        [TaskStatus.IN_PROGRESS]: [],
+        [TaskStatus.DONE]: [],
+        [TaskStatus.CANCEL]: [],
+      };
+
+      data.forEach((task) => {
+        newTasks[task.status].push(task);
+      });
+
+      Object.keys(newTasks).forEach((status) => {
+        newTasks[status as TaskStatus].sort((a, b) => a.position - b.position);
+      });
+
+      setTasks(newTasks);
     }
   }, [data]);
 
-  // const { mutate } = useCreateTask({
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: [GET_ACTIVE_TASKS_QUERY_KEY] });
-  //   },
-  // });
-  //   const container = document.querySelector('.container1')!;
-  //   const swapy = createSwapy(container, {});
-  //   swapy.onSwap(({ data }) => {
-  //     console.log(data);
-  //   });
-  //   return () => {
-  //     swapy.destroy();
-  //   };
-  // }, []);
+  const onDragEndAntonio = useCallback((result: DropResult) => {
+    if (!result.destination) return;
+
+    const { source, destination } = result;
+    const sourceStatus = source.droppableId as TaskStatus;
+    const destStatus = destination.droppableId as TaskStatus;
+
+    let updatesPayload: {
+      id: string;
+      status: TaskStatus;
+      position: number;
+    }[] = [];
+
+    setTasks((prevTasks) => {
+      const newTasks = { ...prevTasks };
+
+      const sourceColumn = [...newTasks[sourceStatus]];
+      const [movedTask] = sourceColumn.splice(source.index, 1);
+
+      if (!movedTask) {
+        return prevTasks;
+      }
+
+      const updatedMovedTask =
+        sourceStatus !== destStatus
+          ? { ...movedTask, status: destStatus }
+          : movedTask;
+
+      newTasks[sourceStatus] = sourceColumn;
+
+      const destColumn = [...newTasks[destStatus]];
+      destColumn.splice(destination.index, 0, updatedMovedTask);
+      newTasks[destStatus] = destColumn;
+
+      updatesPayload = [];
+
+      updatesPayload.push({
+        id: updatedMovedTask.id,
+        status: destStatus,
+        position: Math.min((destination.index + 1) * 1000, 1_000_000),
+      });
+
+      newTasks[destStatus].forEach((task, index) => {
+        if (task && task.id !== updatedMovedTask.id) {
+          const newPosition = Math.min((index + 1) * 1000, 1_000_000);
+          if (task.position !== newPosition) {
+            updatesPayload.push({
+              id: task.id,
+              status: destStatus,
+              position: newPosition,
+            });
+          }
+        }
+      });
+
+      if (sourceStatus !== destStatus) {
+        newTasks[sourceStatus].forEach((task, index) => {
+          if (task) {
+            const newPosition = Math.min((index + 1) * 1000, 1_000_000);
+            if (task.position !== newPosition) {
+              updatesPayload.push({
+                id: task.id,
+                status: sourceStatus,
+                position: newPosition,
+              });
+            }
+          }
+        });
+      }
+      return newTasks;
+    });
+
+    updateTasks(updatesPayload);
+  }, []);
 
   if (isLoading)
     return (
@@ -67,78 +170,71 @@ export default function HomeClient() {
       </div>
     );
 
-  const TO_DO_TASKS = filterTasks(data, 'to_do');
-  const IN_PROGRESS_TASKS = filterTasks(data, 'in_progress');
-  const DONE_TASKS = filterTasks(data, 'done');
-
-  // const handleSubmit = async (e: SyntheticEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-
-  //   const task = {
-  //     title,
-  //     description,
-  //     // date,
-  //     tag,
-  //     priority,
-  //     status,
-  //   };
-
-  //   mutate(task)
-  // };
-
-  if (!TO_DO_TASKS || !IN_PROGRESS_TASKS || !DONE_TASKS) return null;
-
   return (
-    <div className="grid gap-6 lg:grid-cols-3">
-      <div className="grid grid-rows-[max-content] gap-y-4 rounded-xl bg-gray-200 p-6">
-        <div className="flex items-center justify-between font-medium">
-          <p className="text-lg">
-            To do {!!TO_DO_TASKS?.length && <span>{TO_DO_TASKS.length}</span>}
-          </p>
-          {/* <CreateTaskDialog /> */}
-          <Button
-            aria-haspopup="true"
-            size="icon"
-            variant="ghost"
-            onClick={() => openDialog('', 'create')}
+    <DragDropContext onDragEnd={onDragEndAntonio}>
+      <div className="grid gap-6 lg:grid-cols-3">
+        {boards.map((board) => (
+          <div
+            className="grid grid-rows-[max-content] gap-y-4 rounded-xl bg-gray-200 p-6"
+            key={board}
           >
-            <Plus />
-            <span className="sr-only">Add a new task</span>
-          </Button>
-        </div>
-        {TO_DO_TASKS?.map((task) => (
-          // <div data-swapy-slot={task.id} key={task.id}>
-          <TaskCard key={task.id} {...task} />
-          // </div>
+            <ColumnHeader board={board} count={tasks[board].length} />
+            <Droppable droppableId={board}>
+              {(droppableProvided) => (
+                <div
+                  className="h-full min-h-40"
+                  ref={droppableProvided.innerRef}
+                  {...droppableProvided.droppableProps}
+                >
+                  {tasks[board].map((task, i) => (
+                    <Draggable draggableId={task.id} index={i} key={task.id}>
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <TaskCard key={task.id} {...task} />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {droppableProvided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </div>
         ))}
       </div>
-      <div className="grid grid-rows-[max-content] gap-y-4 rounded-xl bg-gray-200 p-6">
-        <div className="flex items-center justify-between font-medium">
-          <p className="text-lg">
-            In progress{' '}
-            {!!IN_PROGRESS_TASKS?.length && (
-              <span>{IN_PROGRESS_TASKS.length}</span>
-            )}
-          </p>
-        </div>
-        {IN_PROGRESS_TASKS?.map((task) => (
-          // <div data-swapy-slot={task.id} key={task.id}>
-          <TaskCard key={task.id} {...task} />
-          // </div>
-        ))}
-      </div>
-      <div className="grid grid-rows-[max-content] gap-y-4 rounded-xl bg-gray-200 p-6">
-        <div className="flex items-center justify-between font-medium">
-          <p className="text-lg">
-            Done {!!DONE_TASKS?.length && <span>{DONE_TASKS.length}</span>}
-          </p>
-        </div>
-        {DONE_TASKS?.map((task) => (
-          // <div data-swapy-slot={task.id} key={task.id}>
-          <TaskCard key={task.id} {...task} />
-          // </div>
-        ))}
-      </div>
-    </div>
+    </DragDropContext>
   );
 }
+
+interface ColumnHeaderProps {
+  board: TaskStatus;
+  count: number;
+}
+
+const ColumnHeader = ({ board, count }: ColumnHeaderProps) => {
+  const openDialog = useDialogsStore((state) => state.openDialog);
+
+  return (
+    <div className="flex items-center justify-between font-medium">
+      <p className="text-lg leading-9">
+        {board.replace('_', ' ')}
+        {!!count && <span> {count}</span>}
+      </p>
+      {board === 'to_do' && (
+        <Button
+          aria-haspopup="true"
+          size="icon"
+          variant="ghost"
+          onClick={() => openDialog('', 'create')}
+        >
+          <Plus />
+          <span className="sr-only">Add a new task</span>
+        </Button>
+      )}
+    </div>
+  );
+};

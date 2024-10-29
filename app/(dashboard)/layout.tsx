@@ -27,7 +27,7 @@ export default function RootLayout({
   const theme = cookies().get('theme')?.value || 'system';
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="overscroll-none" suppressHydrationWarning>
       <body
         className={cn(`${inter.className} antialiased`)}
         suppressHydrationWarning

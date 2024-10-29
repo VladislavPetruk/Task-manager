@@ -2,13 +2,29 @@
 
 import axios, { AxiosError } from 'axios';
 
-import { TASK_TYPE } from '@/constants/task';
+import { Task } from '@/constants/task';
 import { toast } from '@/hooks/useToast';
 import { QueryOptions, useQuery, UseQueryResult } from '@tanstack/react-query';
 
 export const GET_ACTIVE_TASKS_QUERY_KEY = '@query/getActiveTasks';
 
-const queryFn = async (): Promise<TASK_TYPE[]> => {
+// const groupTasksByStatus = (tasks: Task[]): Task[] => {
+//   const taskMap = new Task[]([
+//     ['to_do', []],
+//     ['in_progress', []],
+//     ['done', []],
+//   ]);
+
+//   tasks.forEach(task => {
+//     if (task.status !== 'cancel') {
+//       taskMap.get(task.status)!.push(task);
+//     }
+//   });
+
+//   return taskMap;
+// };
+
+const queryFn = async (): Promise<Task[]> => {
   try {
     const { data } = await axios.get('/api/tasks?filter=active');
     return data;
@@ -32,9 +48,9 @@ const queryFn = async (): Promise<TASK_TYPE[]> => {
 };
 
 export function useGetActiveTasks(
-  options?: QueryOptions<TASK_TYPE[], Error>
-): UseQueryResult<TASK_TYPE[], Error> {
-  return useQuery<TASK_TYPE[], Error>({
+  options?: QueryOptions<Task[], Error>
+): UseQueryResult<Task[], Error> {
+  return useQuery<Task[], Error>({
     ...options,
     queryKey: [GET_ACTIVE_TASKS_QUERY_KEY],
     queryFn: queryFn,
