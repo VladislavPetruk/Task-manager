@@ -4,11 +4,11 @@ import { EllipsisVertical } from 'lucide-react';
 import {
   GET_ACTIVE_TASKS_QUERY_KEY,
   GET_FUTURE_TASKS_QUERY_KEY,
+  useDeleteTask,
 } from '@/app/api/tasks';
-import { useDeleteTask } from '@/app/api/tasks/[id]';
 import { PRIORITY_COLORS, Task } from '@/constants/task';
 import { cn } from '@/lib/utils';
-import { useDialogsStore } from '@/stores/DialogsStore';
+import { useDialogsStore } from '@/stores';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { Badge } from '../ui/badge';
@@ -42,7 +42,7 @@ export const TaskCard = (props: TaskCardProps) => {
     <Card
       x-chunk="dashboard-01-chunk-0"
       className={cn(
-        `relative mb-4 h-max cursor-pointer overflow-hidden rounded-2xl bg-background before:absolute before:h-full before:w-1.5 before:bg-[var(--user-color)] before:content-['']`
+        `relative h-max cursor-grab overflow-hidden rounded-2xl bg-background before:absolute before:h-full before:w-1.5 before:bg-[var(--user-color)] before:content-['']`
       )}
       style={
         {
@@ -54,7 +54,7 @@ export const TaskCard = (props: TaskCardProps) => {
       }}
     >
       {isPending && (
-        <div className="absolute inset-0 grid place-content-center bg-gray-200/40">
+        <div className="absolute inset-0 grid place-content-center bg-accent/50">
           <Loader />
         </div>
       )}

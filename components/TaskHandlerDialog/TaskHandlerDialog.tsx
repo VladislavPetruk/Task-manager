@@ -1,13 +1,14 @@
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { FolderPen } from 'lucide-react';
 
 import {
   GET_ACTIVE_TASKS_QUERY_KEY,
   GET_COMPLETED_TASKS_QUERY_KEY,
+  useCreateTask,
+  useUpdateTask,
 } from '@/app/api/tasks';
-import { useUpdateTask } from '@/app/api/tasks/[id]';
-import { useCreateTask } from '@/app/api/tasks/create';
 // import { useUpdateTask } from '@/app/api/tasks/[id]';
+// import { useCreateTask } from '@/app/api/tasks/create';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -18,26 +19,16 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  PRIORITY_COLORS,
-  Task,
-  TaskPriority,
-  TaskStatus,
-} from '@/constants/task';
+import { INITIAL_STATE, Task } from '@/constants/task';
 import { toast } from '@/hooks/useToast';
-import { cn } from '@/lib/utils';
-import { useDialogsStore } from '@/stores/DialogsStore';
-import { useTasksStore } from '@/stores/TasksStore';
+import { useDialogsStore, useTasksStore } from '@/stores';
+// import { useDialogsStore } from '@/stores/DialogsStore';
+// import { useTasksStore } from '@/stores/TasksStore';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { Loader } from '../ui/loader';
+
+import { PrioritySelect, StatusSelect } from './Helper';
 
 export default function UpdateTaskDialog() {
   const showDialog = useDialogsStore((state) => state.showDialog);
@@ -48,28 +39,12 @@ export default function UpdateTaskDialog() {
 
   const allTasksInStore = useTasksStore((state) => state.allTasks);
 
-  const [title, setTitle] = useState<Task['title']>('');
-  const [description, setDescription] = useState<Task['description']>('');
-  const [tags, setTags] = useState<Task['tags']>([]);
-  const [priority, setPriority] = useState<Task['priority']>(
-    TaskPriority.MEDIUM
-  );
-  const [status, setStatus] = useState<Task['status']>(TaskStatus.TODO);
-  const [isCompleted, setIsCompleted] = useState<Task['isCompleted']>(false);
-  const [, setIsFutured] = useState<Task['isFutured']>(false);
-  const [id, setId] = useState<Task['id']>('');
+  const [taskState, setTaskState] = useState<Task>(INITIAL_STATE);
 
   useEffect(() => {
     const currentTask = allTasksInStore.get(currentTaskId);
     if (currentTask) {
-      setTitle(currentTask.title);
-      setDescription(currentTask.description);
-      setTags(currentTask.tags);
-      setPriority(currentTask.priority);
-      setStatus(currentTask.status);
-      setIsCompleted(currentTask.isCompleted);
-      setIsFutured(currentTask.isFutured);
-      setId(currentTask.id);
+      setTaskState(currentTask);
     }
   }, [currentTaskId, allTasksInStore]);
 
@@ -112,31 +87,30 @@ export default function UpdateTaskDialog() {
   const onCreateTask = async (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    const newTask = {
-      title,
-      description,
-      tags,
-      priority,
-      status,
-      comments: [],
+    const task = {
+      title: taskState.title,
+      description: taskState.description,
+      tags: taskState.tags,
+      priority: taskState.priority,
+      status: taskState.status,
     };
 
-    mutateCreateTask(newTask);
+    mutateCreateTask(task);
   };
 
   const onUpdateTask = async (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    const isCompleted = status === 'cancel';
+    const isCompleted = taskState.status === 'cancel';
     const isFutured = false;
 
     const updatedTask = {
-      id,
-      title,
-      description,
-      tags,
-      priority,
-      status,
+      id: taskState.id,
+      title: taskState.title,
+      description: taskState.description,
+      tags: taskState.tags,
+      priority: taskState.priority,
+      status: taskState.status,
       isCompleted,
       isFutured,
     };
@@ -144,156 +118,105 @@ export default function UpdateTaskDialog() {
     mutateUpdateTask(updatedTask);
   };
 
-  const resetState = () => {
-    setTitle('');
-    setDescription('');
-    setTags([]);
-    setId('');
+  const resetState = () => setTaskState(INITIAL_STATE);
+
+  const handleInputChange =
+    (field: keyof Task) => (e: ChangeEvent<HTMLInputElement>) => {
+      setTaskState((prev) => ({ ...prev, [field]: e.target.value }));
+    };
+
+  const handleSelectChange = (field: keyof Task) => (value: string) => {
+    setTaskState((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const getDialogTitle = () => {
+    if (taskState.isCompleted) return 'Task info';
+    switch (dialogType) {
+      case 'create':
+        return 'Add a new task';
+      case 'update':
+        return 'Update a task';
+      default:
+        return 'Handler';
+    }
+  };
+
+  const getButtonAction = () => {
+    switch (dialogType) {
+      case 'create':
+        return onCreateTask;
+      case 'update':
+        return onUpdateTask;
+      default:
+        return () => console.log(22);
+    }
+  };
+
+  const getButtonText = () => {
+    switch (dialogType) {
+      case 'create':
+        return 'Create a task';
+      case 'update':
+        return 'Update a task';
+      default:
+        return 'Confirm';
+    }
   };
 
   return (
     <Dialog open={showDialog} onOpenChange={toggleDialog}>
       <DialogContent className="sm:max-w-[500px]">
-        {!inPendingUpdateTask && (
+        {inPendingUpdateTask && (
           <div className="absolute inset-0 grid place-content-center bg-accent/50">
             <Loader />
           </div>
         )}
         <DialogHeader>
-          <DialogTitle>
-            {/* {isCompleted ? 'Task info' : 'Update task'} */}
-            {isCompleted
-              ? 'Task info'
-              : dialogType === 'create'
-                ? 'Add a new task'
-                : dialogType === 'update'
-                  ? 'Update a task'
-                  : 'Handler'}
-          </DialogTitle>
+          <DialogTitle>{getDialogTitle()}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-y-4 py-4">
           <div className="grid gap-y-2">
             <Label htmlFor="title">Title</Label>
             <Input
               id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              disabled={isCompleted}
+              value={taskState.title}
+              onChange={handleInputChange('title')}
+              disabled={taskState.isCompleted}
             />
           </div>
           <div className="grid gap-y-2">
             <Label htmlFor="description">Description</Label>
             <Input
               id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              disabled={isCompleted}
+              value={taskState.description}
+              onChange={handleInputChange('description')}
+              disabled={taskState.isCompleted}
             />
           </div>
-          {/* <div className="grid gap-y-2">
-            <Label htmlFor="tag">Tag</Label>
-            <Input
-              id="tag"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
-              disabled={isCompleted}
-            />
-          </div> */}
           <div className="grid gap-y-2">
             <Label htmlFor="priority">Priority</Label>
-            <Select
-              value={priority}
-              onValueChange={(e: Task['priority']) => setPriority(e)}
-              disabled={isCompleted}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a task priority" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="low" className="cursor-pointer">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={cn(`h-4 w-4 rounded-full`)}
-                      style={{
-                        backgroundColor: PRIORITY_COLORS['low'],
-                      }}
-                    ></div>
-                    Low
-                  </div>
-                </SelectItem>
-                <SelectItem value="medium" className="cursor-pointer">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={cn(`h-4 w-4 rounded-full`)}
-                      style={{
-                        backgroundColor: PRIORITY_COLORS['medium'],
-                      }}
-                    ></div>
-                    Medium
-                  </div>
-                </SelectItem>
-                <SelectItem value="high" className="cursor-pointer">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={cn(`h-4 w-4 rounded-full`)}
-                      style={{
-                        backgroundColor: PRIORITY_COLORS['high'],
-                      }}
-                    ></div>
-                    High
-                  </div>
-                </SelectItem>
-              </SelectContent>
-            </Select>
+            <PrioritySelect
+              value={taskState.priority}
+              onChange={handleSelectChange('priority')}
+              disabled={taskState.isCompleted}
+            />
           </div>
           {dialogType === 'update' && (
             <div className="grid gap-y-2">
               <Label htmlFor="status">Status</Label>
-              <Select
-                value={status}
-                onValueChange={(e: Task['status']) => setStatus(e)}
-                disabled={isCompleted}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a task status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="to_do" className="cursor-pointer">
-                    <div className="flex items-center gap-3">To do</div>
-                  </SelectItem>
-                  <SelectItem value="in_progress" className="cursor-pointer">
-                    <div className="flex items-center gap-3">In progress</div>
-                  </SelectItem>
-                  <SelectItem value="done" className="cursor-pointer">
-                    <div className="flex items-center gap-3">Done</div>
-                  </SelectItem>
-                  <SelectItem value="cancel" className="cursor-pointer">
-                    <div className="flex items-center gap-3">Cancel</div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              <StatusSelect
+                value={taskState.status}
+                onChange={handleSelectChange('status')}
+                disabled={taskState.isCompleted}
+              />
             </div>
           )}
         </div>
-        {!isCompleted && (
+        {!taskState.isCompleted && (
           <DialogFooter>
-            <Button
-              type="submit"
-              className="pl-3"
-              onClick={
-                dialogType === 'create'
-                  ? onCreateTask
-                  : dialogType === 'update'
-                    ? onUpdateTask
-                    : () => console.log(22)
-              }
-            >
+            <Button type="submit" className="pl-3" onClick={getButtonAction()}>
               <FolderPen className="mr-1" size={20} />
-              {dialogType === 'create'
-                ? 'Create a task'
-                : dialogType === 'update'
-                  ? 'Update a task'
-                  : 'Confirm'}
+              {getButtonText()}
             </Button>
           </DialogFooter>
         )}

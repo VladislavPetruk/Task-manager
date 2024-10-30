@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { TaskStatus } from '@/constants/task';
 import { validateToken } from '@/helper/validateToken';
 import prisma from '@/lib/prisma';
 
@@ -182,40 +181,6 @@ export async function GET(request: NextRequest) {
 //     return NextResponse.json({ error }, { status: 500 });
 //   }
 // }
-
-export async function PUT(req: Request) {
-  try {
-    const decodedToken = validateToken();
-
-    if (!decodedToken?.username) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
-
-    const updatesPayload: {
-      id: string;
-      status: TaskStatus;
-      position: number;
-    }[] = await req.json();
-
-    // Виконуємо транзакцію для масового оновлення тасок
-    const updateTasks = updatesPayload.map((task) =>
-      prisma.task.update({
-        where: { id: task.id },
-        data: { status: task.status, position: task.position },
-      })
-    );
-
-    console.log(111, updateTasks);
-
-    // Виконуємо всі оновлення в транзакції
-    await prisma.$transaction(updateTasks);
-
-    return NextResponse.json({ message: 'Tasks updated successfully' });
-  } catch (error) {
-    console.error('Error updating tasks:', error);
-    return NextResponse.json({ error }, { status: 500 });
-  }
-}
 
 // export async function PUT(req: Request) {
 //   try {

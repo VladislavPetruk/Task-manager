@@ -22,9 +22,7 @@ type CreateTaskParams = {
 
 const mutationFn = async (params: CreateTaskParams) => {
   try {
-    console.log(params);
-
-    await axios.post('/api/tasks/createTask', params);
+    await axios.post('/api/tasks/create', params);
   } catch (error) {
     if (error instanceof AxiosError) {
       const data = error.response?.data;

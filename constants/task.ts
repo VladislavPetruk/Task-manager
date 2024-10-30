@@ -52,6 +52,28 @@ export type Task = {
   comments: Array<TaskComment>;
 };
 
+export const INITIAL_STATE: Task = {
+  id: '',
+  title: '',
+  description: '',
+  createdOn: '',
+  updatedOn: '',
+  tags: [],
+  comments: [],
+  priority: TaskPriority.MEDIUM,
+  status: TaskStatus.TODO,
+  isCompleted: false,
+  isFutured: false,
+  position: 0,
+};
+
+export const STATUS_OPTIONS = [
+  { value: TaskStatus.TODO, label: 'To do' },
+  { value: TaskStatus.IN_PROGRESS, label: 'In progress' },
+  { value: TaskStatus.DONE, label: 'Done' },
+  { value: TaskStatus.CANCEL, label: 'Cancel' },
+];
+
 // const board: TaskStatus[] = [
 //   TaskStatus.TODO,
 //   TaskStatus.IN_PROGRESS,
