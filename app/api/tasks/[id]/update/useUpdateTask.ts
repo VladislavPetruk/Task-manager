@@ -2,7 +2,7 @@
 
 import axios, { AxiosError } from 'axios';
 
-import { TASK_TYPE } from '@/constants/task';
+import { Task } from '@/constants/task';
 import { toast } from '@/hooks/useToast';
 import {
   MutationOptions,
@@ -13,19 +13,19 @@ import {
 const UPDATE_TASK_MUTATION_KEY = '@mutation/updateTask';
 
 type UpdateTaskParams = {
-  id: TASK_TYPE['id'];
-  title: TASK_TYPE['title'];
-  description: TASK_TYPE['description'];
-  tags: TASK_TYPE['tags'];
-  priority: TASK_TYPE['priority'];
-  status: TASK_TYPE['status'];
-  isCompleted: TASK_TYPE['isCompleted'];
-  isFutured: TASK_TYPE['isFutured'];
+  id: Task['id'];
+  title: Task['title'];
+  description: Task['description'];
+  tags: Task['tags'];
+  priority: Task['priority'];
+  status: Task['status'];
+  isCompleted: Task['isCompleted'];
+  isFutured: Task['isFutured'];
 };
 
 const mutationFn = async (params: UpdateTaskParams) => {
   try {
-    await axios.put(`/api/tasks/${params.id}`, params);
+    await axios.put(`/api/tasks/${params.id}/update`, params);
   } catch (error) {
     if (error instanceof AxiosError) {
       const data = error.response?.data;

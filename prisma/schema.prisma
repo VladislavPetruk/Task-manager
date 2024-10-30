@@ -22,7 +22,7 @@ model Task {
   priority    Priority
   status      Status
   createdOn   DateTime @default(now())
-  updateOn    DateTime? @updatedAt
+  updatedOn   DateTime? @updatedAt
   isCompleted Boolean  @default(false)
   isFutured   Boolean  @default(false)
   position    Int
@@ -33,7 +33,7 @@ model Comment {
   id          String   @id @default(uuid()) @map("_id") 
   content     String   
   createdOn   DateTime @default(now())
-  taskId      String   // Замість @db.ObjectId
+  taskId      String
   task        Task     @relation("TaskComments", fields: [taskId], references: [id])
 }
 

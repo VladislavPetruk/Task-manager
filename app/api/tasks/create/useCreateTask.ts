@@ -2,7 +2,7 @@
 
 import axios, { AxiosError } from 'axios';
 
-import { TASK_TYPE } from '@/constants/task';
+import { Task } from '@/constants/task';
 import { toast } from '@/hooks/useToast';
 import {
   MutationOptions,
@@ -13,21 +13,19 @@ import {
 export const CREATE_TASK_MUTATION_KEY = '@mutation/createTask';
 
 type CreateTaskParams = {
-  title: TASK_TYPE['title'];
-  description: TASK_TYPE['description'];
-  tags: TASK_TYPE['tags'];
-  priority: TASK_TYPE['priority'];
-  status: TASK_TYPE['status'];
+  title: Task['title'];
+  description: Task['description'];
+  tags: Task['tags'];
+  priority: Task['priority'];
+  status: Task['status'];
 };
 
 const mutationFn = async (params: CreateTaskParams) => {
   try {
     console.log(params);
 
-    await axios.post(`/api/tasks`, params);
+    await axios.post('/api/tasks/createTask', params);
   } catch (error) {
-    console.log(error);
-
     if (error instanceof AxiosError) {
       const data = error.response?.data;
       if (data?.message) {

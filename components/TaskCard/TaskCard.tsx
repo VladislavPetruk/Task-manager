@@ -42,7 +42,7 @@ export const TaskCard = (props: TaskCardProps) => {
     <Card
       x-chunk="dashboard-01-chunk-0"
       className={cn(
-        `relative mb-4 h-max cursor-pointer overflow-hidden rounded-2xl before:absolute before:h-full before:w-1.5 before:bg-[var(--user-color)] before:content-['']`
+        `relative mb-4 h-max cursor-pointer overflow-hidden rounded-2xl bg-background before:absolute before:h-full before:w-1.5 before:bg-[var(--user-color)] before:content-['']`
       )}
       style={
         {

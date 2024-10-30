@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { shallow } from 'zustand/shallow';
 
+import { TaskCard } from '@/components/TaskCard';
 // import { TaskCard } from '@/components/TaskCard';
 import { Loader } from '@/components/ui/loader';
 import { useTasksStore } from '@/stores/TasksStore';
@@ -39,9 +40,9 @@ export default function CompletedClient() {
 
   return (
     <div className="grid grid-cols-3 gap-3">
-      {/* {completedTasks.map((task) => (
+      {completedTasks.map((task) => (
         <TaskCard key={task.id} {...task} />
-      ))} */}
+      ))}
     </div>
   );
 }

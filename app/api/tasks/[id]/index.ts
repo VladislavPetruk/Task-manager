@@ -1,2 +1,2 @@
-export { useDeleteTask } from './useDeleteTask';
-export { useUpdateTask } from './useUpdateTask';
+export * from './delete';
+export * from './update';

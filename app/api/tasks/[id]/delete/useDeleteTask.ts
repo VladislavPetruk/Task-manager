@@ -2,7 +2,7 @@
 
 import axios, { AxiosError } from 'axios';
 
-import { TASK_TYPE } from '@/constants/task';
+import { Task } from '@/constants/task';
 import { toast } from '@/hooks/useToast';
 import {
   MutationOptions,
@@ -12,11 +12,11 @@ import {
 
 const DELETE_TASK_MUTATION_KEY = '@mutation/deleteTask';
 
-type DeleteParams = TASK_TYPE['id'];
+type DeleteParams = Task['id'];
 
 const mutationFn = async (params: DeleteParams) => {
   try {
-    await axios.delete(`/api/tasks/${params}`, {
+    await axios.delete(`/api/tasks/${params}/delete`, {
       params: { id: params },
     });
   } catch (error) {

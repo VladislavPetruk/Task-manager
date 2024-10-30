@@ -4,9 +4,10 @@ import { FolderPen } from 'lucide-react';
 import {
   GET_ACTIVE_TASKS_QUERY_KEY,
   GET_COMPLETED_TASKS_QUERY_KEY,
-  useCreateTask,
 } from '@/app/api/tasks';
 import { useUpdateTask } from '@/app/api/tasks/[id]';
+import { useCreateTask } from '@/app/api/tasks/create';
+// import { useUpdateTask } from '@/app/api/tasks/[id]';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -24,7 +25,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { PRIORITY_COLORS, TASK_TYPE } from '@/constants/task';
+import {
+  PRIORITY_COLORS,
+  Task,
+  TaskPriority,
+  TaskStatus,
+} from '@/constants/task';
 import { toast } from '@/hooks/useToast';
 import { cn } from '@/lib/utils';
 import { useDialogsStore } from '@/stores/DialogsStore';
@@ -42,15 +48,16 @@ export default function UpdateTaskDialog() {
 
   const allTasksInStore = useTasksStore((state) => state.allTasks);
 
-  const [title, setTitle] = useState<TASK_TYPE['title']>('');
-  const [description, setDescription] = useState<TASK_TYPE['description']>('');
-  const [tags, setTags] = useState<TASK_TYPE['tags']>([]);
-  const [priority, setPriority] = useState<TASK_TYPE['priority']>('low');
-  const [status, setStatus] = useState<TASK_TYPE['status']>('to_do');
-  const [isCompleted, setIsCompleted] =
-    useState<TASK_TYPE['isCompleted']>(false);
-  const [, setIsFutured] = useState<TASK_TYPE['isFutured']>(false);
-  const [id, setId] = useState<TASK_TYPE['id']>('');
+  const [title, setTitle] = useState<Task['title']>('');
+  const [description, setDescription] = useState<Task['description']>('');
+  const [tags, setTags] = useState<Task['tags']>([]);
+  const [priority, setPriority] = useState<Task['priority']>(
+    TaskPriority.MEDIUM
+  );
+  const [status, setStatus] = useState<Task['status']>(TaskStatus.TODO);
+  const [isCompleted, setIsCompleted] = useState<Task['isCompleted']>(false);
+  const [, setIsFutured] = useState<Task['isFutured']>(false);
+  const [id, setId] = useState<Task['id']>('');
 
   useEffect(() => {
     const currentTask = allTasksInStore.get(currentTaskId);
@@ -147,8 +154,8 @@ export default function UpdateTaskDialog() {
   return (
     <Dialog open={showDialog} onOpenChange={toggleDialog}>
       <DialogContent className="sm:max-w-[500px]">
-        {inPendingUpdateTask && (
-          <div className="absolute inset-0 grid place-content-center bg-gray-200/40">
+        {!inPendingUpdateTask && (
+          <div className="absolute inset-0 grid place-content-center bg-accent/50">
             <Loader />
           </div>
         )}
@@ -196,7 +203,7 @@ export default function UpdateTaskDialog() {
             <Label htmlFor="priority">Priority</Label>
             <Select
               value={priority}
-              onValueChange={(e: TASK_TYPE['priority']) => setPriority(e)}
+              onValueChange={(e: Task['priority']) => setPriority(e)}
               disabled={isCompleted}
             >
               <SelectTrigger>
@@ -244,7 +251,7 @@ export default function UpdateTaskDialog() {
               <Label htmlFor="status">Status</Label>
               <Select
                 value={status}
-                onValueChange={(e: TASK_TYPE['status']) => setStatus(e)}
+                onValueChange={(e: Task['status']) => setStatus(e)}
                 disabled={isCompleted}
               >
                 <SelectTrigger>

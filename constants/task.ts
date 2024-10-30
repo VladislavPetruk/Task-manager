@@ -1,20 +1,27 @@
-export type TASK_STATUSES = 'to_do' | 'in_progress' | 'done' | 'cancel';
-export const TASK_STATUSES_ARRAY = ['to_do', 'in_progress', 'done', 'cancel'];
+// export type TASK_STATUSES = 'to_do' | 'in_progress' | 'done' | 'cancel';
+// export const TASK_STATUSES_ARRAY = ['to_do', 'in_progress', 'done', 'cancel'];
 
-export type TasksByStatus = Map<TASK_TYPE['status'], Array<TASK_TYPE>>;
+// export type TasksByStatus = Map<Task['status'], Array<Task>>;
 
-export type TASK_TYPE = {
+// export type Task = {
+//   id: string;
+//   title: string;
+//   description: string;
+//   tags: Array<string>;
+//   priority: 'low' | 'medium' | 'high';
+//   createdOn: string;
+//   updateOn: string;
+//   status: TASK_STATUSES;
+//   isCompleted: boolean;
+//   isFutured: boolean;
+//   position: number;
+// };
+
+type TaskComment = {
+  content: string;
   id: string;
-  title: string;
-  description: string;
-  tags: Array<string>;
-  priority: 'low' | 'medium' | 'high';
   createdOn: string;
-  updateOn: string;
-  status: TASK_STATUSES;
-  isCompleted: boolean;
-  isFutured: boolean;
-  position: number;
+  taskId: string;
 };
 
 export enum TaskStatus {
@@ -24,26 +31,25 @@ export enum TaskStatus {
   CANCEL = 'cancel',
 }
 
+export enum TaskPriority {
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
+}
+
 export type Task = {
   id: string;
   title: string;
   description: string;
-  tags: string[];
-  priority: 'low' | 'medium' | 'high';
+  tags: Array<string>;
+  priority: TaskPriority;
   createdOn: string;
   updatedOn: string;
   status: TaskStatus;
   isCompleted: boolean;
-  isFeatured: boolean;
+  isFutured: boolean;
   position: number;
-  comments: TaskComment[];
-};
-
-type TaskComment = {
-  content: string;
-  id: string;
-  createdOn: string;
-  taskId: string;
+  comments: Array<TaskComment>;
 };
 
 // const board: TaskStatus[] = [
@@ -56,7 +62,7 @@ type TaskComment = {
 //   [key in TaskStatus]: Task[];
 // };
 
-// export const TASKS: Array<TASK_TYPE> = [
+// export const TASKS: Array<Task> = [
 //   {
 //     id: '1',
 //     title: 'Title 1',

@@ -111,9 +111,9 @@ export async function GET(request: NextRequest) {
 
     const tasks = await prisma.task.findMany({
       where: whereCondition,
-      // include: {
-      //   comments: true,
-      // },
+      include: {
+        comments: true,
+      },
     });
 
     return NextResponse.json(tasks);

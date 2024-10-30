@@ -85,6 +85,7 @@ export default function HomeClient() {
       });
 
       setTasks(newTasks);
+      setActiveTasks(data)
     }
   }, [data]);
 
@@ -175,7 +176,7 @@ export default function HomeClient() {
       <div className="grid gap-6 lg:grid-cols-3">
         {boards.map((board) => (
           <div
-            className="grid grid-rows-[max-content] gap-y-4 rounded-xl bg-gray-200 p-6"
+            className="grid grid-rows-[max-content] gap-y-4 rounded-xl bg-accent p-6"
             key={board}
           >
             <ColumnHeader board={board} count={tasks[board].length} />
