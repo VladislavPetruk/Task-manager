@@ -9,7 +9,11 @@ type TasksStoreState = {
   dialogType: DialogTypeState | undefined;
   taskType: TaskTypeState | undefined;
   currentTaskId: string;
-  openDialog: (currentTaskId: string, dialogType: DialogTypeState, taskType: TaskTypeState) => void;
+  openDialog: (
+    currentTaskId: string,
+    dialogType: DialogTypeState,
+    taskType: TaskTypeState
+  ) => void;
   closeDialog: () => void;
   toggleDialog: () => void;
 };
@@ -21,11 +25,20 @@ export const useDialogsStore = create<TasksStoreState>()(
       dialogType: undefined,
       taskType: undefined,
       currentTaskId: '',
-      openDialog: (currentTaskId = '', dialogType = 'create', taskType = 'active') => {
+      openDialog: (
+        currentTaskId = '',
+        dialogType = 'create',
+        taskType = 'active'
+      ) => {
         set({ showDialog: true, currentTaskId, dialogType, taskType });
       },
       closeDialog: () => {
-        set({ showDialog: false, currentTaskId: '', dialogType: undefined, taskType: undefined });
+        set({
+          showDialog: false,
+          currentTaskId: '',
+          dialogType: undefined,
+          taskType: undefined,
+        });
       },
       toggleDialog: () => {
         set({ showDialog: !get().showDialog });

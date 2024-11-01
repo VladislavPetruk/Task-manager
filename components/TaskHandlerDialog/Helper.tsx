@@ -99,7 +99,11 @@ export const StatusSelect = ({
   </Select>
 );
 
-export const MultipleSelector = ({ tags, disabled, onChange }: TagsSelectProps) => {
+export const MultipleSelector = ({
+  tags,
+  disabled,
+  onChange,
+}: TagsSelectProps) => {
   const [open, setOpen] = useState<boolean>(false);
 
   const handleSetValue = (tag: string) => {
