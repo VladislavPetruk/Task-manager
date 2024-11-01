@@ -7,7 +7,7 @@ import { shallow } from 'zustand/shallow';
 import { TaskCard } from '@/components/TaskCard';
 import { Button } from '@/components/ui/button';
 import { Loader } from '@/components/ui/loader';
-import { Task, TaskStatus } from '@/constants/task';
+import { STATUS_OPTIONS, Task, TaskStatus } from '@/constants/task';
 import { toast } from '@/hooks/useToast';
 import { useDialogsStore, useTasksStore } from '@/stores';
 // import { useDialogsStore } from '@/stores/DialogsStore';
@@ -213,16 +213,22 @@ const ColumnHeader = ({ board, count }: ColumnHeaderProps) => {
 
   return (
     <div className="flex items-center justify-between font-medium">
-      <p className="text-lg leading-9">
-        {board.replace('_', ' ')}
-        {!!count && <span> {count}</span>}
-      </p>
-      {board === 'to_do' && (
+      <div className="flex items-center gap-x-2 font-bold uppercase leading-8">
+        <span className="shrink-0">
+          {STATUS_OPTIONS.find((status) => status.value === board)?.label}
+        </span>
+        {!!count && (
+          <div className="grid h-8 min-w-8 place-content-center rounded-3xl bg-accent-foreground/10 px-2">
+            {count}
+          </div>
+        )}
+      </div>
+      {board === TaskStatus.TODO && (
         <Button
           aria-haspopup="true"
           size="icon"
           variant="ghost"
-          onClick={() => openDialog('', 'create')}
+          onClick={() => openDialog('', 'create', 'active')}
         >
           <Plus />
           <span className="sr-only">Add a new task</span>

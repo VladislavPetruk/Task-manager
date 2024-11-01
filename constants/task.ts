@@ -37,6 +37,16 @@ export enum TaskPriority {
   HIGH = 'high',
 }
 
+export enum TaskTag {
+  GOALS = 'goals',
+  HEALTH = 'health',
+  INTERESTS = 'interests',
+  SPORT = 'sport',
+  TRAVEL = 'travel',
+  WORK = 'work',
+  OTHER = 'other',
+}
+
 export type Task = {
   id: string;
   title: string;
@@ -73,6 +83,32 @@ export const STATUS_OPTIONS = [
   { value: TaskStatus.DONE, label: 'Done' },
   { value: TaskStatus.CANCEL, label: 'Cancel' },
 ];
+
+export const TAGS_OPTIONS = [
+  { value: TaskTag.GOALS, color: '#f37336' },
+  { value: TaskTag.HEALTH, color: '#5aba4a' },
+  { value: TaskTag.INTERESTS, color: '#78559b' },
+  { value: TaskTag.SPORT, color: '#4758d6' },
+  { value: TaskTag.TRAVEL, color: '#bf1796' },
+  { value: TaskTag.WORK, color: '#c7b198' },
+  { value: TaskTag.OTHER, color: '#BDBDBD' },
+];
+// export const TAGS_OPTIONS = [
+//   { value: TaskTag.GOALS, color: '#AB47BC' },
+//   { value: TaskTag.HEALTH, color: '#FFB74D' },
+//   { value: TaskTag.INTERESTS, color: '#42A5F5' },
+//   { value: TaskTag.SPORT, color: '#FF5733' },
+//   { value: TaskTag.TRAVEL, color: '#4CAF50' },
+//   { value: TaskTag.WORK, color: '#5C6BC0' },
+//   { value: TaskTag.OTHER, color: '#BDBDBD' },
+// ];
+
+// interests: #42A5F5 — насичений блакитний, асоціюється з відкриттям і новизною.
+// 	3.	travel: #4CAF50 — природний зелений, нагадує про пригоди та природу.
+// 	4.	health: #FFB74D — теплий персиковий, що символізує баланс і гармонію.
+// 	5.	goals: #AB47BC — насичений фіолетовий, асоціюється з амбіціями і натхненням.
+// 	6.	work: #5C6BC0 — приглушений синій, що добре підходить для робочих задач.
+// 	7.	other: #BDBDBD —
 
 // const board: TaskStatus[] = [
 //   TaskStatus.TODO,

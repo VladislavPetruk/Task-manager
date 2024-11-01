@@ -11,7 +11,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const { title, description, tags, priority, status } = await req.json();
+    const {
+      title,
+      description,
+      tags,
+      priority,
+      status,
+      isFutured,
+      isCompleted,
+    } = await req.json();
 
     if (!title || !description) {
       return NextResponse.json(
@@ -49,6 +57,8 @@ export async function POST(req: Request) {
         priority,
         status,
         position,
+        isFutured,
+        isCompleted,
         comments: {
           create: [],
         },

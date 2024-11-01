@@ -1,12 +1,14 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, SyntheticEvent } from 'react';
 import { EllipsisVertical } from 'lucide-react';
 
 import {
   GET_ACTIVE_TASKS_QUERY_KEY,
   GET_FUTURE_TASKS_QUERY_KEY,
   useDeleteTask,
+  useUpdateTask,
 } from '@/app/api/tasks';
-import { PRIORITY_COLORS, Task } from '@/constants/task';
+import { PRIORITY_COLORS, TAGS_OPTIONS, Task } from '@/constants/task';
+import { toast } from '@/hooks/useToast';
 import { cn } from '@/lib/utils';
 import { useDialogsStore } from '@/stores';
 import { useQueryClient } from '@tanstack/react-query';
@@ -26,17 +28,54 @@ type TaskCardProps = Task;
 
 export const TaskCard = (props: TaskCardProps) => {
   const task = props;
+
   const openDialog = useDialogsStore((state) => state.openDialog);
 
   const queryClient = useQueryClient();
   const color = PRIORITY_COLORS[task.priority];
 
-  const { mutate, isPending } = useDeleteTask({
+  const { mutate: mutateDeleteTask, isPending: inPendingDeleteTask } =
+    useDeleteTask({
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: [GET_ACTIVE_TASKS_QUERY_KEY],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [GET_FUTURE_TASKS_QUERY_KEY],
+        });
+      },
+    });
+
+  const { mutate: mutateUpdateTask } = useUpdateTask({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [GET_ACTIVE_TASKS_QUERY_KEY] });
-      queryClient.invalidateQueries({ queryKey: [GET_FUTURE_TASKS_QUERY_KEY] });
+      queryClient.invalidateQueries({
+        queryKey: [GET_ACTIVE_TASKS_QUERY_KEY],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [GET_FUTURE_TASKS_QUERY_KEY],
+      });
+      // closeDialog();
+      // resetState();
+    },
+    onError: (error) => {
+      toast({
+        title: error.message || 'Something went wrong',
+        variant: 'destructive',
+      });
     },
   });
+
+  const onUpdateTask = async (e: SyntheticEvent<HTMLDivElement>) => {
+    e.preventDefault();
+
+    const updatedTask = {
+      ...task,
+      isCompleted: false,
+      isFutured: false,
+    };
+
+    mutateUpdateTask(updatedTask);
+  };
 
   return (
     <Card
@@ -50,35 +89,78 @@ export const TaskCard = (props: TaskCardProps) => {
         } as CSSProperties
       }
       onDoubleClick={() => {
-        openDialog(task.id, 'update');
+        openDialog(
+          task.id,
+          'update',
+          task.isCompleted ? 'completed' : task.isFutured ? 'futured' : 'active'
+        );
       }}
     >
-      {isPending && (
+      {inPendingDeleteTask && (
         <div className="absolute inset-0 grid place-content-center bg-accent/50">
           <Loader />
         </div>
       )}
-      <CardHeader className="items-center justify-between pb-2">
+      <CardHeader className="items-center justify-between gap-x-3 pb-2">
         {task.tags.length > 0 && (
-          <Badge variant={null}>{task.tags.toString()}</Badge>
+          <div className="flex flex-wrap items-center gap-1">
+            {task.tags.map((tag) => (
+              <Badge
+                key={tag}
+                className="gap-x-1 px-1.5 capitalize text-white"
+                style={{
+                  backgroundColor: TAGS_OPTIONS.find((t) => t.value === tag)
+                    ?.color,
+                }}
+              >
+                {TAGS_OPTIONS.find((t) => t.value === tag)?.value}
+              </Badge>
+            ))}
+          </div>
         )}
         <DropdownMenu>
-          <DropdownMenuTrigger asChild className="ml-auto">
+          <DropdownMenuTrigger asChild className="!mt-0 ml-auto">
             <Button aria-haspopup="true" size="icon" variant="ghost">
               <EllipsisVertical />
               <span className="sr-only">Toggle card handler</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
+            {task.isFutured && (
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={(e) => onUpdateTask(e)}
+              >
+                Move to active
+              </DropdownMenuItem>
+            )}
+            {!task.isFutured && !task.isCompleted && (
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={(e) => onUpdateTask(e)}
+              >
+                Move to future
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => openDialog(task.id, 'update')}
+              onClick={() =>
+                openDialog(
+                  task.id,
+                  'update',
+                  task.isCompleted
+                    ? 'completed'
+                    : task.isFutured
+                      ? 'futured'
+                      : 'active'
+                )
+              }
             >
-              Edit
+              {task.isCompleted ? 'Info' : 'Edit'}
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => mutate(task.id)}
+              onClick={() => mutateDeleteTask(task.id)}
             >
               Delete
             </DropdownMenuItem>

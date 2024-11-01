@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+/* eslint-disable */
 import { validateToken } from '@/helper/validateToken';
 import prisma from '@/lib/prisma';
 
@@ -11,18 +12,21 @@ export async function PUT(req: Request) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id, ...params } = await req.json();
+    const { id, comments, ...params } = await req.json();
 
     const task = await prisma.task.update({
       where: {
         id: id,
       },
       data: params,
+      include: {
+        comments: true,
+      },
     });
 
     return NextResponse.json(task);
   } catch (error) {
     console.log('ERROR UPDATING TASK: ', error);
-    return NextResponse.json({ error: 'Error deleting task' }, { status: 500 });
+    return NextResponse.json({ error: 'Error updating task' }, { status: 500 });
   }
 }

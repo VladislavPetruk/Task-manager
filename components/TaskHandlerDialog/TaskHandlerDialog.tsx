@@ -4,6 +4,7 @@ import { FolderPen } from 'lucide-react';
 import {
   GET_ACTIVE_TASKS_QUERY_KEY,
   GET_COMPLETED_TASKS_QUERY_KEY,
+  GET_FUTURE_TASKS_QUERY_KEY,
   useCreateTask,
   useUpdateTask,
 } from '@/app/api/tasks';
@@ -13,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -28,12 +30,15 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { Loader } from '../ui/loader';
 
-import { PrioritySelect, StatusSelect } from './Helper';
+import { MultipleSelector, PrioritySelect, StatusSelect } from './Helper';
+
+// Need create validate form, title, description
 
 export default function UpdateTaskDialog() {
   const showDialog = useDialogsStore((state) => state.showDialog);
   const currentTaskId = useDialogsStore((state) => state.currentTaskId);
   const dialogType = useDialogsStore((state) => state.dialogType);
+  const taskType = useDialogsStore((state) => state.taskType);
   const toggleDialog = useDialogsStore((state) => state.toggleDialog);
   const closeDialog = useDialogsStore((state) => state.closeDialog);
 
@@ -42,6 +47,8 @@ export default function UpdateTaskDialog() {
   const [taskState, setTaskState] = useState<Task>(INITIAL_STATE);
 
   useEffect(() => {
+    resetState();
+
     const currentTask = allTasksInStore.get(currentTaskId);
     if (currentTask) {
       setTaskState(currentTask);
@@ -70,19 +77,29 @@ export default function UpdateTaskDialog() {
       },
     });
 
-  const { mutate: mutateCreateTask } = useCreateTask({
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [GET_ACTIVE_TASKS_QUERY_KEY] });
-      closeDialog();
-      resetState();
-    },
-    onError: (error) => {
-      toast({
-        title: error.message || 'Something went wrong',
-        variant: 'destructive',
-      });
-    },
-  });
+  const { mutate: mutateCreateTask, isPending: inPendingCreateTask } =
+    useCreateTask({
+      onSuccess: () => {
+        if (taskType === 'active') {
+          queryClient.invalidateQueries({
+            queryKey: [GET_ACTIVE_TASKS_QUERY_KEY],
+          });
+        }
+        if (taskType === 'futured') {
+          queryClient.invalidateQueries({
+            queryKey: [GET_FUTURE_TASKS_QUERY_KEY],
+          });
+        }
+        closeDialog();
+        resetState();
+      },
+      onError: (error) => {
+        toast({
+          title: error.message || 'Something went wrong',
+          variant: 'destructive',
+        });
+      },
+    });
 
   const onCreateTask = async (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -93,6 +110,7 @@ export default function UpdateTaskDialog() {
       tags: taskState.tags,
       priority: taskState.priority,
       status: taskState.status,
+      isFutured: taskType === 'futured',
     };
 
     mutateCreateTask(task);
@@ -127,6 +145,13 @@ export default function UpdateTaskDialog() {
 
   const handleSelectChange = (field: keyof Task) => (value: string) => {
     setTaskState((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleTagsChange = (field: keyof Task) => (newValues: string[]) => {
+    setTaskState((prev) => ({
+      ...prev,
+      [field]: newValues,
+    }));
   };
 
   const getDialogTitle = () => {
@@ -166,7 +191,7 @@ export default function UpdateTaskDialog() {
   return (
     <Dialog open={showDialog} onOpenChange={toggleDialog}>
       <DialogContent className="sm:max-w-[500px]">
-        {inPendingUpdateTask && (
+        {(inPendingUpdateTask || inPendingCreateTask) && (
           <div className="absolute inset-0 grid place-content-center bg-accent/50">
             <Loader />
           </div>
@@ -174,6 +199,9 @@ export default function UpdateTaskDialog() {
         <DialogHeader>
           <DialogTitle>{getDialogTitle()}</DialogTitle>
         </DialogHeader>
+        <DialogDescription className="sr-only">
+          Task handler dialog
+        </DialogDescription>
         <div className="grid gap-y-4 py-4">
           <div className="grid gap-y-2">
             <Label htmlFor="title">Title</Label>
@@ -194,6 +222,14 @@ export default function UpdateTaskDialog() {
             />
           </div>
           <div className="grid gap-y-2">
+            <Label htmlFor="tags">Tags</Label>
+            <MultipleSelector
+              tags={taskState.tags}
+              onChange={handleTagsChange('tags')}
+              disabled={taskState.isCompleted}
+            />
+          </div>
+          <div className="grid gap-y-2">
             <Label htmlFor="priority">Priority</Label>
             <PrioritySelect
               value={taskState.priority}
@@ -201,7 +237,7 @@ export default function UpdateTaskDialog() {
               disabled={taskState.isCompleted}
             />
           </div>
-          {dialogType === 'update' && (
+          {dialogType === 'update' && taskType !== 'futured' && (
             <div className="grid gap-y-2">
               <Label htmlFor="status">Status</Label>
               <StatusSelect

@@ -49,3 +49,10 @@ enum Status {
   done
   cancel
 }
+
+
+//enum Status {
+//  ACTIVE
+//  FUTURE
+//  COMPLETED
+//  scheduled або deferred}

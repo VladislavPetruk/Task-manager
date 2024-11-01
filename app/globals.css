@@ -92,3 +92,7 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.tags-button:hover:not(:has(.hide-hover:hover)) {
+  background-color: hsl(var(--accent));
+}
