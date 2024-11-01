@@ -1,17 +1,34 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Plus } from 'lucide-react';
+import { shallow } from 'zustand/shallow';
 
 import { useGetFutureTasks } from '@/app/api/tasks';
 import { TaskCard } from '@/components/TaskCard';
 import { Button } from '@/components/ui/button';
 import { Loader } from '@/components/ui/loader';
-import { useDialogsStore } from '@/stores';
+import { DialogType } from '@/constants/other';
+import { TaskStage } from '@/constants/task';
+import { useDialogsStore, useTasksStore } from '@/stores';
 
 export default function FutureClient() {
   const openDialog = useDialogsStore((state) => state.openDialog);
 
   const { data: futuredTasks, isLoading } = useGetFutureTasks();
+  const { setFutureTasksInStore } = useTasksStore(
+    (state) => ({
+      // completedTasksInStore: state.completedTasks,
+      setFutureTasksInStore: state.setFutureTasks,
+    }),
+    shallow
+  );
+
+  useEffect(() => {
+    if (futuredTasks) {
+      setFutureTasksInStore(futuredTasks);
+    }
+  }, [futuredTasks]);
 
   if (isLoading)
     return (
@@ -22,15 +39,15 @@ export default function FutureClient() {
   if (!futuredTasks?.length)
     return (
       <div>
-        <p>You have not completed tasks yet</p>
+        <p>You have not scheduled tasks yet</p>
         <Button
           aria-haspopup="true"
           size="icon"
           variant="ghost"
-          onClick={() => openDialog('', 'create', 'futured')}
+          onClick={() => openDialog('', DialogType.CREATE, TaskStage.SCHEDULED)}
         >
           <Plus />
-          <span className="sr-only">Add a new futured task</span>
+          <span className="sr-only">Add a new scheduled task</span>
         </Button>
       </div>
     );

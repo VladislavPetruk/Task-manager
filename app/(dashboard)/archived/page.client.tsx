@@ -35,7 +35,7 @@ export default function CompletedClient() {
     );
 
   if (!completedTasks?.length)
-    return <div>You have not completed tasks yet</div>;
+    return <div>You have not archived tasks yet</div>;
   console.log(completedTasks);
 
   return (

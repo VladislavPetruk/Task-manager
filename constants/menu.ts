@@ -1,5 +1,5 @@
-import { LoaderCircle, LucideProps, NotebookPen, Trash } from 'lucide-react';
-import { ForwardRefExoticComponent, ReactNode, RefAttributes } from 'react';
+import { ClipboardList, ListPlus, LucideProps, Trash2 } from 'lucide-react';
+import { ForwardRefExoticComponent, RefAttributes } from 'react';
 
 export type MenuItem = {
   link: string;
@@ -12,18 +12,18 @@ export type MenuItem = {
 export const MENU_LIST: Array<MenuItem> = [
   {
     link: '/',
-    label: 'Active',
-    icon: LoaderCircle,
+    label: 'Current',
+    icon: ClipboardList,
   },
   {
-    link: '/future',
-    label: 'Future',
-    icon: NotebookPen,
+    link: '/scheduled',
+    label: 'Scheduled',
+    icon: ListPlus,
   },
   {
-    link: '/completed',
-    label: 'Completed',
-    icon: Trash,
+    link: '/archived',
+    label: 'Archived',
+    icon: Trash2,
   },
   // {
   //   link: '/login',

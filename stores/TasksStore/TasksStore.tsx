@@ -54,13 +54,13 @@ export const useTasksStore = create<TasksStoreState>()(
         tasks.forEach((task) => {
           activeTasksMap.set(task.id, task);
           switch (task.status) {
-            case 'to_do':
+            case TaskStatus.TO_DO:
               toDoTasksMap.set(task.id, task);
               break;
-            case 'in_progress':
+            case TaskStatus.IN_PROGRESS:
               inProgressTasksMap.set(task.id, task);
               break;
-            case 'done':
+            case TaskStatus.DONE:
               doneTasksMap.set(task.id, task);
               break;
           }

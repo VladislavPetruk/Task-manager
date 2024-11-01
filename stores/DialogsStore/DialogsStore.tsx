@@ -1,18 +1,17 @@
+import { DialogType } from '@/constants/other';
+import { TaskStage } from '@/constants/task';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-type DialogTypeState = 'create' | 'update' | 'confirm';
-type TaskTypeState = 'futured' | 'active' | 'completed';
-
 type TasksStoreState = {
   showDialog: boolean;
-  dialogType: DialogTypeState | undefined;
-  taskType: TaskTypeState | undefined;
+  dialogType: DialogType | undefined;
+  taskStage: TaskStage | undefined;
   currentTaskId: string;
   openDialog: (
     currentTaskId: string,
-    dialogType: DialogTypeState,
-    taskType: TaskTypeState
+    dialogType: DialogType,
+    taskStage: TaskStage
   ) => void;
   closeDialog: () => void;
   toggleDialog: () => void;
@@ -23,21 +22,17 @@ export const useDialogsStore = create<TasksStoreState>()(
     (set, get) => ({
       showDialog: false,
       dialogType: undefined,
-      taskType: undefined,
+      taskStage: undefined,
       currentTaskId: '',
-      openDialog: (
-        currentTaskId = '',
-        dialogType = 'create',
-        taskType = 'active'
-      ) => {
-        set({ showDialog: true, currentTaskId, dialogType, taskType });
+      openDialog: (currentTaskId = '', dialogType, taskStage) => {
+        set({ showDialog: true, currentTaskId, dialogType, taskStage });
       },
       closeDialog: () => {
         set({
           showDialog: false,
           currentTaskId: '',
           dialogType: undefined,
-          taskType: undefined,
+          taskStage: undefined,
         });
       },
       toggleDialog: () => {

@@ -8,9 +8,9 @@ import { QueryOptions, useQuery, UseQueryResult } from '@tanstack/react-query';
 
 export const GET_COMPLETED_TASKS_QUERY_KEY = '@query/getCompletedTasks';
 
-const queryFn = async (): Promise<Task[]> => {
+const queryFn = async (): Promise<Array<Task>> => {
   try {
-    const { data } = await axios.get('/api/tasks?filter=completed');
+    const { data } = await axios.get('/api/tasks?filter=archived');
     return data;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -32,9 +32,9 @@ const queryFn = async (): Promise<Task[]> => {
 };
 
 export function useGetCompletedTasks(
-  options?: QueryOptions<Task[], Error>
-): UseQueryResult<Task[], Error> {
-  return useQuery<Task[], Error>({
+  options?: QueryOptions<Array<Task>, Error>
+): UseQueryResult<Array<Task>, Error> {
+  return useQuery<Array<Task>, Error>({
     ...options,
     queryKey: [GET_COMPLETED_TASKS_QUERY_KEY],
     queryFn: queryFn,

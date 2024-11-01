@@ -8,9 +8,9 @@ import { QueryOptions, useQuery, UseQueryResult } from '@tanstack/react-query';
 
 export const GET_FUTURE_TASKS_QUERY_KEY = '@query/getFutureTasks';
 
-const queryFn = async (): Promise<Task[]> => {
+const queryFn = async (): Promise<Array<Task>> => {
   try {
-    const { data } = await axios.get('/api/tasks?filter=future');
+    const { data } = await axios.get('/api/tasks?filter=scheduled');
     return data;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -32,9 +32,9 @@ const queryFn = async (): Promise<Task[]> => {
 };
 
 export function useGetFutureTasks(
-  options?: QueryOptions<Task[], Error>
-): UseQueryResult<Task[], Error> {
-  return useQuery<Task[], Error>({
+  options?: QueryOptions<Array<Task>, Error>
+): UseQueryResult<Array<Task>, Error> {
+  return useQuery<Array<Task>, Error>({
     ...options,
     queryKey: [GET_FUTURE_TASKS_QUERY_KEY],
     queryFn: queryFn,

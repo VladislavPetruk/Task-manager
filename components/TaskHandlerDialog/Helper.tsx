@@ -3,6 +3,7 @@ import { Check, X } from 'lucide-react';
 
 import {
   PRIORITY_COLORS,
+  PRIORITY_LABELS,
   STATUS_OPTIONS,
   TAGS_OPTIONS,
   TaskPriority,
@@ -60,18 +61,16 @@ export const PrioritySelect = ({
         <SelectValue placeholder="Select a task priority" />
       </SelectTrigger>
       <SelectContent>
-        {Object.entries(PRIORITY_COLORS).map(([key, color]) => (
-          <SelectItem
-            key={key}
-            value={key as TaskPriority}
-            className="cursor-pointer"
-          >
+        {Object.entries(PRIORITY_LABELS).map(([key, value]) => (
+          <SelectItem key={key} value={key} className="cursor-pointer">
             <div className="flex items-center gap-3">
               <div
                 className="h-4 w-4 rounded-full"
-                style={{ backgroundColor: color }}
+                style={{
+                  backgroundColor: PRIORITY_COLORS[key as TaskPriority],
+                }}
               />
-              {key.charAt(0).toUpperCase() + key.slice(1)}
+              {value}
             </div>
           </SelectItem>
         ))}

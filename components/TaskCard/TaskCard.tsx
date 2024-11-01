@@ -1,4 +1,4 @@
-import { CSSProperties, SyntheticEvent } from 'react';
+import { CSSProperties } from 'react';
 import { EllipsisVertical } from 'lucide-react';
 
 import {
@@ -7,7 +7,13 @@ import {
   useDeleteTask,
   useUpdateTask,
 } from '@/app/api/tasks';
-import { PRIORITY_COLORS, TAGS_OPTIONS, Task } from '@/constants/task';
+import { DialogType } from '@/constants/other';
+import {
+  PRIORITY_COLORS,
+  TAGS_OPTIONS,
+  Task,
+  TaskStage,
+} from '@/constants/task';
 import { toast } from '@/hooks/useToast';
 import { cn } from '@/lib/utils';
 import { useDialogsStore } from '@/stores';
@@ -46,32 +52,28 @@ export const TaskCard = (props: TaskCardProps) => {
       },
     });
 
-  const { mutate: mutateUpdateTask } = useUpdateTask({
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [GET_ACTIVE_TASKS_QUERY_KEY],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [GET_FUTURE_TASKS_QUERY_KEY],
-      });
-      // closeDialog();
-      // resetState();
-    },
-    onError: (error) => {
-      toast({
-        title: error.message || 'Something went wrong',
-        variant: 'destructive',
-      });
-    },
-  });
+  const { mutate: mutateUpdateTask, isPending: inPendingMutateTask } =
+    useUpdateTask({
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: [GET_ACTIVE_TASKS_QUERY_KEY],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [GET_FUTURE_TASKS_QUERY_KEY],
+        });
+      },
+      onError: (error) => {
+        toast({
+          title: error.message || 'Something went wrong',
+          variant: 'destructive',
+        });
+      },
+    });
 
-  const onUpdateTask = async (e: SyntheticEvent<HTMLDivElement>) => {
-    e.preventDefault();
-
+  const onUpdateTask = async (stage: TaskStage) => {
     const updatedTask = {
       ...task,
-      isCompleted: false,
-      isFutured: false,
+      currentStage: stage,
     };
 
     mutateUpdateTask(updatedTask);
@@ -89,14 +91,10 @@ export const TaskCard = (props: TaskCardProps) => {
         } as CSSProperties
       }
       onDoubleClick={() => {
-        openDialog(
-          task.id,
-          'update',
-          task.isCompleted ? 'completed' : task.isFutured ? 'futured' : 'active'
-        );
+        openDialog(task.id, DialogType.UPDATE, task.currentStage);
       }}
     >
-      {inPendingDeleteTask && (
+      {(inPendingMutateTask || inPendingDeleteTask) && (
         <div className="absolute inset-0 grid place-content-center bg-accent/50">
           <Loader />
         </div>
@@ -126,37 +124,30 @@ export const TaskCard = (props: TaskCardProps) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            {task.isFutured && (
+            {task.currentStage === TaskStage.SCHEDULED && (
               <DropdownMenuItem
                 className="cursor-pointer"
-                onClick={(e) => onUpdateTask(e)}
+                onClick={() => onUpdateTask(TaskStage.CURRENT)}
               >
-                Move to active
+                Move to current
               </DropdownMenuItem>
             )}
-            {!task.isFutured && !task.isCompleted && (
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={(e) => onUpdateTask(e)}
-              >
-                Move to future
-              </DropdownMenuItem>
-            )}
+            {task.currentStage !== TaskStage.SCHEDULED &&
+              task.currentStage !== TaskStage.ARCHIVED && (
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => onUpdateTask(TaskStage.SCHEDULED)}
+                >
+                  Move to scheduler
+                </DropdownMenuItem>
+              )}
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() =>
-                openDialog(
-                  task.id,
-                  'update',
-                  task.isCompleted
-                    ? 'completed'
-                    : task.isFutured
-                      ? 'futured'
-                      : 'active'
-                )
+                openDialog(task.id, DialogType.UPDATE, task.currentStage)
               }
             >
-              {task.isCompleted ? 'Info' : 'Edit'}
+              {task.currentStage === TaskStage.ARCHIVED ? 'Info' : 'Edit'}
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"

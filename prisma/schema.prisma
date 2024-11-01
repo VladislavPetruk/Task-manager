@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
@@ -15,44 +15,56 @@ datasource db {
 }
 
 model Task {
-  id          String   @id @default(uuid()) @map("_id")
-  title       String
-  description String
-  tags        String[]
-  priority    Priority
-  status      Status
-  createdOn   DateTime @default(now())
-  updatedOn   DateTime? @updatedAt
-  isCompleted Boolean  @default(false)
-  isFutured   Boolean  @default(false)
-  position    Int
-  comments    Comment[] @relation("TaskComments")
+  id           String       @id @default(uuid()) @map("_id")
+  title        String
+  description  String
+  priority     Priority     @default(MEDIUM)
+  status       Status       @default(TO_DO)
+  currentStage CurrentStage @default(CURRENT)
+  createdOn    DateTime     @default(now())
+  updatedOn    DateTime?    @updatedAt
+  comments     Comment[]    @relation("TaskComments")
+  tags         String[]
+  position     Int
 }
 
+// model Tag {
+//   id    String    @id @default(uuid()) @map("_id")
+//   name  String    @unique
+//   tasks TaskTag[]
+// }
+
+// model TaskTag {
+//   id     String @id @default(uuid()) @map("_id")
+//   taskId String
+//   tagId  String
+//   task   Task   @relation(fields: [taskId], references: [id])
+//   tag    Tag    @relation(fields: [tagId], references: [id])
+// }
+
 model Comment {
-  id          String   @id @default(uuid()) @map("_id") 
-  content     String   
-  createdOn   DateTime @default(now())
-  taskId      String
-  task        Task     @relation("TaskComments", fields: [taskId], references: [id])
+  id        String   @id @default(uuid()) @map("_id")
+  content   String
+  taskId    String
+  task      Task     @relation("TaskComments", fields: [taskId], references: [id])
+  createdOn DateTime @default(now())
 }
 
 enum Priority {
-  low
-  medium
-  high
+  LOW
+  MEDIUM
+  HIGH
 }
 
 enum Status {
-  to_do
-  in_progress
-  done
-  cancel
+  TO_DO
+  IN_PROGRESS
+  DONE
+  CANCEL
 }
 
-
-//enum Status {
-//  ACTIVE
-//  FUTURE
-//  COMPLETED
-//  scheduled або deferred}
+enum CurrentStage {
+  CURRENT
+  SCHEDULED
+  ARCHIVED
+}

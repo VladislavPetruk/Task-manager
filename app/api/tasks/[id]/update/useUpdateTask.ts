@@ -2,7 +2,7 @@
 
 import axios, { AxiosError } from 'axios';
 
-import { Task } from '@/constants/task';
+import { Task, TaskPriority, TaskStage, TaskStatus } from '@/constants/task';
 import { toast } from '@/hooks/useToast';
 import {
   MutationOptions,
@@ -17,10 +17,9 @@ type UpdateTaskParams = {
   title: Task['title'];
   description: Task['description'];
   tags: Task['tags'];
-  priority: Task['priority'];
-  status: Task['status'];
-  isCompleted: Task['isCompleted'];
-  isFutured: Task['isFutured'];
+  priority: TaskPriority;
+  status: TaskStatus;
+  currentStage: TaskStage;
 };
 
 const mutationFn = async (params: UpdateTaskParams) => {

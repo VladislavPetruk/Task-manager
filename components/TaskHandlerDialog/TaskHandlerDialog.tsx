@@ -21,7 +21,8 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { INITIAL_STATE, Task } from '@/constants/task';
+import { DialogType } from '@/constants/other';
+import { INITIAL_STATE, Task, TaskStage, TaskStatus } from '@/constants/task';
 import { toast } from '@/hooks/useToast';
 import { useDialogsStore, useTasksStore } from '@/stores';
 // import { useDialogsStore } from '@/stores/DialogsStore';
@@ -38,7 +39,7 @@ export default function UpdateTaskDialog() {
   const showDialog = useDialogsStore((state) => state.showDialog);
   const currentTaskId = useDialogsStore((state) => state.currentTaskId);
   const dialogType = useDialogsStore((state) => state.dialogType);
-  const taskType = useDialogsStore((state) => state.taskType);
+  const taskStage = useDialogsStore((state) => state.taskStage);
   const toggleDialog = useDialogsStore((state) => state.toggleDialog);
   const closeDialog = useDialogsStore((state) => state.closeDialog);
 
@@ -50,6 +51,7 @@ export default function UpdateTaskDialog() {
     resetState();
 
     const currentTask = allTasksInStore.get(currentTaskId);
+    console.log(currentTaskId, allTasksInStore);
     if (currentTask) {
       setTaskState(currentTask);
     }
@@ -80,12 +82,12 @@ export default function UpdateTaskDialog() {
   const { mutate: mutateCreateTask, isPending: inPendingCreateTask } =
     useCreateTask({
       onSuccess: () => {
-        if (taskType === 'active') {
+        if (taskStage === TaskStage.CURRENT) {
           queryClient.invalidateQueries({
             queryKey: [GET_ACTIVE_TASKS_QUERY_KEY],
           });
         }
-        if (taskType === 'futured') {
+        if (taskStage === TaskStage.SCHEDULED) {
           queryClient.invalidateQueries({
             queryKey: [GET_FUTURE_TASKS_QUERY_KEY],
           });
@@ -110,7 +112,7 @@ export default function UpdateTaskDialog() {
       tags: taskState.tags,
       priority: taskState.priority,
       status: taskState.status,
-      isFutured: taskType === 'futured',
+      currentStage: taskState.currentStage,
     };
 
     mutateCreateTask(task);
@@ -119,21 +121,20 @@ export default function UpdateTaskDialog() {
   const onUpdateTask = async (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    const isCompleted = taskState.status === 'cancel';
-    const isFutured = false;
-
-    const updatedTask = {
+    const task = {
       id: taskState.id,
       title: taskState.title,
       description: taskState.description,
       tags: taskState.tags,
       priority: taskState.priority,
       status: taskState.status,
-      isCompleted,
-      isFutured,
+      currentStage:
+        taskState.status === TaskStatus.CANCEL
+          ? TaskStage.ARCHIVED
+          : taskState.currentStage,
     };
 
-    mutateUpdateTask(updatedTask);
+    mutateUpdateTask(task);
   };
 
   const resetState = () => setTaskState(INITIAL_STATE);
@@ -155,11 +156,11 @@ export default function UpdateTaskDialog() {
   };
 
   const getDialogTitle = () => {
-    if (taskState.isCompleted) return 'Task info';
+    if (taskState.currentStage === TaskStage.ARCHIVED) return 'Task info';
     switch (dialogType) {
-      case 'create':
+      case DialogType.CREATE:
         return 'Add a new task';
-      case 'update':
+      case DialogType.UPDATE:
         return 'Update a task';
       default:
         return 'Handler';
@@ -168,9 +169,9 @@ export default function UpdateTaskDialog() {
 
   const getButtonAction = () => {
     switch (dialogType) {
-      case 'create':
+      case DialogType.CREATE:
         return onCreateTask;
-      case 'update':
+      case DialogType.UPDATE:
         return onUpdateTask;
       default:
         return () => console.log(22);
@@ -179,9 +180,9 @@ export default function UpdateTaskDialog() {
 
   const getButtonText = () => {
     switch (dialogType) {
-      case 'create':
+      case DialogType.CREATE:
         return 'Create a task';
-      case 'update':
+      case DialogType.UPDATE:
         return 'Update a task';
       default:
         return 'Confirm';
@@ -209,7 +210,7 @@ export default function UpdateTaskDialog() {
               id="title"
               value={taskState.title}
               onChange={handleInputChange('title')}
-              disabled={taskState.isCompleted}
+              disabled={taskState.currentStage === TaskStage.ARCHIVED}
             />
           </div>
           <div className="grid gap-y-2">
@@ -218,7 +219,7 @@ export default function UpdateTaskDialog() {
               id="description"
               value={taskState.description}
               onChange={handleInputChange('description')}
-              disabled={taskState.isCompleted}
+              disabled={taskState.currentStage === TaskStage.ARCHIVED}
             />
           </div>
           <div className="grid gap-y-2">
@@ -226,7 +227,7 @@ export default function UpdateTaskDialog() {
             <MultipleSelector
               tags={taskState.tags}
               onChange={handleTagsChange('tags')}
-              disabled={taskState.isCompleted}
+              disabled={taskState.currentStage === TaskStage.ARCHIVED}
             />
           </div>
           <div className="grid gap-y-2">
@@ -234,21 +235,22 @@ export default function UpdateTaskDialog() {
             <PrioritySelect
               value={taskState.priority}
               onChange={handleSelectChange('priority')}
-              disabled={taskState.isCompleted}
+              disabled={taskState.currentStage === TaskStage.ARCHIVED}
             />
           </div>
-          {dialogType === 'update' && taskType !== 'futured' && (
-            <div className="grid gap-y-2">
-              <Label htmlFor="status">Status</Label>
-              <StatusSelect
-                value={taskState.status}
-                onChange={handleSelectChange('status')}
-                disabled={taskState.isCompleted}
-              />
-            </div>
-          )}
+          {dialogType === DialogType.UPDATE &&
+            taskState.currentStage !== TaskStage.SCHEDULED && (
+              <div className="grid gap-y-2">
+                <Label htmlFor="status">Status</Label>
+                <StatusSelect
+                  value={taskState.status}
+                  onChange={handleSelectChange('status')}
+                  disabled={taskState.currentStage === TaskStage.ARCHIVED}
+                />
+              </div>
+            )}
         </div>
-        {!taskState.isCompleted && (
+        {taskState.currentStage !== TaskStage.ARCHIVED && (
           <DialogFooter>
             <Button type="submit" className="pl-3" onClick={getButtonAction()}>
               <FolderPen className="mr-1" size={20} />

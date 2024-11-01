@@ -18,7 +18,6 @@ export async function PUT(req: Request) {
       position: number;
     }[] = await req.json();
 
-    // Виконуємо транзакцію для масового оновлення тасок
     const updateTasks = updatesPayload.map((task) =>
       prisma.task.update({
         where: { id: task.id },

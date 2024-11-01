@@ -8,25 +8,9 @@ import { QueryOptions, useQuery, UseQueryResult } from '@tanstack/react-query';
 
 export const GET_ACTIVE_TASKS_QUERY_KEY = '@query/getActiveTasks';
 
-// const groupTasksByStatus = (tasks: Task[]): Task[] => {
-//   const taskMap = new Task[]([
-//     ['to_do', []],
-//     ['in_progress', []],
-//     ['done', []],
-//   ]);
-
-//   tasks.forEach(task => {
-//     if (task.status !== 'cancel') {
-//       taskMap.get(task.status)!.push(task);
-//     }
-//   });
-
-//   return taskMap;
-// };
-
-const queryFn = async (): Promise<Task[]> => {
+const queryFn = async (): Promise<Array<Task>> => {
   try {
-    const { data } = await axios.get('/api/tasks?filter=active');
+    const { data } = await axios.get('/api/tasks?filter=current');
     return data;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -48,9 +32,9 @@ const queryFn = async (): Promise<Task[]> => {
 };
 
 export function useGetActiveTasks(
-  options?: QueryOptions<Task[], Error>
-): UseQueryResult<Task[], Error> {
-  return useQuery<Task[], Error>({
+  options?: QueryOptions<Array<Task>, Error>
+): UseQueryResult<Array<Task>, Error> {
+  return useQuery<Array<Task>, Error>({
     ...options,
     queryKey: [GET_ACTIVE_TASKS_QUERY_KEY],
     queryFn: queryFn,

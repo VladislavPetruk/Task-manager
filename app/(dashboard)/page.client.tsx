@@ -7,7 +7,8 @@ import { shallow } from 'zustand/shallow';
 import { TaskCard } from '@/components/TaskCard';
 import { Button } from '@/components/ui/button';
 import { Loader } from '@/components/ui/loader';
-import { STATUS_OPTIONS, Task, TaskStatus } from '@/constants/task';
+import { DialogType } from '@/constants/other';
+import { STATUS_LABELS, Task, TaskStage, TaskStatus } from '@/constants/task';
 import { toast } from '@/hooks/useToast';
 import { useDialogsStore, useTasksStore } from '@/stores';
 // import { useDialogsStore } from '@/stores/DialogsStore';
@@ -28,7 +29,7 @@ type TasksState = {
 };
 
 const boards: TaskStatus[] = [
-  TaskStatus.TODO,
+  TaskStatus.TO_DO,
   TaskStatus.IN_PROGRESS,
   TaskStatus.DONE,
 ];
@@ -52,7 +53,7 @@ export default function HomeClient() {
   });
 
   const [tasks, setTasks] = useState<TasksState>({
-    [TaskStatus.TODO]: [],
+    [TaskStatus.TO_DO]: [],
     [TaskStatus.IN_PROGRESS]: [],
     [TaskStatus.DONE]: [],
     [TaskStatus.CANCEL]: [],
@@ -61,7 +62,7 @@ export default function HomeClient() {
   useEffect(() => {
     if (activeTasks) {
       const newTasks: TasksState = {
-        [TaskStatus.TODO]: [],
+        [TaskStatus.TO_DO]: [],
         [TaskStatus.IN_PROGRESS]: [],
         [TaskStatus.DONE]: [],
         [TaskStatus.CANCEL]: [],
@@ -214,21 +215,19 @@ const ColumnHeader = ({ board, count }: ColumnHeaderProps) => {
   return (
     <div className="flex items-center justify-between font-medium">
       <div className="flex items-center gap-x-2 font-bold uppercase leading-8">
-        <span className="shrink-0">
-          {STATUS_OPTIONS.find((status) => status.value === board)?.label}
-        </span>
+        <span className="shrink-0">{STATUS_LABELS[board]}</span>
         {!!count && (
           <div className="grid h-8 min-w-8 place-content-center rounded-3xl bg-accent-foreground/10 px-2">
             {count}
           </div>
         )}
       </div>
-      {board === TaskStatus.TODO && (
+      {board === TaskStatus.TO_DO && (
         <Button
           aria-haspopup="true"
           size="icon"
           variant="ghost"
-          onClick={() => openDialog('', 'create', 'active')}
+          onClick={() => openDialog('', DialogType.CREATE, TaskStage.CURRENT)}
         >
           <Plus />
           <span className="sr-only">Add a new task</span>
