@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { Plus } from 'lucide-react';
+import { EllipsisVertical, Plus } from 'lucide-react';
 import { shallow } from 'zustand/shallow';
 
 import { TaskCard } from '@/components/TaskCard';
@@ -35,6 +35,7 @@ const boards: TaskStatus[] = [
 ];
 
 export default function HomeClient() {
+  const openDialog = useDialogsStore((state) => state.openDialog);
   const { setActiveTasks } = useTasksStore(
     (state) => ({
       setActiveTasks: state.setActiveTasks,
@@ -168,7 +169,7 @@ export default function HomeClient() {
       <div className="relative grid gap-6 lg:grid-cols-3">
         {boards.map((board) => (
           <div
-            className="grid grid-rows-[max-content] gap-y-4 rounded-xl bg-accent p-6"
+            className="grid grid-rows-[max-content_max-content] gap-y-4 rounded-xl bg-accent p-6"
             key={board}
           >
             <ColumnHeader board={board} count={tasks[board].length} />
@@ -197,6 +198,19 @@ export default function HomeClient() {
                 </div>
               )}
             </Droppable>
+            {/* {board === TaskStatus.TO_DO && (
+              <Button
+                aria-haspopup="true"
+                variant={null}
+                onClick={() =>
+                  openDialog('', DialogType.CREATE, TaskStage.CURRENT)
+                }
+                className="h-max bg-background py-3 font-medium"
+              >
+                <Plus />
+                Create a new task
+              </Button>
+            )} */}
           </div>
         ))}
       </div>
@@ -216,23 +230,38 @@ const ColumnHeader = ({ board, count }: ColumnHeaderProps) => {
     <div className="flex items-center justify-between font-medium">
       <div className="flex items-center gap-x-2 font-bold uppercase leading-8">
         <span className="shrink-0">{STATUS_LABELS[board]}</span>
-        {!!count && (
-          <div className="grid h-8 min-w-8 place-content-center rounded-3xl bg-accent-foreground/10 px-2">
-            {count}
-          </div>
-        )}
+        <div className="grid h-8 min-w-8 place-content-center rounded-3xl bg-accent-foreground/10 px-2">
+          {count}
+        </div>
       </div>
-      {board === TaskStatus.TO_DO && (
+
+      {/* to do later */}
+      <div className='flex items-center'>
+        {board === TaskStatus.TO_DO && (
+          <Button
+            aria-haspopup="true"
+            size="icon"
+            variant="ghost"
+            onClick={() => openDialog('', DialogType.CREATE, TaskStage.CURRENT)}
+          >
+            <Plus />
+            <span className="sr-only">Add a new task</span>
+          </Button>
+        )}
         <Button
           aria-haspopup="true"
           size="icon"
           variant="ghost"
-          onClick={() => openDialog('', DialogType.CREATE, TaskStage.CURRENT)}
+          onClick={() =>
+            toast({
+              title: 'In develompment:)',
+            })
+          }
         >
-          <Plus />
-          <span className="sr-only">Add a new task</span>
+          <EllipsisVertical />
+          <span className="sr-only">Move to ...</span>
         </Button>
-      )}
+      </div>
     </div>
   );
 };

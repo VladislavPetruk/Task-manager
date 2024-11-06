@@ -61,6 +61,10 @@ export const TaskCard = (props: TaskCardProps) => {
         queryClient.invalidateQueries({
           queryKey: [GET_FUTURE_TASKS_QUERY_KEY],
         });
+        toast({
+          title: 'Task successfully updated',
+          variant: 'success',
+        });
       },
       onError: (error) => {
         toast({
@@ -138,7 +142,7 @@ export const TaskCard = (props: TaskCardProps) => {
                   className="cursor-pointer"
                   onClick={() => onUpdateTask(TaskStage.SCHEDULED)}
                 >
-                  Move to scheduler
+                  Move to scheduled
                 </DropdownMenuItem>
               )}
             <DropdownMenuItem

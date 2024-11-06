@@ -49,9 +49,7 @@ export default function UpdateTaskDialog() {
 
   useEffect(() => {
     resetState();
-
     const currentTask = allTasksInStore.get(currentTaskId);
-    console.log(currentTaskId, allTasksInStore);
     if (currentTask) {
       setTaskState(currentTask);
     }
@@ -70,6 +68,10 @@ export default function UpdateTaskDialog() {
         });
         closeDialog();
         resetState();
+        toast({
+          title: 'Task successfully updated',
+          variant: 'success',
+        });
       },
       onError: (error) => {
         toast({
@@ -94,6 +96,10 @@ export default function UpdateTaskDialog() {
         }
         closeDialog();
         resetState();
+        toast({
+          title: 'Task successfully created',
+          variant: 'success',
+        });
       },
       onError: (error) => {
         toast({
