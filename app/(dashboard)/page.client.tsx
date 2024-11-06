@@ -236,7 +236,7 @@ const ColumnHeader = ({ board, count }: ColumnHeaderProps) => {
       </div>
 
       {/* to do later */}
-      <div className='flex items-center'>
+      <div className="flex items-center">
         {board === TaskStatus.TO_DO && (
           <Button
             aria-haspopup="true"
