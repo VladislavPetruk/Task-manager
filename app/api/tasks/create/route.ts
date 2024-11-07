@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 
-import { validateToken } from '@/helper/validateToken';
+import { auth } from '@/auth';
 import prisma from '@/lib/prisma';
 
 export async function POST(req: Request) {
   try {
-    const decodedToken = validateToken();
+    const session = await auth();
 
-    if (!decodedToken?.username) {
+    if (!session) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
@@ -51,6 +51,9 @@ export async function POST(req: Request) {
         currentStage,
         position,
         tags,
+        user: {
+          connect: { id: session.user?.id },
+        },
         comments: {
           create: [],
         },

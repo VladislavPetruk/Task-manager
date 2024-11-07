@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
 
+import { auth } from '@/auth';
 import { TaskStatus } from '@/constants/task';
-import { validateToken } from '@/helper/validateToken';
 import prisma from '@/lib/prisma';
 
 export async function PUT(req: Request) {
   try {
-    const decodedToken = validateToken();
+    const session = await auth();
 
-    if (!decodedToken?.username) {
+    if (!session) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
@@ -20,7 +20,7 @@ export async function PUT(req: Request) {
 
     const updateTasks = updatesPayload.map((task) =>
       prisma.task.update({
-        where: { id: task.id },
+        where: { id: task.id, userId: session.user?.id },
         data: { status: task.status, position: task.position },
       })
     );

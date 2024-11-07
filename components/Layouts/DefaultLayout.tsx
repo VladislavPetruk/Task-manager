@@ -1,27 +1,27 @@
 'use client';
 
-import { ReactNode, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { ReactNode } from 'react';
+// import { useRouter } from 'next/navigation';
 
-import { useGetUser } from '@/app/api/getUser';
+// import { useGetUser } from '@/app/api/getUser';
 
-import { FullScreenLoader } from '../FullScreenLoader';
+// import { FullScreenLoader } from '../FullScreenLoader';
 
 interface LoginLayoutProps {
   children: ReactNode;
 }
 
 export const DefaultLayout = ({ children }: LoginLayoutProps) => {
-  const router = useRouter();
-  const { data, isLoading, isError } = useGetUser();
+  // const router = useRouter();
+  // const { data, isLoading, isError } = useGetUser();
 
-  useEffect(() => {
-    if (!!data && !isError) {
-      router.push('/');
-    }
-  }, [data, isError]);
+  // useEffect(() => {
+  //   if (!!data && !isError) {
+  //     router.push('/');
+  //   }
+  // }, [data, isError]);
 
-  if (isLoading || !!data) return <FullScreenLoader />;
+  // if (isLoading || !!data) return <FullScreenLoader />;
 
   return (
     <div className="grid min-h-screen place-content-center overflow-hidden">

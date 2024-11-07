@@ -14,6 +14,42 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  username      String
+  email         String    @unique
+  password      String
+  image         String?
+  accounts      Account[]
+  tasks         Task[]    @relation("UserTasks")
+  role          Role      @default(USER)
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
 model Task {
   id           String       @id @default(uuid()) @map("_id")
   title        String
@@ -26,21 +62,10 @@ model Task {
   comments     Comment[]    @relation("TaskComments")
   tags         String[]
   position     Int
+
+  userId String @db.ObjectId
+  user   User   @relation("UserTasks", fields: [userId], references: [id])
 }
-
-// model Tag {
-//   id    String    @id @default(uuid()) @map("_id")
-//   name  String    @unique
-//   tasks TaskTag[]
-// }
-
-// model TaskTag {
-//   id     String @id @default(uuid()) @map("_id")
-//   taskId String
-//   tagId  String
-//   task   Task   @relation(fields: [taskId], references: [id])
-//   tag    Tag    @relation(fields: [tagId], references: [id])
-// }
 
 model Comment {
   id        String   @id @default(uuid()) @map("_id")
@@ -48,6 +73,11 @@ model Comment {
   taskId    String
   task      Task     @relation("TaskComments", fields: [taskId], references: [id])
   createdOn DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  USER
 }
 
 enum Priority {

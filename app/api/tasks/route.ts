@@ -1,29 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { validateToken } from '@/helper/validateToken';
+import { auth } from '@/auth';
 import prisma from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
-    const decodedToken = validateToken();
+    const session = await auth();
 
-    if (!decodedToken?.username) {
+    if (!session) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get query parameters (optional)
     const { searchParams } = new URL(request.url);
     const filter = searchParams.get('filter');
 
     let whereCondition = {};
 
-    // Set `where` condition based on the filter parameter
     if (filter === 'scheduled') {
-      whereCondition = { currentStage: 'SCHEDULED' };
+      whereCondition = { currentStage: 'SCHEDULED', userId: session.user?.id };
     } else if (filter === 'archived') {
-      whereCondition = { currentStage: 'ARCHIVED' };
+      whereCondition = { currentStage: 'ARCHIVED', userId: session.user?.id };
     } else if (filter === 'current') {
-      whereCondition = { currentStage: 'CURRENT' };
+      whereCondition = { currentStage: 'CURRENT', userId: session.user?.id };
     }
 
     const tasks = await prisma.task.findMany({

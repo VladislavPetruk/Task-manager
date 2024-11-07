@@ -1,30 +1,35 @@
 import { NextResponse } from 'next/server';
 
+import { auth } from '@/auth';
 import { Task } from '@/constants/task';
-import { validateToken } from '@/helper/validateToken';
 import prisma from '@/lib/prisma';
 
 type Params = {
   id: Task['id'];
 };
 
-export async function DELETE(req: Request, { params }: { params: Params }) {
+export async function DELETE({ params }: { params: Params }) {
   try {
-    const decodedToken = validateToken();
+    const session = await auth();
 
-    if (!decodedToken?.username) {
+    if (!session) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const id = params;
+    const taskId = params;
 
     const task = await prisma.task.delete({
-      where: id,
+      where: {
+        userId: session.user?.id,
+        ...taskId,
+      },
     });
 
     return NextResponse.json(task);
   } catch (error) {
-    console.log('ERROR UPDATING TASK: ', error);
-    return NextResponse.json({ error: 'Error deleting task' }, { status: 500 });
+    return NextResponse.json(
+      { error: error || 'Error deleting task' },
+      { status: 500 }
+    );
   }
 }
