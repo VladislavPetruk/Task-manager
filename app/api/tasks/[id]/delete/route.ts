@@ -8,7 +8,7 @@ type Params = {
   id: Task['id'];
 };
 
-export async function DELETE({ params }: { params: Params }) {
+export async function DELETE(req: Request, { params }: { params: Params }) {
   try {
     const session = await auth();
 
