@@ -25,11 +25,11 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/hooks/useToast';
+import { toast } from '@/hooks';
 import { REGISTRATION_SCHEMA, RegistrationParams } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-export default function LoginPage() {
+export default function RegistrationPage() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const form = useForm<RegistrationParams>({
@@ -51,13 +51,7 @@ export default function LoginPage() {
 
     if (data.status === 200) {
       form.reset();
-      toast({
-        title: data.message,
-        variant: 'success',
-      });
-      setTimeout(() => {
-        router.push('/login');
-      }, 5000);
+      router.push('/registration/success');
     }
     if (data.status === 400) {
       toast({
@@ -74,10 +68,12 @@ export default function LoginPage() {
   };
 
   return (
-    <Card className="mx-auto min-w-96">
+    <Card className="mx-auto sm:min-w-96">
       <CardHeader className="grid">
         <CardTitle className="text-2xl">Registration</CardTitle>
-        <CardDescription>Please, register, to check the system</CardDescription>
+        <CardDescription>
+          Please, register, to check the dashboard
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -101,7 +97,6 @@ export default function LoginPage() {
                             placeholder="Enter a username"
                             className="w-full text-zinc-700"
                             // disabled={isLoading}
-                            defaultValue={field.value}
                             {...field}
                           />
                         </FormControl>
@@ -128,7 +123,6 @@ export default function LoginPage() {
                             placeholder="Enter a email"
                             className="w-full text-zinc-700"
                             // disabled={isLoading}
-                            defaultValue={field.value}
                             {...field}
                           />
                         </FormControl>
@@ -155,7 +149,6 @@ export default function LoginPage() {
                             placeholder="Enter a password"
                             className="w-full text-zinc-700"
                             // disabled={isLoading}
-                            defaultValue={field.value}
                             {...field}
                           />
                         </FormControl>

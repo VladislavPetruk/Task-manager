@@ -3,7 +3,7 @@ import { auth } from './auth';
 
 export const publicRoutes = ['/'];
 
-export const authRoutes = ['/login', '/registration'];
+export const authRoutes = ['/login', '/registration', '/registration/success'];
 
 export default auth((req) => {
   const { nextUrl } = req;

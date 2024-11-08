@@ -33,7 +33,7 @@ export function Header() {
           </Button>
         </CstmTooltip>
 
-        {/* <SidebarModile menu={MENU_LIST} /> */}
+        {/* <SidebarModile menu={USER_MENU_LIST} /> */}
       </div>
     </header>
   );

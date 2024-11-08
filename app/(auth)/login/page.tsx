@@ -25,7 +25,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/hooks/useToast';
+import { toast } from '@/hooks';
 import { LOGIN_SCHEMA, LoginParams } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -65,10 +65,10 @@ export default function LoginPage() {
   };
 
   return (
-    <Card className="mx-auto min-w-96">
+    <Card className="mx-auto sm:min-w-96">
       <CardHeader className="grid">
         <CardTitle className="text-2xl">Login</CardTitle>
-        <CardDescription>Please, login, to check the system</CardDescription>
+        <CardDescription>Please, login, to check the dashboard</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

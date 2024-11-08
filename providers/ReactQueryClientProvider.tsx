@@ -11,7 +11,7 @@ function createQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 1 * 60 * 1000, // To cache the data for 1 minute
+        staleTime: 1 * 60 * 1000,
         refetchOnReconnect: false,
         refetchOnWindowFocus: false,
         retry: false,
@@ -24,7 +24,6 @@ let browserQueryClient: QueryClient | null = null;
 
 function getQueryClient() {
   if (isServer) {
-    console.log('SSR');
     return createQueryClient();
   } else {
     if (!browserQueryClient) {

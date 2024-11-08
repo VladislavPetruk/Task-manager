@@ -20,12 +20,13 @@ model User {
   email         String    @unique
   password      String
   image         String?
+  emailVerified DateTime?
   accounts      Account[]
   tasks         Task[]    @relation("UserTasks")
   role          Role      @default(USER)
 
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Account {
@@ -75,9 +76,20 @@ model Comment {
   createdOn DateTime @default(now())
 }
 
+model Token {
+  id      String    @id @default(uuid()) @map("_id")
+  email   String
+  token   String
+  expires DateTime
+  type    TokenType
+
+  @@unique([email, token])
+}
+
 enum Role {
   ADMIN
   USER
+  SUBSCRIBER
 }
 
 enum Priority {
@@ -97,4 +109,9 @@ enum CurrentStage {
   CURRENT
   SCHEDULED
   ARCHIVED
+}
+
+enum TokenType {
+  VERIFICATION
+  PASSWORD_RESET
 }

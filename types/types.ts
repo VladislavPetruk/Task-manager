@@ -14,7 +14,7 @@ export type RegistrationParams = {
 // temporary !!!
 export const LOGIN_SCHEMA = z.object({
   email: z.string({
-    required_error: 'You must fill email to login in system',
+    required_error: 'You must fill email to login in dashboard',
   }),
   password: z.string({
     invalid_type_error: 'Invalid password',

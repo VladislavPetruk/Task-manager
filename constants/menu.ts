@@ -1,4 +1,11 @@
-import { ClipboardList, ListPlus, LucideProps, Trash2 } from 'lucide-react';
+import {
+  ChartArea,
+  ClipboardList,
+  ListPlus,
+  LucideProps,
+  Settings,
+  Trash2,
+} from 'lucide-react';
 import { ForwardRefExoticComponent, RefAttributes } from 'react';
 
 export type MenuItem = {
@@ -9,7 +16,7 @@ export type MenuItem = {
   >;
 };
 
-export const MENU_LIST: Array<MenuItem> = [
+export const USER_MENU_LIST: Array<MenuItem> = [
   {
     link: '/',
     label: 'Current',
@@ -25,8 +32,20 @@ export const MENU_LIST: Array<MenuItem> = [
     label: 'Archived',
     icon: Trash2,
   },
-  // {
-  //   link: '/login',
-  //   label: 'Login',
-  // },
+];
+
+export const SUBSCRIBER_MENU_LIST: Array<MenuItem> = [
+  {
+    link: '/settings',
+    label: 'Settings',
+    icon: Settings,
+  },
+];
+
+export const ADMIN_MENU_LIST: Array<MenuItem> = [
+  {
+    link: '/analytics',
+    label: 'Analytics',
+    icon: ChartArea,
+  },
 ];

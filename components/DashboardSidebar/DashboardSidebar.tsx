@@ -3,7 +3,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import logoImage from '@/app/logo.svg';
-import { MENU_LIST } from '@/constants/menu';
+import {
+  ADMIN_MENU_LIST,
+  SUBSCRIBER_MENU_LIST,
+  USER_MENU_LIST,
+} from '@/constants/menu';
+import { useRole } from '@/hooks';
 
 import { Collapsible } from '../ui/collapsible';
 import {
@@ -18,6 +23,14 @@ import {
 export const DashboardSidebar = ({
   ...props
 }: ComponentProps<typeof Sidebar>) => {
+  const role = useRole();
+  const menu =
+    role === 'ADMIN'
+      ? [...USER_MENU_LIST, ...SUBSCRIBER_MENU_LIST, ...ADMIN_MENU_LIST]
+      : role === 'SUBSCRIBER'
+        ? [...USER_MENU_LIST, ...SUBSCRIBER_MENU_LIST]
+        : USER_MENU_LIST;
+
   return (
     <Sidebar collapsible="icon" className="py-2" {...props}>
       <SidebarHeader>
@@ -36,7 +49,7 @@ export const DashboardSidebar = ({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarMenu className="grid gap-y-4 py-14">
-        {MENU_LIST.map((item) => (
+        {menu.map((item) => (
           <Collapsible key={item.label} asChild className="group/collapsible">
             <SidebarMenuItem className="px-2">
               <SidebarMenuButton tooltip={item.label} className="h-full">
