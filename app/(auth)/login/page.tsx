@@ -91,6 +91,7 @@ export default function LoginPage() {
                             autoCorrect="off"
                             placeholder="Enter an email"
                             className="w-full text-zinc-700"
+                            data-testid="login-email"
                             // disabled={isLoading}
                             {...field}
                           />
@@ -117,6 +118,7 @@ export default function LoginPage() {
                             autoCorrect="off"
                             placeholder="Enter a password"
                             className="w-full text-zinc-700"
+                            data-testid="login-password"
                             // disabled={isLoading}
                             {...field}
                           />
@@ -127,7 +129,7 @@ export default function LoginPage() {
                   )}
                 />
               </div>
-              <Button disabled={loading} type="submit">
+              <Button disabled={loading} type="submit" data-testid="login-submit">
                 {loading ? (
                   <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-x-white" />
                 ) : (

@@ -47,13 +47,13 @@ test.describe(
     test('can access to menu', async ({ page }) => {
       await page.goto('/login');
 
-      const emailInput = page.getByRole('textbox', { name: /email/i });
-      const passwordInput = page.getByRole('textbox', { name: /password/i });
+      const emailInput = page.getByTestId('login-email');
+      const passwordInput = page.getByTestId('login-password');
 
       await emailInput.fill(userEmail);
       await passwordInput.fill(userPassword);
 
-      const signinButton = page.getByRole('button', { name: /login/i });
+      const signinButton = page.getByTestId('login-submit');
       signinButton.click();
 
       await page.waitForURL('/');
