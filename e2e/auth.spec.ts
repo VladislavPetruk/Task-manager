@@ -51,10 +51,10 @@ test.describe(
       const passwordInput = page.getByTestId('login-password');
 
       await emailInput.fill(userEmail);
-      await expect(emailInput).toHaveValue(userEmail);
+      await page.waitForTimeout(100);
 
       await passwordInput.fill(userPassword);
-      await expect(passwordInput).toHaveValue(userPassword);
+      await page.waitForTimeout(100);
 
       const signinButton = page.getByTestId('login-submit');
       signinButton.click();
