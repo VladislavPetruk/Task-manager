@@ -32,7 +32,13 @@ const userPassword = '1q2w3e4r5t';
 test.describe(
   'authenticated user',
   {
-    tag: ['@Tests', '@UnauthenticatedUser', '@LoginUser', '@UI', '@FrontendTest'],
+    tag: [
+      '@Tests',
+      '@UnauthenticatedUser',
+      '@LoginUser',
+      '@UI',
+      '@FrontendTest',
+    ],
   },
   () => {
     test.beforeEach(async ({ context }) => {
