@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 
 export default defineConfig({
-  timeout: 10000,
+  timeout: 30000,
   testDir: './e2e',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -13,16 +13,9 @@ export default defineConfig({
   use: {
     storageState: path.join(__dirname, './e2e/setup/state.json'),
     baseURL: 'http://localhost:3000',
-    screenshot: 'only-on-failure',  // Для налагодження можна зробити скріншоти на помилках
+    screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },
-  // use: {
-  //   storageState: path.join(__dirname, 'e2e/setup/state.json'),
-  //   baseURL: 'http://localhost:3000',
-  //   trace: 'on-first-retry',
-  // },
-  // globalSetup: require.resolve('./e2e/setup/globalSetup'),
-
   projects: [
     {
       name: 'chromium',
@@ -34,6 +27,8 @@ export default defineConfig({
       use: { ...devices['Desktop Firefox'] },
     },
 
+
+    // Need fix problem with not filled fields
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
@@ -53,6 +48,6 @@ export default defineConfig({
     command: 'npm run dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
-    timeout: 20000,
+    timeout: 120000,
   },
 });

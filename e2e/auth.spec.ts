@@ -56,6 +56,13 @@ test.describe(
       await passwordInput.fill(userPassword);
       await page.waitForTimeout(100);
 
+
+      // Hack for webkit browser
+      const emailValue = await emailInput.inputValue();
+      if (emailValue !== userEmail) {
+          await emailInput.fill(userEmail);
+      }
+
       const signinButton = page.getByTestId('login-submit');
       signinButton.click();
 
