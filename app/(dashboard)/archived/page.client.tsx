@@ -3,12 +3,11 @@
 import { useEffect } from 'react';
 import { shallow } from 'zustand/shallow';
 
+import { useGetCompletedTasks } from '@/app/api/hooks/queries';
 import { TaskCard } from '@/components/TaskCard';
 // import { TaskCard } from '@/components/TaskCard';
 import { Loader } from '@/components/ui/loader';
 import { useTasksStore } from '@/stores/TasksStore';
-
-import { useGetCompletedTasks } from '../../api/tasks';
 
 export default function CompletedClient() {
   const { data: completedTasks, isLoading: isLoadingCompletedTasks } =

@@ -1,15 +1,12 @@
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { FolderPen } from 'lucide-react';
 
+import { useCreateTask, useUpdateTask } from '@/app/api/hooks/mutations';
 import {
   GET_ACTIVE_TASKS_QUERY_KEY,
   GET_COMPLETED_TASKS_QUERY_KEY,
   GET_FUTURE_TASKS_QUERY_KEY,
-  useCreateTask,
-  useUpdateTask,
-} from '@/app/api/tasks';
-// import { useUpdateTask } from '@/app/api/tasks/[id]';
-// import { useCreateTask } from '@/app/api/tasks/create';
+} from '@/app/api/hooks/queries';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,

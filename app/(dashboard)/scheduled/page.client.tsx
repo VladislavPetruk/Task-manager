@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { shallow } from 'zustand/shallow';
 
-import { useGetFutureTasks } from '@/app/api/tasks';
+import { useGetFutureTasks } from '@/app/api/hooks/queries';
 import { TaskCard } from '@/components/TaskCard';
 import { Button } from '@/components/ui/button';
 import { Loader } from '@/components/ui/loader';

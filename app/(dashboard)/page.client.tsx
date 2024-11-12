@@ -19,8 +19,13 @@ import {
   Droppable,
   DropResult,
 } from '@hello-pangea/dnd';
+import { useQueryClient } from '@tanstack/react-query';
 
-import { useDragAndDropTasks, useGetActiveTasks } from '../api/tasks';
+import { useDragAndDropTasks } from '../api/hooks/mutations';
+import {
+  GET_ACTIVE_TASKS_QUERY_KEY,
+  useGetActiveTasks,
+} from '../api/hooks/queries';
 
 /* eslint-disable */
 
@@ -43,8 +48,15 @@ export default function HomeClient() {
     shallow
   );
 
+  const queryClient = useQueryClient();
+
   const { data: activeTasks, isLoading } = useGetActiveTasks();
   const { mutate: mutateUpdateTasks } = useDragAndDropTasks({
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [GET_ACTIVE_TASKS_QUERY_KEY],
+      });
+    },
     onError: (error) => {
       toast({
         title: error.message || 'Something went wrong',

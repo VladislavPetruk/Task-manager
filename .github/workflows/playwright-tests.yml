@@ -21,6 +21,18 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
         run: npx playwright test --grep @UI
+      - name: Send Telegram notification
+        if: always()
+        run: |
+          if [ $? -eq 0 ]; then
+            MESSAGE="Playwright tests passed successfully ✅"
+          else
+            MESSAGE="Playwright tests failed ❌"
+          fi
+          curl -X POST \
+            https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            -d text="$MESSAGE"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

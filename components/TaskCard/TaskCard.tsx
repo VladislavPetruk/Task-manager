@@ -1,12 +1,11 @@
 import { CSSProperties } from 'react';
 import { EllipsisVertical } from 'lucide-react';
 
+import { useDeleteTask, useUpdateTask } from '@/app/api/hooks/mutations';
 import {
   GET_ACTIVE_TASKS_QUERY_KEY,
   GET_FUTURE_TASKS_QUERY_KEY,
-  useDeleteTask,
-  useUpdateTask,
-} from '@/app/api/tasks';
+} from '@/app/api/hooks/queries';
 import { DialogType } from '@/constants/other';
 import {
   PRIORITY_COLORS,
@@ -48,6 +47,10 @@ export const TaskCard = (props: TaskCardProps) => {
         });
         queryClient.invalidateQueries({
           queryKey: [GET_FUTURE_TASKS_QUERY_KEY],
+        });
+        toast({
+          title: 'Task successfully deleted',
+          variant: 'success',
         });
       },
     });
