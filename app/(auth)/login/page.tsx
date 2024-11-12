@@ -42,6 +42,9 @@ export default function LoginPage() {
 
   const router = useRouter();
 
+  const disableSubmitButton =
+    !form.getValues('email') || !form.getValues('password');
+
   const onSubmit: SubmitHandler<z.infer<typeof LOGIN_SCHEMA>> = async (
     values
   ) => {
@@ -130,7 +133,7 @@ export default function LoginPage() {
                 />
               </div>
               <Button
-                disabled={loading}
+                disabled={disableSubmitButton || loading}
                 type="submit"
                 data-testid="login-submit"
               >
