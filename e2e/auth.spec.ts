@@ -26,39 +26,79 @@ import { test, expect } from '@playwright/test';
 //   await expect(page).toHaveURL('/');  // замініть на URL, куди перенаправляється користувач після входу
 // });
 
-test.describe('authenticated user', () => {
-  test.beforeEach(async ({ context }) => {
-    await context.clearCookies();
-  });
-  test('can access to menu', async ({ page }) => {
-    await page.goto('/login');
+const userEmail = 'testuser@gmail.com';
+const userPassword = '1q2w3e4r5t';
 
-    const emailInput = page.getByRole('textbox', { name: /email/i });
-    const passwordInput = page.getByRole('textbox', { name: /password/i });
+test.describe(
+  'authenticated user',
+  {
+    tag: ['@Tests', '@UnauthenticatedUser', '@LoginUser', '@UI', '@FrontendTest'],
+  },
+  () => {
+    test.beforeEach(async ({ context }) => {
+      await context.clearCookies();
+    });
+    test('can access to menu', async ({ page }) => {
+      await page.goto('/login');
 
-    await emailInput.fill('testuser@gmail.com');
-    await passwordInput.fill('1q2w3e4r5t');
+      const emailInput = page.getByRole('textbox', { name: /email/i });
+      const passwordInput = page.getByRole('textbox', { name: /password/i });
 
-    const signinButton = page.getByRole('button', { name: /login/i });
-    signinButton.click();
+      await emailInput.fill(userEmail);
+      await passwordInput.fill(userPassword);
 
-    await page.waitForURL('/');
-    await expect(page.getByRole('link', { name: 'Current' })).toBeVisible();
-  });
-});
+      const signinButton = page.getByRole('button', { name: /login/i });
+      signinButton.click();
 
-test.describe('Unauthenticated user', () => {
-  test.beforeEach(async ({ context }) => {
-    await context.clearCookies();
-  });
-  test('can access login page', async ({ page }) => {
-    await page.goto('/login');
-    await expect(page.getByRole('heading', { name: /login/i })).toBeVisible();
-  });
-  test('can access registration page', async ({ page }) => {
-    await page.goto('/registration');
-    await expect(
-      page.getByRole('heading', { name: /registration/i })
-    ).toBeVisible();
-  });
-});
+      await page.waitForURL('/');
+      await expect(page.getByRole('link', { name: 'Current' })).toBeVisible();
+    });
+  }
+);
+
+test.describe(
+  'Unauthenticated user',
+  {
+    tag: ['@Tests', '@UnauthenticatedUser', '@UI', '@FrontendTest'],
+  },
+  () => {
+    test.beforeEach(async ({ context }) => {
+      await context.clearCookies();
+    });
+    test('can access login page', async ({ page }) => {
+      await page.goto('/login');
+      await expect(page.getByRole('heading', { name: /login/i })).toBeVisible();
+    });
+    test('can access registration page', async ({ page }) => {
+      await page.goto('/registration');
+      await expect(
+        page.getByRole('heading', { name: /registration/i })
+      ).toBeVisible();
+    });
+  }
+);
+
+// On future...
+
+// test(
+//   'Backend Test - Auth Login',
+//   {
+//     tag: [
+//       '@Tests',
+//       '@AuthUser',
+//       '@Login',
+//       '@API',
+//       '@BackendTest',
+//     ],
+//   },
+//   async ({ request }) => {
+//     const response = await request.post('/auth/login', {
+//       data: {
+//         username: userEmail,
+//         password: userPassword,
+//       },
+//     });
+
+//     expect(response.status()).toBe(200);
+//   }
+// );

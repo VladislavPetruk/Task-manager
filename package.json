@@ -13,7 +13,9 @@
     "prepare": "husky install",
     "postinstall": "npx prisma generate",
     "test:e2e": "npx playwright test",
-    "test:e2e:ui": "npx playwright test --ui"
+    "test:e2e:ui": "npx playwright test --ui",
+    "test:ui": "npx playwright test --grep @UI",
+    "test:api": "npx playwright test --grep @API"
   },
   "dependencies": {
     "@auth/core": "^0.37.3",
