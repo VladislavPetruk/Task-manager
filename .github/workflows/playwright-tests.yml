@@ -14,14 +14,6 @@ jobs:
           node-version: lts/*
       - name: Install dependencies
         run: npm ci
-      - name: Start Application Server
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
-        run: |
-          npm run build
-          npm run start & # Start the server in the background
-          sleep 5         # Wait a few seconds for the server to start
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
