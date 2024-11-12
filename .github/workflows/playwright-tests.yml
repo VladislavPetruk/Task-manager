@@ -1,0 +1,52 @@
+name: E2E Tests
+
+# Trigger the workflow daily at 2 AM UTC
+on:
+  schedule:
+    - cron: '0 9 * * *'  # 2 AM UTC daily
+  workflow_dispatch:  # Allow manual triggering of the workflow
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'  # Use the version compatible with your project
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Set up environment variables
+      - name: Configure environment variables
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}  # Use secrets to store sensitive information
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+        run: echo "Environment variables set."
+
+      # Run Prisma migrations to set up the database (if necessary)
+      - name: Run migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      # Run Playwright tests
+      - name: Run Playwright E2E tests
+        run: npx playwright test
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+
+      # Upload test results (optional, for better reporting)
+      - name: Upload Playwright test results
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-results
+          path: playwright-report/

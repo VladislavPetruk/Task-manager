@@ -229,7 +229,7 @@ const ColumnHeader = ({ board, count }: ColumnHeaderProps) => {
   return (
     <div className="flex items-center justify-between font-medium">
       <div className="flex items-center gap-x-2 font-bold uppercase leading-8">
-        <span className="shrink-0">{STATUS_LABELS[board]}</span>
+        <p className="shrink-0">{STATUS_LABELS[board]}</p>
         <div className="grid h-8 min-w-8 place-content-center rounded-3xl bg-accent-foreground/10 px-2">
           {count}
         </div>

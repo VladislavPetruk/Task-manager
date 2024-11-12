@@ -12,6 +12,7 @@ const config: Config = {
     '^.+\\.tsx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
   // collectCoverageFrom: [
   //   "lib/**/*.{js,jsx,ts,tsx}",
   //   "app/**/*.{js,jsx,ts,tsx}",

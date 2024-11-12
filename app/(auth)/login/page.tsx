@@ -86,7 +86,7 @@ export default function LoginPage() {
                         <FormControl className="w-full">
                           <Input
                             id="email"
-                            type="text"
+                            type="email"
                             autoCapitalize="none"
                             autoCorrect="off"
                             placeholder="Enter an email"
@@ -127,7 +127,7 @@ export default function LoginPage() {
                   )}
                 />
               </div>
-              <Button disabled={loading}>
+              <Button disabled={loading} type="submit">
                 {loading ? (
                   <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-x-white" />
                 ) : (
