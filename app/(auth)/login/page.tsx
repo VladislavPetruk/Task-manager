@@ -129,7 +129,11 @@ export default function LoginPage() {
                   )}
                 />
               </div>
-              <Button disabled={loading} type="submit" data-testid="login-submit">
+              <Button
+                disabled={loading}
+                type="submit"
+                data-testid="login-submit"
+              >
                 {loading ? (
                   <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-x-white" />
                 ) : (
