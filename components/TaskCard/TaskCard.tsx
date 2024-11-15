@@ -5,14 +5,11 @@ import { useDeleteTask, useUpdateTask } from '@/app/api/hooks/mutations';
 import {
   GET_ACTIVE_TASKS_QUERY_KEY,
   GET_FUTURE_TASKS_QUERY_KEY,
+  useGetUserTaskTags,
 } from '@/app/api/hooks/queries';
 import { DialogType } from '@/constants/other';
-import {
-  PRIORITY_COLORS,
-  TAGS_OPTIONS,
-  Task,
-  TaskStage,
-} from '@/constants/task';
+import { PRIORITY_COLORS, Task, TaskStage } from '@/constants/task';
+import { filterTags } from '@/helper/filterTags';
 import { toast } from '@/hooks/useToast';
 import { cn } from '@/lib/utils';
 import { useDialogsStore } from '@/stores';
@@ -38,6 +35,8 @@ export const TaskCard = (props: TaskCardProps) => {
 
   const queryClient = useQueryClient();
   const color = PRIORITY_COLORS[task.priority];
+
+  const { data: userTags } = useGetUserTaskTags();
 
   const { mutate: mutateDeleteTask, isPending: inPendingDeleteTask } =
     useDeleteTask({
@@ -107,20 +106,25 @@ export const TaskCard = (props: TaskCardProps) => {
         </div>
       )}
       <CardHeader className="items-center justify-between gap-x-3 pb-2">
-        {task.tags.length > 0 && (
+        {task.tags.length > 0 && userTags !== undefined && (
           <div className="flex flex-wrap items-center gap-1">
-            {task.tags.map((tag) => (
-              <Badge
-                key={tag}
-                className="gap-x-1 px-1.5 capitalize text-white"
-                style={{
-                  backgroundColor: TAGS_OPTIONS.find((t) => t.value === tag)
-                    ?.color,
-                }}
-              >
-                {TAGS_OPTIONS.find((t) => t.value === tag)?.value}
-              </Badge>
-            ))}
+            {task.tags.map((tag) => {
+              const existTag = filterTags(tag, userTags);
+              if (!existTag) return null;
+
+              return (
+                <Badge
+                  key={tag}
+                  className="gap-x-1 px-1.5 capitalize text-white"
+                  style={{
+                    backgroundColor: userTags.find((t) => t.value === tag)
+                      ?.color,
+                  }}
+                >
+                  {userTags.find((t) => t.value === tag)?.value}
+                </Badge>
+              );
+            })}
           </div>
         )}
         <DropdownMenu>

@@ -4,6 +4,7 @@ import { AuthError } from 'next-auth';
 import bcrypt from 'bcryptjs';
 
 import { auth, signIn, signOut } from '@/auth';
+import { TAGS_OPTIONS } from '@/constants/task';
 import prisma from '@/lib/prisma';
 import { LoginParams, REGISTRATION_SCHEMA, RegistrationParams } from '@/types';
 
@@ -32,12 +33,20 @@ export const register = async (values: RegistrationParams) => {
       };
     }
 
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         username,
         email,
         password: hashedPassword,
       },
+    });
+
+    await prisma.userTag.createMany({
+      data: TAGS_OPTIONS.map((tag) => ({
+        userId: user.id,
+        value: tag.value,
+        color: tag.color,
+      })),
     });
 
     return {

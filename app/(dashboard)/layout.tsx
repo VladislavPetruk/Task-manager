@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
 import { SessionProvider } from 'next-auth/react';
 
+import { auth } from '@/auth';
 import { DashboardLayout } from '@/components/Layouts';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
@@ -20,12 +21,13 @@ const AppThemeProvider = dynamic(() => import('@/providers/ThemeProvider'), {
   ssr: false,
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const theme = cookies().get('theme')?.value || 'system';
+  const session = await auth();
 
   return (
     <html lang="en" className="overscroll-none" suppressHydrationWarning>
@@ -33,7 +35,7 @@ export default function RootLayout({
         className={cn(`${inter.className} antialiased`)}
         suppressHydrationWarning
       >
-        <SessionProvider>
+        <SessionProvider session={session}>
           <ReactQueryClientProvider>
             <AppThemeProvider attribute="class" defaultTheme={theme}>
               <div></div>

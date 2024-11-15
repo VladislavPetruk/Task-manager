@@ -18,9 +18,12 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { DialogType } from '@/constants/other';
 import { INITIAL_STATE, Task, TaskStage, TaskStatus } from '@/constants/task';
+import { useRole } from '@/hooks';
 import { toast } from '@/hooks/useToast';
+import { cn } from '@/lib/utils';
 import { useDialogsStore, useTasksStore } from '@/stores';
 // import { useDialogsStore } from '@/stores/DialogsStore';
 // import { useTasksStore } from '@/stores/TasksStore';
@@ -31,6 +34,24 @@ import { Loader } from '../ui/loader';
 import { MultipleSelector, PrioritySelect, StatusSelect } from './Helper';
 
 // Need create validate form, title, description
+
+function formatISODate(dateString: string, locale = 'uk-UA') {
+  const date = new Date(dateString);
+
+  // return new Intl.DateTimeFormat(locale, {
+  //   day: '2-digit',
+  //   month: '2-digit',
+  //   year: 'numeric',
+  // }).format(date);
+
+  return new Intl.DateTimeFormat(locale, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+}
 
 export default function UpdateTaskDialog() {
   const showDialog = useDialogsStore((state) => state.showDialog);
@@ -53,6 +74,7 @@ export default function UpdateTaskDialog() {
   }, [currentTaskId, allTasksInStore]);
 
   const queryClient = useQueryClient();
+  const role = useRole();
 
   const { mutate: mutateUpdateTask, isPending: inPendingUpdateTask } =
     useUpdateTask({
@@ -106,6 +128,8 @@ export default function UpdateTaskDialog() {
       },
     });
 
+  console.log(taskState);
+
   const onCreateTask = async (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
@@ -144,6 +168,11 @@ export default function UpdateTaskDialog() {
 
   const handleInputChange =
     (field: keyof Task) => (e: ChangeEvent<HTMLInputElement>) => {
+      setTaskState((prev) => ({ ...prev, [field]: e.target.value }));
+    };
+
+  const handleTextAreaChange =
+    (field: keyof Task) => (e: ChangeEvent<HTMLTextAreaElement>) => {
       setTaskState((prev) => ({ ...prev, [field]: e.target.value }));
     };
 
@@ -194,7 +223,11 @@ export default function UpdateTaskDialog() {
 
   return (
     <Dialog open={showDialog} onOpenChange={toggleDialog}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent
+        className={cn(
+          role === 'USER' ? 'sm:max-w-[500px]' : 'w-[800px] max-w-[800px]'
+        )}
+      >
         {(inPendingUpdateTask || inPendingCreateTask) && (
           <div className="absolute inset-0 grid place-content-center bg-accent/50">
             <Loader />
@@ -206,52 +239,77 @@ export default function UpdateTaskDialog() {
         <DialogDescription className="sr-only">
           Task handler dialog
         </DialogDescription>
-        <div className="grid gap-y-4 py-4">
-          <div className="grid gap-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input
-              id="title"
-              value={taskState.title}
-              onChange={handleInputChange('title')}
-              disabled={taskState.currentStage === TaskStage.ARCHIVED}
-            />
+        <div
+          className={cn(
+            role === 'USER'
+              ? 'grid gap-y-4 py-4'
+              : 'grid grid-cols-[1fr_300px] items-start gap-x-8'
+          )}
+        >
+          <div className="grid gap-y-4">
+            <div className="grid gap-y-2">
+              <Label htmlFor="title">Title</Label>
+              <Input
+                id="title"
+                value={taskState.title}
+                onChange={handleInputChange('title')}
+                disabled={taskState.currentStage === TaskStage.ARCHIVED}
+              />
+            </div>
+            <div className="grid gap-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                value={taskState.description}
+                id="description"
+                onChange={handleTextAreaChange('description')}
+                disabled={taskState.currentStage === TaskStage.ARCHIVED}
+                className="max-h-56 min-h-28"
+              />
+            </div>
           </div>
-          <div className="grid gap-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Input
-              id="description"
-              value={taskState.description}
-              onChange={handleInputChange('description')}
-              disabled={taskState.currentStage === TaskStage.ARCHIVED}
-            />
-          </div>
-          <div className="grid gap-y-2">
-            <Label htmlFor="tags">Tags</Label>
-            <MultipleSelector
-              tags={taskState.tags}
-              onChange={handleTagsChange('tags')}
-              disabled={taskState.currentStage === TaskStage.ARCHIVED}
-            />
-          </div>
-          <div className="grid gap-y-2">
-            <Label htmlFor="priority">Priority</Label>
-            <PrioritySelect
-              value={taskState.priority}
-              onChange={handleSelectChange('priority')}
-              disabled={taskState.currentStage === TaskStage.ARCHIVED}
-            />
-          </div>
-          {dialogType === DialogType.UPDATE &&
-            taskState.currentStage !== TaskStage.SCHEDULED && (
-              <div className="grid gap-y-2">
-                <Label htmlFor="status">Status</Label>
-                <StatusSelect
-                  value={taskState.status}
-                  onChange={handleSelectChange('status')}
-                  disabled={taskState.currentStage === TaskStage.ARCHIVED}
-                />
-              </div>
+          <div className="grid gap-y-4">
+            <div className="grid gap-y-2">
+              <Label htmlFor="tags">Tags</Label>
+              <MultipleSelector
+                tags={taskState.tags}
+                onChange={handleTagsChange('tags')}
+                disabled={taskState.currentStage === TaskStage.ARCHIVED}
+              />
+            </div>
+            <div className="grid gap-y-2">
+              <Label htmlFor="priority">Priority</Label>
+              <PrioritySelect
+                value={taskState.priority}
+                onChange={handleSelectChange('priority')}
+                disabled={taskState.currentStage === TaskStage.ARCHIVED}
+              />
+            </div>
+            {dialogType === DialogType.UPDATE &&
+              taskState.currentStage !== TaskStage.SCHEDULED && (
+                <div className="grid gap-y-2">
+                  <Label htmlFor="status">Status</Label>
+                  <StatusSelect
+                    value={taskState.status}
+                    onChange={handleSelectChange('status')}
+                    disabled={taskState.currentStage === TaskStage.ARCHIVED}
+                  />
+                </div>
+              )}
+            {dialogType !== DialogType.CREATE && (
+              <>
+                {!!taskState.createdOn && (
+                  <div className="mt-4 text-sm">
+                    Created date - {formatISODate(taskState.createdOn)}
+                  </div>
+                )}
+                {!!taskState.updatedOn && (
+                  <div className="text-sm">
+                    Updated date - {formatISODate(taskState.updatedOn)}
+                  </div>
+                )}
+              </>
             )}
+          </div>
         </div>
         {taskState.currentStage !== TaskStage.ARCHIVED && (
           <DialogFooter>

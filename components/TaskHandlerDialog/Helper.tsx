@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Check, X } from 'lucide-react';
 
+import { useGetUserTaskTags } from '@/app/api/hooks/queries';
 import {
   PRIORITY_COLORS,
   PRIORITY_LABELS,
   STATUS_OPTIONS,
-  TAGS_OPTIONS,
   TaskPriority,
   TaskStatus,
 } from '@/constants/task';
+import { filterTags } from '@/helper/filterTags';
 import { CaretSortIcon } from '@radix-ui/react-icons';
 
 import { Badge } from '../ui/badge';
@@ -105,6 +106,10 @@ export const MultipleSelector = ({
 }: TagsSelectProps) => {
   const [open, setOpen] = useState<boolean>(false);
 
+  const { data: userTags } = useGetUserTaskTags();
+
+  if (!userTags) return null;
+
   const handleSetValue = (tag: string) => {
     const newValues = tags.includes(tag)
       ? tags.filter((t) => t !== tag)
@@ -125,28 +130,33 @@ export const MultipleSelector = ({
         >
           <div className="flex max-w-full flex-wrap gap-2">
             {tags?.length
-              ? tags.map((tag) => (
-                  <Badge
-                    key={tag}
-                    className="hide-hover cursor-auto gap-x-1 px-1.5 capitalize text-white"
-                    style={{
-                      backgroundColor: TAGS_OPTIONS.find((t) => t.value === tag)
-                        ?.color,
-                    }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                  >
-                    {TAGS_OPTIONS.find((t) => t.value === tag)?.value}
-                    <button
-                      className="group shrink-0 rounded-full hover:opacity-70"
-                      onClick={() => handleSetValue(tag)}
+              ? tags.map((tag) => {
+                  const existTag = filterTags(tag, userTags);
+                  if (!existTag) return null;
+
+                  return (
+                    <Badge
+                      key={tag}
+                      className="hide-hover cursor-auto gap-x-1 px-1.5 capitalize text-white"
+                      style={{
+                        backgroundColor: userTags.find((t) => t.value === tag)
+                          ?.color,
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
                     >
-                      <X className="size-3 stroke-current" />
-                    </button>
-                  </Badge>
-                ))
+                      {userTags.find((t) => t.value === tag)?.value}
+                      <button
+                        className="group shrink-0 rounded-full hover:opacity-70"
+                        onClick={() => handleSetValue(tag)}
+                      >
+                        <X className="size-3 stroke-current" />
+                      </button>
+                    </Badge>
+                  );
+                })
               : 'Select tags...'}
           </div>
           <CaretSortIcon className="h-4 w-4 opacity-50" />
@@ -158,7 +168,7 @@ export const MultipleSelector = ({
           <CommandEmpty>No tag found.</CommandEmpty>
           <CommandGroup>
             <CommandList>
-              {TAGS_OPTIONS.map((tag) => (
+              {userTags.map((tag) => (
                 <CommandItem
                   key={tag.value}
                   value={tag.value}

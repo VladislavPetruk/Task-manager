@@ -177,40 +177,57 @@ export default function HomeClient() {
     );
 
   return (
-    <DragDropContext onDragEnd={onDragEndAntonio}>
-      <div className="relative grid gap-6 lg:grid-cols-3">
-        {boards.map((board) => (
-          <div
-            className="grid grid-rows-[max-content_max-content] gap-y-4 rounded-xl bg-accent p-6"
-            key={board}
-          >
-            <ColumnHeader board={board} count={tasks[board].length} />
-            <Droppable droppableId={board}>
-              {(droppableProvided) => (
-                <div
-                  className="h-full min-h-40"
-                  ref={droppableProvided.innerRef}
-                  {...droppableProvided.droppableProps}
-                >
-                  {tasks[board].map((task, i) => (
-                    <Draggable draggableId={task.id} index={i} key={task.id}>
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className="mb-4"
-                        >
-                          <TaskCard key={task.id} {...task} />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {droppableProvided.placeholder}
-                </div>
-              )}
-            </Droppable>
-            {/* {board === TaskStatus.TO_DO && (
+    <div>
+      <div className="mb-4 flex items-center justify-between lg:mb-8">
+        <h1 className="text-2xl font-medium">Current tasks</h1>
+        <Button
+          aria-haspopup="true"
+          size="icon"
+          variant="ghost"
+          onClick={() =>
+            toast({
+              title: 'In develompment:)',
+            })
+          }
+        >
+          <EllipsisVertical />
+          <span className="sr-only">Move to ...</span>
+        </Button>
+      </div>
+      <DragDropContext onDragEnd={onDragEndAntonio}>
+        <div className="relative grid gap-6 lg:grid-cols-3">
+          {boards.map((board) => (
+            <div
+              className="grid grid-rows-[max-content_max-content] gap-y-4 rounded-xl bg-accent p-6"
+              key={board}
+            >
+              <ColumnHeader board={board} count={tasks[board].length} />
+              <Droppable droppableId={board}>
+                {(droppableProvided) => (
+                  <div
+                    className="h-full min-h-40"
+                    ref={droppableProvided.innerRef}
+                    {...droppableProvided.droppableProps}
+                  >
+                    {tasks[board].map((task, i) => (
+                      <Draggable draggableId={task.id} index={i} key={task.id}>
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className="mb-4"
+                          >
+                            <TaskCard key={task.id} {...task} />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {droppableProvided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+              {/* {board === TaskStatus.TO_DO && (
               <Button
                 aria-haspopup="true"
                 variant={null}
@@ -223,10 +240,11 @@ export default function HomeClient() {
                 Create a new task
               </Button>
             )} */}
-          </div>
-        ))}
-      </div>
-    </DragDropContext>
+            </div>
+          ))}
+        </div>
+      </DragDropContext>
+    </div>
   );
 }
 

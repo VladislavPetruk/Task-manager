@@ -44,7 +44,7 @@ test.describe(
     test.beforeEach(async ({ context }) => {
       await context.clearCookies();
     });
-    test('can access to menu', async ({ page }) => {
+    test('can access to main page', async ({ page }) => {
       await page.goto('/login');
 
       const emailInput = page.getByTestId('login-email');
@@ -66,7 +66,9 @@ test.describe(
       signinButton.click();
 
       await page.waitForURL('/');
-      await expect(page.getByRole('link', { name: 'Current' })).toBeVisible();
+      await expect(
+        page.getByRole('heading', { name: 'Current tasks' })
+      ).toBeVisible();
     });
   }
 );
