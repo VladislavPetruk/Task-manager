@@ -19,7 +19,7 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-const UpdateTaskDialog = dynamic(
+const TaskHandlerDialog = dynamic(
   () => import('@/components/TaskHandlerDialog/TaskHandlerDialog'),
   {
     ssr: false,
@@ -45,7 +45,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
     <SidebarProvider className="grid h-screen grid-rows-[max-content_1fr] overflow-hidden">
       <Header />
-      <UpdateTaskDialog />
+      <TaskHandlerDialog />
       <div className="flex items-start">
         <DashboardSidebar />
         <ScrollArea className="h-full max-h-[calc(100vh-56px)] w-full">

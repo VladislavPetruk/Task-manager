@@ -54,7 +54,7 @@ function formatISODate(dateString: string, locale = 'uk-UA') {
   }).format(date);
 }
 
-export default function UpdateTaskDialog() {
+export default function TaskHandlerDialog() {
   const showDialog = useDialogsStore((state) => state.showDialog);
   const currentTaskId = useDialogsStore((state) => state.currentTaskId);
   const dialogType = useDialogsStore((state) => state.dialogType);
@@ -140,7 +140,7 @@ export default function UpdateTaskDialog() {
       tags: taskState.tags,
       priority: taskState.priority,
       status: taskState.status,
-      currentStage: taskState.currentStage,
+      currentStage: taskStage,
     };
 
     mutateCreateTask(task);
