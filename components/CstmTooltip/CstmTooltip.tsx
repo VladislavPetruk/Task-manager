@@ -14,6 +14,7 @@ interface CstmTooltipProps {
   children: ReactNode;
   side?: 'top' | 'right' | 'bottom' | 'left';
   align?: 'start' | 'center' | 'end';
+  className?: string;
 }
 
 export const CstmTooltip = ({
@@ -21,16 +22,19 @@ export const CstmTooltip = ({
   children,
   side,
   align,
+  className,
 }: CstmTooltipProps) => {
   return (
     <TooltipProvider>
       <Tooltip delayDuration={50}>
-        <TooltipTrigger asChild>{children}</TooltipTrigger>
+        <TooltipTrigger asChild className={className}>
+          {children}
+        </TooltipTrigger>
         <TooltipContent
           sideOffset={12}
           side={side}
           align={align}
-          className="border border-white/5 bg-black text-white"
+          className="max-w-64 border border-white/5"
         >
           <p className="text-xs font-medium">{label}</p>
         </TooltipContent>

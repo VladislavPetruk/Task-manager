@@ -29,6 +29,7 @@ import { useDialogsStore, useTasksStore } from '@/stores';
 // import { useTasksStore } from '@/stores/TasksStore';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { TiptapEditor } from '../Tiptap/Tiptap';
 import { Loader } from '../ui/loader';
 
 import { MultipleSelector, PrioritySelect, StatusSelect } from './Helper';
@@ -176,6 +177,10 @@ export default function UpdateTaskDialog() {
       setTaskState((prev) => ({ ...prev, [field]: e.target.value }));
     };
 
+  const handleTiptapChange = (value: string) => {
+    setTaskState((prev) => ({ ...prev, description: value }));
+  };
+
   const handleSelectChange = (field: keyof Task) => (value: string) => {
     setTaskState((prev) => ({ ...prev, [field]: value }));
   };
@@ -225,7 +230,7 @@ export default function UpdateTaskDialog() {
     <Dialog open={showDialog} onOpenChange={toggleDialog}>
       <DialogContent
         className={cn(
-          role === 'USER' ? 'sm:max-w-[500px]' : 'w-[800px] max-w-[800px]'
+          role === 'USER' ? 'sm:max-w-[500px]' : 'w-[1000px] max-w-[1000px]'
         )}
       >
         {(inPendingUpdateTask || inPendingCreateTask) && (
@@ -257,14 +262,32 @@ export default function UpdateTaskDialog() {
               />
             </div>
             <div className="grid gap-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                value={taskState.description}
-                id="description"
-                onChange={handleTextAreaChange('description')}
-                disabled={taskState.currentStage === TaskStage.ARCHIVED}
-                className="max-h-56 min-h-28"
-              />
+              {role === 'USER' ? (
+                <>
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    value={taskState.description}
+                    id="description"
+                    onChange={handleTextAreaChange('description')}
+                    disabled={taskState.currentStage === TaskStage.ARCHIVED}
+                    className="max-h-56 min-h-28"
+                  />
+                </>
+              ) : (
+                <TiptapEditor
+                  value={taskState.description}
+                  throttleDelay={1000}
+                  className={cn(
+                    'grid h-full min-h-56 w-full grid-rows-[1fr_50px] rounded-xl'
+                  )}
+                  editorContentClassName="overflow-auto h-full"
+                  output="html"
+                  placeholder="Type your description here..."
+                  editable={true}
+                  editorClassName="focus:outline-none px-5 py-4 h-full"
+                  onChange={(value) => handleTiptapChange(value)}
+                />
+              )}
             </div>
           </div>
           <div className="grid gap-y-4">

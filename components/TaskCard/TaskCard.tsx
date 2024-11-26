@@ -105,28 +105,11 @@ export const TaskCard = (props: TaskCardProps) => {
           <Loader />
         </div>
       )}
-      <CardHeader className="items-center justify-between gap-x-3 pb-2">
-        {task.tags.length > 0 && userTags !== undefined && (
-          <div className="flex flex-wrap items-center gap-1">
-            {task.tags.map((tag) => {
-              const existTag = filterTags(tag, userTags);
-              if (!existTag) return null;
+      <CardHeader className="items-start justify-between gap-x-3 pb-2">
+        <CardTitle className="mb-1 text-2xl font-medium">
+          {task.title}
+        </CardTitle>
 
-              return (
-                <Badge
-                  key={tag}
-                  className="gap-x-1 px-1.5 capitalize text-white"
-                  style={{
-                    backgroundColor: userTags.find((t) => t.value === tag)
-                      ?.color,
-                  }}
-                >
-                  {userTags.find((t) => t.value === tag)?.value}
-                </Badge>
-              );
-            })}
-          </div>
-        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild className="!mt-0 ml-auto">
             <Button aria-haspopup="true" size="icon" variant="ghost">
@@ -170,10 +153,27 @@ export const TaskCard = (props: TaskCardProps) => {
         </DropdownMenu>
       </CardHeader>
       <CardContent>
-        <CardTitle className="mb-1 text-2xl font-medium">
-          {task.title}
-        </CardTitle>
-        <p className="text-muted-foreground">{task.description}</p>
+        {task.tags.length > 0 && userTags !== undefined && (
+          <div className="flex flex-wrap items-center gap-1">
+            {task.tags.map((tag) => {
+              const existTag = filterTags(tag, userTags);
+              if (!existTag) return null;
+
+              return (
+                <Badge
+                  key={tag}
+                  className="gap-x-1 px-1.5 capitalize text-white"
+                  style={{
+                    backgroundColor: userTags.find((t) => t.value === tag)
+                      ?.color,
+                  }}
+                >
+                  {userTags.find((t) => t.value === tag)?.value}
+                </Badge>
+              );
+            })}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

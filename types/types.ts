@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { Editor } from '@tiptap/react';
 
 export type LoginParams = {
   email: string;
@@ -10,6 +11,16 @@ export type RegistrationParams = {
   email: string;
   password: string;
 };
+
+export interface FormatAction {
+  label: string;
+  icon?: React.ReactNode;
+  action: (editor: Editor) => void;
+  isActive: (editor: Editor) => boolean;
+  canExecute: (editor: Editor) => boolean;
+  shortcuts: string[];
+  value: string;
+}
 
 // temporary !!!
 export const LOGIN_SCHEMA = z.object({

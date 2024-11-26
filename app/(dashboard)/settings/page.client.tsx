@@ -10,12 +10,14 @@ import {
   useGetUserTaskTags,
 } from '@/app/api/hooks/queries';
 import { ColorPicker } from '@/components/ColorPicker';
+import { CstmTooltip } from '@/components/CstmTooltip';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Loader } from '@/components/ui/loader';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
-import { Trash } from 'lucide-react';
+import { Info, Trash } from 'lucide-react';
 import { useState } from 'react';
 
 const DEFAULT_TAG_VALUES = {
@@ -24,7 +26,7 @@ const DEFAULT_TAG_VALUES = {
 };
 
 export default function SettingsClient() {
-  // const [editMode, setEditMode] = useState<boolean>(false);
+  const [targetTagId, setTargetTagId] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -44,6 +46,10 @@ export default function SettingsClient() {
         queryClient.invalidateQueries({
           queryKey: [GET_USER_TASK_TAGS_QUERY_KEY],
         });
+        setTargetTagId(null);
+      },
+      onSettled: () => {
+        setTargetTagId(null);
       },
     });
 
@@ -132,6 +138,7 @@ export default function SettingsClient() {
   };
 
   const handleDeleteTag = (id: string) => {
+    setTargetTagId(id);
     mutateDeleteTag(id);
   };
 
@@ -172,63 +179,52 @@ export default function SettingsClient() {
           <TabsTrigger value="password">Password</TabsTrigger>
         </TabsList>
         <TabsContent value="tags">
-          <p className="mb-4 text-lg font-medium">
-            You can change or add new tags{' '}
-            {/* Додати тултіп що після редеагування або видалення тегу в тасці він пропаде */}
+          <p className="mb-4 inline-flex items-center gap-x-2 text-lg font-medium">
+            You can change or add new tags
+            <CstmTooltip label="Tags assigned to a task will be removed from task when you delete the tag.">
+              <Info size={20} />
+            </CstmTooltip>
           </p>
           <div className="mb-6 grid gap-y-1.5">
             {userTags.map((tag) => (
               <div
                 className={cn(
-                  'grid items-center gap-x-3 capitalize',
-                  true ? 'grid-cols-[24px_1fr_24px]' : 'grid-cols-[24px_1fr]'
+                  'grid grid-cols-[24px_1fr_24px] items-center gap-x-3 capitalize',
+                  isPendingDeletingTag && targetTagId === tag.id
+                    ? 'pointer-events-none opacity-70'
+                    : ''
                 )}
                 key={tag.id}
               >
-                {!true ? (
-                  <>
-                    <div
-                      className="h-6 rounded-full"
-                      style={{ backgroundColor: tag.color }}
-                    />
-                    {tag.value}
-                  </>
-                ) : (
-                  <>
-                    {/* <div
-                      className="h-6 rounded-full"
-                      style={{ backgroundColor: tag.color }}
-                    /> */}
-                    <ColorPicker
-                      background={tag.color as string}
-                      setBackground={(color) =>
-                        handleTagColorChange(tag.id, color)
-                      }
-                      onClose={() => handleTagChangeColor(tag.id, tag.color)}
-                    />
-                    <Input
-                      type="text"
-                      value={tag.value}
-                      onChange={(e) => handleTagChange(tag.id, e.target.value)}
-                      onBlur={(e) => handleTagBlur(tag.id, e.target.value)}
-                      className="rounded border p-1"
-                    />
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => handleDeleteTag(tag.id)}
-                    >
-                      <Trash />
-                    </Button>
-                  </>
-                )}
+                <ColorPicker
+                  background={tag.color as string}
+                  setBackground={(color) => handleTagColorChange(tag.id, color)}
+                  onClose={() => handleTagChangeColor(tag.id, tag.color)}
+                />
+                <Input
+                  type="text"
+                  value={tag.value}
+                  onChange={(e) => handleTagChange(tag.id, e.target.value)}
+                  onBlur={(e) => handleTagBlur(tag.id, e.target.value)}
+                  className="rounded border p-1"
+                />
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => handleDeleteTag(tag.id)}
+                  disabled={isPendingDeletingTag || targetTagId === tag.id}
+                >
+                  {isPendingDeletingTag && targetTagId === tag.id ? (
+                    <Loader />
+                  ) : (
+                    <Trash />
+                  )}
+                </Button>
               </div>
             ))}
-            {true && (
-              <Button className="mt-2" onClick={handleAddTag}>
-                Add a new tag
-              </Button>
-            )}
+            <Button className="mt-2" onClick={handleAddTag}>
+              Add a new tag
+            </Button>
           </div>
           <div className="flex items-center justify-between">
             {/* <Button onClick={toggleEditMode}>Edit tags</Button> */}
