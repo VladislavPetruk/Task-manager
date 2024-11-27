@@ -12,7 +12,7 @@ export default async function globalSetup() {
   if (!process.env.AUTH_SECRET) throw new Error('AUTH_SECRET is not defined');
 
   const payload = {
-    id: '67323e0de9fe030c9d8372bb',
+    id: '67471b65813e64c2154b4af8',
     role: 'USER',
   };
 
