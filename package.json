@@ -113,6 +113,9 @@
       "pre-push": "npm run lint && npm run format"
     }
   },
+  "prisma": {
+    "schema": "./shared/prisma/schema.prisma"
+  },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
       "npm run lint",
