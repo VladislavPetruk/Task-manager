@@ -10,7 +10,7 @@ import {
 import { common, createLowlight } from 'lowlight';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 import { CodeBlockLowlight as TiptapCodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 import { Color } from '@tiptap/extension-color';
 import { Image } from '@tiptap/extension-image';

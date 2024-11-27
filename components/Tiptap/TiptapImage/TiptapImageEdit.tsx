@@ -1,7 +1,7 @@
 import { ChangeEvent, useCallback, useRef } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { fileToBase64 } from '@/helper/fileToBase64';
+import { fileToBase64 } from '@/shared/functions/fileToBase64';
 import type { Editor } from '@tiptap/react';
 
 interface TiptapImageEditProps {

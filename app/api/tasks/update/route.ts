@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 
 import { auth } from '@/auth';
-import { TaskStatus } from '@/constants/task';
-import prisma from '@/lib/prisma';
+import { TaskStatus } from '@/shared/constants/task';
+import prisma from '@/shared/lib/prisma';
 
 export async function PUT(req: Request) {
   try {

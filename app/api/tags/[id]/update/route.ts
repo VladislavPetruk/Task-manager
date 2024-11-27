@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { auth } from '@/auth';
 /* eslint-disable */
-import prisma from '@/lib/prisma';
+import prisma from '@/shared/lib/prisma';
 
 export async function PUT(req: Request) {
   try {

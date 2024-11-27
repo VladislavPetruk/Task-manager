@@ -5,7 +5,7 @@ import { useTheme } from 'next-themes';
 import { LogOut } from 'lucide-react';
 
 import { logOut } from '@/app/actions/authActions';
-import ThemeProvider from '@/providers/ThemeProvider';
+import ThemeProvider from '@/shared/providers/ThemeProvider';
 
 import { CstmTooltip } from '../CstmTooltip';
 import { ThemeToglle } from '../ThemeToggle';

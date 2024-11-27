@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 
 import { auth } from '@/auth';
-import { Task } from '@/constants/task';
-import prisma from '@/lib/prisma';
+import { Task } from '@/shared/constants/task';
+import prisma from '@/shared/lib/prisma';
 
 type Params = {
   id: Task['id'];

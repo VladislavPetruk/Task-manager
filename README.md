@@ -44,11 +44,7 @@ yarn install
 ```bash
 ├── app/                 # Next.js app directory
 ├── components/          # Reusable UI components
-├── hooks/               # Custom hooks for state management and logic
-├── lib/                 # Library functions and utilities
-├── stores/              # Zustand stores for global state management
-├── types/               # Type definitions
-├── utils/               # Utility functions
+├── shared/              # Folder with library functions and utilities, stores, types, hooks, etc
 ```
 
 ## Removing Unnecessary Packages

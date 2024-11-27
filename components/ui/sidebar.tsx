@@ -17,8 +17,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { useIsMobile } from '@/hooks';
-import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/shared/hooks';
+import { cn } from '@/shared/lib/utils';
 import { Slot } from '@radix-ui/react-slot';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar:state';

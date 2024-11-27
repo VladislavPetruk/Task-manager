@@ -7,7 +7,7 @@ import { useGetCompletedTasks } from '@/app/api/hooks/queries';
 import { TaskCard } from '@/components/TaskCard';
 // import { TaskCard } from '@/components/TaskCard';
 import { Loader } from '@/components/ui/loader';
-import { useTasksStore } from '@/stores/TasksStore';
+import { useTasksStore } from '@/shared/stores/TasksStore';
 
 export default function CompletedClient() {
   const { data: completedTasks, isLoading: isLoadingCompletedTasks } =

@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader } from '@/components/ui/loader';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { Info, Trash } from 'lucide-react';
 import { useState } from 'react';

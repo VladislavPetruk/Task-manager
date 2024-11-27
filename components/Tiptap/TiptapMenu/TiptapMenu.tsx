@@ -8,8 +8,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type { toggleVariants } from '@/components/ui/toggle';
-import { cn } from '@/lib/utils';
-import { FormatAction } from '@/types';
+import { cn } from '@/shared/lib/utils';
+import { FormatAction } from '@/shared/types';
 import { CaretDownIcon } from '@radix-ui/react-icons';
 import type { Editor } from '@tiptap/react';
 

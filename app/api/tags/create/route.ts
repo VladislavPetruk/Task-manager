@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { auth } from '@/auth';
-import prisma from '@/lib/prisma';
+import prisma from '@/shared/lib/prisma';
 import { UserTag } from '@prisma/client';
 
 export async function POST(req: Request) {

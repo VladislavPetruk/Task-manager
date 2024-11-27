@@ -34,7 +34,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useIsMounted } from '@/hooks/useIsMounted';
+import { useIsMounted } from '@/shared/hooks/useIsMounted';
 
 import { CstmTooltip } from '../CstmTooltip';
 

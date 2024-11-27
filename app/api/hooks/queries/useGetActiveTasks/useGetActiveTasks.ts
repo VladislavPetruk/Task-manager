@@ -2,8 +2,8 @@
 
 import axios, { AxiosError } from 'axios';
 
-import { Task } from '@/constants/task';
-import { toast } from '@/hooks/useToast';
+import { Task } from '@/shared/constants/task';
+import { toast } from '@/shared/hooks/useToast';
 import { QueryOptions, useQuery, UseQueryResult } from '@tanstack/react-query';
 
 export const GET_ACTIVE_TASKS_QUERY_KEY = '@query/getActiveTasks';

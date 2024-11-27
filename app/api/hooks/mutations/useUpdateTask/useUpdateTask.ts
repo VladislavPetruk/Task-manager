@@ -2,8 +2,13 @@
 
 import axios, { AxiosError } from 'axios';
 
-import { Task, TaskPriority, TaskStage, TaskStatus } from '@/constants/task';
-import { toast } from '@/hooks/useToast';
+import {
+  Task,
+  TaskPriority,
+  TaskStage,
+  TaskStatus,
+} from '@/shared/constants/task';
+import { toast } from '@/shared/hooks/useToast';
 import {
   MutationOptions,
   useMutation,

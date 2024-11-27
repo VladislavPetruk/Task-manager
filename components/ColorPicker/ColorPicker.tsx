@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 
-import { COLOR_PICKER_PALLETE } from '@/constants/colors';
-import { cn } from '@/lib/utils';
+import { COLOR_PICKER_PALLETE } from '@/shared/constants/colors';
+import { cn } from '@/shared/lib/utils';
 
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';

@@ -2,7 +2,7 @@
 
 import axios, { AxiosError } from 'axios';
 
-import { toast } from '@/hooks/useToast';
+import { toast } from '@/shared/hooks/useToast';
 import { UserTag } from '@prisma/client';
 import {
   MutationOptions,

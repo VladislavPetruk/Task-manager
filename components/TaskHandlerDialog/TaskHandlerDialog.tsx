@@ -19,40 +19,28 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { DialogType } from '@/constants/other';
-import { INITIAL_STATE, Task, TaskStage, TaskStatus } from '@/constants/task';
-import { useRole } from '@/hooks';
-import { toast } from '@/hooks/useToast';
-import { cn } from '@/lib/utils';
-import { useDialogsStore, useTasksStore } from '@/stores';
+import { DialogType } from '@/shared/constants/other';
+import {
+  INITIAL_STATE,
+  Task,
+  TaskStage,
+  TaskStatus,
+} from '@/shared/constants/task';
+import { formatISODate } from '@/shared/functions/formatISODate';
+import { useRole } from '@/shared/hooks';
+import { toast } from '@/shared/hooks/useToast';
+import { cn } from '@/shared/lib/utils';
+import { useDialogsStore, useTasksStore } from '@/shared/stores';
 // import { useDialogsStore } from '@/stores/DialogsStore';
 // import { useTasksStore } from '@/stores/TasksStore';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { TiptapEditor } from '../Tiptap/Tiptap';
+import { TiptapEditor } from '../Tiptap/TiptapEditor';
 import { Loader } from '../ui/loader';
 
 import { MultipleSelector, PrioritySelect, StatusSelect } from './Helper';
 
 // Need create validate form, title, description
-
-function formatISODate(dateString: string, locale = 'uk-UA') {
-  const date = new Date(dateString);
-
-  // return new Intl.DateTimeFormat(locale, {
-  //   day: '2-digit',
-  //   month: '2-digit',
-  //   year: 'numeric',
-  // }).format(date);
-
-  return new Intl.DateTimeFormat(locale, {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(date);
-}
 
 export default function TaskHandlerDialog() {
   const showDialog = useDialogsStore((state) => state.showDialog);

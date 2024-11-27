@@ -3,7 +3,7 @@
 import { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 
-import { useRole } from '@/hooks';
+import { useRole } from '@/shared/hooks';
 
 // import { useRouter } from 'next/navigation';
 // import { useGetUser } from '@/app/api/getUser';

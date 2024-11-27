@@ -7,8 +7,8 @@ import { SessionProvider } from 'next-auth/react';
 import { auth } from '@/auth';
 import { DashboardLayout } from '@/components/Layouts';
 import { Toaster } from '@/components/ui/toaster';
-import { cn } from '@/lib/utils';
-import { ReactQueryClientProvider } from '@/providers/ReactQueryClientProvider';
+import { cn } from '@/shared/lib/utils';
+import { ReactQueryClientProvider } from '@/shared/providers/ReactQueryClientProvider';
 
 import '@/app/globals.css';
 
@@ -17,9 +17,12 @@ const inter = Inter({
   subsets: ['latin'],
 });
 
-const AppThemeProvider = dynamic(() => import('@/providers/ThemeProvider'), {
-  ssr: false,
-});
+const AppThemeProvider = dynamic(
+  () => import('@/shared/providers/ThemeProvider'),
+  {
+    ssr: false,
+  }
+);
 
 export default async function RootLayout({
   children,

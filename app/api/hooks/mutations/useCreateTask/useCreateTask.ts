@@ -2,8 +2,8 @@
 
 import axios, { AxiosError } from 'axios';
 
-import { Task } from '@/constants/task';
-import { toast } from '@/hooks/useToast';
+import { Task } from '@/shared/constants/task';
+import { toast } from '@/shared/hooks/useToast';
 import {
   MutationOptions,
   useMutation,

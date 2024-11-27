@@ -7,10 +7,15 @@ import { shallow } from 'zustand/shallow';
 import { TaskCard } from '@/components/TaskCard';
 import { Button } from '@/components/ui/button';
 import { Loader } from '@/components/ui/loader';
-import { DialogType } from '@/constants/other';
-import { STATUS_LABELS, Task, TaskStage, TaskStatus } from '@/constants/task';
-import { toast } from '@/hooks/useToast';
-import { useDialogsStore, useTasksStore } from '@/stores';
+import { DialogType } from '@/shared/constants/other';
+import {
+  STATUS_LABELS,
+  Task,
+  TaskStage,
+  TaskStatus,
+} from '@/shared/constants/task';
+import { toast } from '@/shared/hooks/useToast';
+import { useDialogsStore, useTasksStore } from '@/shared/stores';
 // import { useDialogsStore } from '@/stores/DialogsStore';
 // import { useTasksStore } from '@/stores/TasksStore';
 import {

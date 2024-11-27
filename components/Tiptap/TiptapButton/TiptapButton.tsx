@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 import type { TooltipContentProps } from '@radix-ui/react-tooltip';
 
 interface TiptapButtonProps extends ComponentPropsWithoutRef<typeof Toggle> {

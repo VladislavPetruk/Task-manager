@@ -8,8 +8,8 @@ import {
   STATUS_OPTIONS,
   TaskPriority,
   TaskStatus,
-} from '@/constants/task';
-import { filterTags } from '@/helper/filterTags';
+} from '@/shared/constants/task';
+import { filterTags } from '@/shared/functions/filterTags';
 import { CaretSortIcon } from '@radix-ui/react-icons';
 
 import { Badge } from '../ui/badge';

@@ -7,8 +7,8 @@ import {
   ADMIN_MENU_LIST,
   SUBSCRIBER_MENU_LIST,
   USER_MENU_LIST,
-} from '@/constants/menu';
-import { useRole } from '@/hooks';
+} from '@/shared/constants/menu';
+import { useRole } from '@/shared/hooks';
 
 import { Collapsible } from '../ui/collapsible';
 import {
@@ -52,10 +52,13 @@ export const DashboardSidebar = ({
         {menu.map((item) => (
           <Collapsible key={item.label} asChild className="group/collapsible">
             <SidebarMenuItem className="px-2">
-              <SidebarMenuButton tooltip={item.label} className="h-full">
+              <SidebarMenuButton
+                tooltip={item.label}
+                className="relative h-full"
+              >
                 <Link
                   href={item.link}
-                  className="flex w-full items-center gap-x-2"
+                  className="flex w-full items-center gap-x-2 before:absolute before:inset-0 before:content-['']"
                 >
                   {item.icon && <item.icon size={28} className="shrink-0" />}
                   <span className="flex-1">{item.label}</span>

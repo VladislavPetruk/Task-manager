@@ -1,5 +1,5 @@
-import { DialogType } from '@/constants/other';
-import { TaskStage } from '@/constants/task';
+import { DialogType } from '@/shared/constants/other';
+import { TaskStage } from '@/shared/constants/task';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 

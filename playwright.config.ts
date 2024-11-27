@@ -3,15 +3,15 @@ import path from 'path';
 
 export default defineConfig({
   timeout: 30000,
-  testDir: './e2e',
+  testDir: './shared/e2e',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
-  globalSetup: require.resolve('./e2e/setup/globalSetup'),
+  globalSetup: require.resolve('./shared/e2e/setup/globalSetup'),
   use: {
-    storageState: path.join(__dirname, './e2e/setup/state.json'),
+    storageState: path.join(__dirname, './shared/e2e/setup/state.json'),
     baseURL: 'http://localhost:3000',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',

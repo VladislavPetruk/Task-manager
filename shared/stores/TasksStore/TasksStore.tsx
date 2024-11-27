@@ -1,4 +1,4 @@
-import { Task, TaskStatus } from '@/constants/task';
+import { Task, TaskStatus } from '@/shared/constants/task';
 import { createWithEqualityFn as create } from 'zustand/traditional'; // use with shallow
 import { devtools } from 'zustand/middleware';
 

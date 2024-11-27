@@ -8,9 +8,9 @@ import { useGetFutureTasks } from '@/app/api/hooks/queries';
 import { TaskCard } from '@/components/TaskCard';
 import { Button } from '@/components/ui/button';
 import { Loader } from '@/components/ui/loader';
-import { DialogType } from '@/constants/other';
-import { TaskStage } from '@/constants/task';
-import { useDialogsStore, useTasksStore } from '@/stores';
+import { DialogType } from '@/shared/constants/other';
+import { TaskStage } from '@/shared/constants/task';
+import { useDialogsStore, useTasksStore } from '@/shared/stores';
 
 export default function FutureClient() {
   const openDialog = useDialogsStore((state) => state.openDialog);

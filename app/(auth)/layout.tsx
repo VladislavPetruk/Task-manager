@@ -3,8 +3,8 @@ import { Inter } from 'next/font/google';
 
 import { DefaultLayout } from '@/components/Layouts';
 import { Toaster } from '@/components/ui/toaster';
-import { cn } from '@/lib/utils';
-import { ReactQueryClientProvider } from '@/providers/ReactQueryClientProvider';
+import { cn } from '@/shared/lib/utils';
+import { ReactQueryClientProvider } from '@/shared/providers/ReactQueryClientProvider';
 
 import '@/app/globals.css';
 

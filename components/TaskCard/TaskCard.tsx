@@ -7,12 +7,12 @@ import {
   GET_FUTURE_TASKS_QUERY_KEY,
   useGetUserTaskTags,
 } from '@/app/api/hooks/queries';
-import { DialogType } from '@/constants/other';
-import { PRIORITY_COLORS, Task, TaskStage } from '@/constants/task';
-import { filterTags } from '@/helper/filterTags';
-import { toast } from '@/hooks/useToast';
-import { cn } from '@/lib/utils';
-import { useDialogsStore } from '@/stores';
+import { DialogType } from '@/shared/constants/other';
+import { PRIORITY_COLORS, Task, TaskStage } from '@/shared/constants/task';
+import { filterTags } from '@/shared/functions/filterTags';
+import { toast } from '@/shared/hooks/useToast';
+import { cn } from '@/shared/lib/utils';
+import { useDialogsStore } from '@/shared/stores';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { Badge } from '../ui/badge';
