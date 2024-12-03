@@ -33,6 +33,17 @@ export const REGISTRATION_SCHEMA = z.object({
     .regex(/\d/, { message: 'Password must contain at least one number' }),
 });
 
+export const RESET_PASSWORD_SCHEMA = z.object({
+  password: z
+    .string({
+      invalid_type_error: 'Invalid password',
+      required_error: 'You must fill in this field.',
+    })
+    .min(8, { message: 'Password must be at least 8 characters long' })
+    .regex(/[A-Za-z]/, { message: 'Password must contain at least one letter' })
+    .regex(/\d/, { message: 'Password must contain at least one number' }),
+});
+
 export const TASK_HANDLER_SCHEMA = z.object({
   title: z
     .string({
@@ -46,3 +57,5 @@ export const TASK_HANDLER_SCHEMA = z.object({
     })
     .min(1, 'Description is required'),
 });
+
+export type ResetPasswordSchema = z.infer<typeof RESET_PASSWORD_SCHEMA>;

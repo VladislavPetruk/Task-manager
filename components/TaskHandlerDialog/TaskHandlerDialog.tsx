@@ -117,8 +117,6 @@ export default function TaskHandlerDialog() {
       },
     });
 
-  console.log(taskState);
-
   const onCreateTask = async (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
 

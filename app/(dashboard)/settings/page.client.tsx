@@ -11,6 +11,7 @@ import {
 } from '@/app/api/hooks/queries';
 import { ColorPicker } from '@/components/ColorPicker';
 import { CstmTooltip } from '@/components/CstmTooltip';
+import { ResetPassword } from '@/components/ResetPassword';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader } from '@/components/ui/loader';
@@ -226,14 +227,11 @@ export default function SettingsClient() {
               Add a new tag
             </Button>
           </div>
-          <div className="flex items-center justify-between">
-            {/* <Button onClick={toggleEditMode}>Edit tags</Button> */}
-            {/* {editMode && (
-              <Button onClick={onCreateUserTags}>Save chandges</Button>
-            )} */}
-          </div>
+          <div className="flex items-center justify-between"></div>
         </TabsContent>
-        <TabsContent value="password">{/* <PickerExample /> */}</TabsContent>
+        <TabsContent value="password">
+          <ResetPassword />
+        </TabsContent>
       </Tabs>
     </div>
   );

@@ -5,3 +5,4 @@ export * from './useDragAndDropTasks';
 export * from './useCreateUserTaskTags';
 export * from './useDeleteTag';
 export * from './useUpdateTag';
+export * from './useChangePassword';
