@@ -25,8 +25,9 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { REGISTRATION_SCHEMA } from '@/shared/constants';
 import { toast } from '@/shared/hooks';
-import { REGISTRATION_SCHEMA, RegistrationParams } from '@/shared/types';
+import { RegistrationParams } from '@/shared/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 export default function RegistrationPage() {

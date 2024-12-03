@@ -25,8 +25,9 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { LOGIN_SCHEMA } from '@/shared/constants';
 import { toast } from '@/shared/hooks';
-import { LOGIN_SCHEMA, LoginParams } from '@/shared/types';
+import { LoginParams } from '@/shared/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 export default function LoginPage() {

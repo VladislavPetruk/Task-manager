@@ -4,13 +4,10 @@ import { AuthError } from 'next-auth';
 import bcrypt from 'bcryptjs';
 
 import { auth, signIn, signOut } from '@/auth';
+import { REGISTRATION_SCHEMA } from '@/shared/constants';
 import { TAGS_OPTIONS } from '@/shared/constants/task';
 import prisma from '@/shared/lib/prisma';
-import {
-  LoginParams,
-  REGISTRATION_SCHEMA,
-  RegistrationParams,
-} from '@/shared/types';
+import { LoginParams, RegistrationParams } from '@/shared/types';
 
 export const register = async (values: RegistrationParams) => {
   try {
