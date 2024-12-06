@@ -44,6 +44,14 @@ export const RESET_PASSWORD_SCHEMA = z.object({
     .regex(/\d/, { message: 'Password must contain at least one number' }),
 });
 
+export const RESEND_CONFIRMATION_SCHEMA = z.object({
+  email: z
+    .string({
+      required_error: 'You must fill in this field',
+    })
+    .email({ message: 'Invalid email address' }),
+});
+
 export const TASK_HANDLER_SCHEMA = z.object({
   title: z
     .string({
@@ -59,3 +67,4 @@ export const TASK_HANDLER_SCHEMA = z.object({
 });
 
 export type ResetPasswordSchema = z.infer<typeof RESET_PASSWORD_SCHEMA>;
+export type ResendConfirmationSchema = z.infer<typeof RESEND_CONFIRMATION_SCHEMA>;

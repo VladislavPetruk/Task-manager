@@ -112,7 +112,15 @@ export default function LoginPage() {
                   name="password"
                   render={({ field }) => (
                     <FormItem className="w-full pb-4">
-                      <FormLabel htmlFor="password">Password</FormLabel>
+                      <div className="flex items-center">
+                        <FormLabel htmlFor="password">Password</FormLabel>
+                        <Link
+                          href="/forgot-password"
+                          className="ml-auto inline-block text-sm font-medium hover:underline"
+                        >
+                          Forgot your password?
+                        </Link>
+                      </div>
                       <div className="relative w-full">
                         <FormControl className="w-full">
                           <Input
@@ -150,7 +158,7 @@ export default function LoginPage() {
       </CardContent>
 
       <CardFooter>
-        <Link href="/registration">
+        <Link href="/registration" className="hover:underline">
           Don&apos;t have an account? <strong>Sign Up</strong>
         </Link>
       </CardFooter>

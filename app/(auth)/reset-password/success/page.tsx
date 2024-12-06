@@ -1,17 +1,16 @@
 import Link from 'next/link';
 import { CircleCheck } from 'lucide-react';
 
-export default function RegistrationSuccessPage() {
+export default function ResetPasswordSuccessPage() {
   return (
     <div className="mx-auto max-w-md text-center">
       <CircleCheck className="mx-auto mb-4 text-green-500" size={48} />
       <h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground">
-        Account Created!
+        Password changed!
       </h1>
       <p className="mt-4 text-muted-foreground">
-        Congratulations, your account has been successfully created. Now, check
-        your email for the confirmation letter we’ve recently sent you, please
-        follow the link from the letter to complete registration and sign in.
+        Congratulations, your password has been successfully successfully. Now,
+        you can sign in to dashboard using a new password.
       </p>
       <Link
         href="/login"

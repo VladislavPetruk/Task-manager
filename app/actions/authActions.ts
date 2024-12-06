@@ -7,7 +7,11 @@ import { auth, signIn, signOut } from '@/auth';
 import { REGISTRATION_SCHEMA } from '@/shared/constants';
 import { TAGS_OPTIONS } from '@/shared/constants/task';
 import prisma from '@/shared/lib/prisma';
+import { sendVerificationEmail } from '@/shared/mails';
 import { LoginParams, RegistrationParams } from '@/shared/types';
+import { TokenType } from '@prisma/client';
+
+import { generateToken } from './tokenActions';
 
 export const register = async (values: RegistrationParams) => {
   try {
@@ -50,6 +54,17 @@ export const register = async (values: RegistrationParams) => {
       })),
     });
 
+    const verificationToken = await generateToken(
+      email,
+      TokenType.VERIFICATION
+    );
+
+    await sendVerificationEmail(
+      verificationToken.email,
+      verificationToken.token,
+      username
+    );
+
     return {
       status: 200,
       message: 'User successfully created!',
@@ -72,6 +87,20 @@ export const login = async (values: LoginParams) => {
 
     if (!existingUser || !existingUser.email)
       return { status: 400, error: 'User not found' };
+
+    if (!existingUser.emailVerified) {
+      const { token, email } = await generateToken(
+        existingUser.email,
+        TokenType.VERIFICATION
+      );
+
+      await sendVerificationEmail(email, token);
+
+      return {
+        status: 400,
+        error: 'Please verify your email before logging in',
+      };
+    }
 
     await signIn('credentials', {
       email: values.email,

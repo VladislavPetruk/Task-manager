@@ -1,5 +1,6 @@
 import type { Editor } from '@tiptap/react';
 import { TaskPriority, TaskStatus } from '../constants';
+import { ZodIssue } from 'zod';
 
 export type LoginParams = {
   email: string;
@@ -29,3 +30,7 @@ export interface FormatAction {
   isActive: (editor: Editor) => boolean;
   canExecute: (editor: Editor) => boolean;
 }
+
+export type ActionResult<T> =
+  | { status: 'success'; data: T }
+  | { status: 'error'; error: string | ZodIssue[] };
