@@ -31,7 +31,6 @@ export default function ResetPassword({
     resolver: zodResolver(RESET_PASSWORD_SCHEMA),
   });
 
-
   const onSubmit: SubmitHandler<ResetPasswordSchema> = async (values) => {
     setLoading(true);
     const data = await resetPassword(
