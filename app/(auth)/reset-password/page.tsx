@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { resetPassword } from '@/app/actions/tokenActions';
@@ -19,23 +19,24 @@ import { RESET_PASSWORD_SCHEMA, ResetPasswordSchema } from '@/shared/constants';
 import { toast } from '@/shared/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-export default function ResetPassword() {
+export default function ResetPassword({
+  searchParams,
+}: {
+  searchParams: { token: string };
+}) {
   const [loading, setLoading] = useState<boolean>(false);
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const form = useForm<ResetPasswordSchema>({
-    // mode: 'onTouched',
     resolver: zodResolver(RESET_PASSWORD_SCHEMA),
   });
 
-  // const disableSubmitButton = !form.getValues('password').length;
 
   const onSubmit: SubmitHandler<ResetPasswordSchema> = async (values) => {
     setLoading(true);
     const data = await resetPassword(
       values.password,
-      searchParams.get('token')
+      searchParams.token
     ).finally(() => setLoading(false));
     if (data.status === 200) {
       router.push('/reset-password/success');
