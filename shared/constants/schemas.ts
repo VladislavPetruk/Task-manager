@@ -67,4 +67,6 @@ export const TASK_HANDLER_SCHEMA = z.object({
 });
 
 export type ResetPasswordSchema = z.infer<typeof RESET_PASSWORD_SCHEMA>;
-export type ResendConfirmationSchema = z.infer<typeof RESEND_CONFIRMATION_SCHEMA>;
+export type ResendConfirmationSchema = z.infer<
+  typeof RESEND_CONFIRMATION_SCHEMA
+>;
