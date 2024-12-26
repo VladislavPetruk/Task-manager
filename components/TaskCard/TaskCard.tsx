@@ -1,5 +1,6 @@
 import { CSSProperties } from 'react';
 import { EllipsisVertical } from 'lucide-react';
+import { shallow } from 'zustand/shallow';
 
 import { useDeleteTask, useUpdateTask } from '@/app/api/hooks/mutations';
 import {
@@ -28,14 +29,15 @@ import { Loader } from '../ui/loader';
 
 type TaskCardProps = Task;
 
-export const TaskCard = (props: TaskCardProps) => {
-  const task = props;
-
-  const openDialog = useDialogsStore((state) => state.openDialog);
+export const TaskCard = (task: TaskCardProps) => {
+  const { openDialog } = useDialogsStore(
+    (state) => ({
+      openDialog: state.openDialog,
+    }),
+    shallow
+  );
 
   const queryClient = useQueryClient();
-  const color = PRIORITY_COLORS[task.priority];
-
   const { data: userTags } = useGetUserTaskTags();
 
   const { mutate: mutateDeleteTask, isPending: inPendingDeleteTask } =
@@ -75,6 +77,8 @@ export const TaskCard = (props: TaskCardProps) => {
         });
       },
     });
+
+  const color = PRIORITY_COLORS[task.priority];
 
   const onUpdateTask = async (stage: TaskStage) => {
     const updatedTask = {

@@ -1,5 +1,6 @@
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { FolderPen } from 'lucide-react';
+import { shallow } from 'zustand/shallow';
 
 import { useCreateTask, useUpdateTask } from '@/app/api/hooks/mutations';
 import {
@@ -43,12 +44,24 @@ import { MultipleSelector, PrioritySelect, StatusSelect } from './Helper';
 // Need create validate form, title, description
 
 export default function TaskHandlerDialog() {
-  const showDialog = useDialogsStore((state) => state.showDialog);
-  const currentTaskId = useDialogsStore((state) => state.currentTaskId);
-  const dialogType = useDialogsStore((state) => state.dialogType);
-  const taskStage = useDialogsStore((state) => state.taskStage);
-  const toggleDialog = useDialogsStore((state) => state.toggleDialog);
-  const closeDialog = useDialogsStore((state) => state.closeDialog);
+  const {
+    showDialog,
+    currentTaskId,
+    dialogType,
+    taskStage,
+    toggleDialog,
+    closeDialog,
+  } = useDialogsStore(
+    (state) => ({
+      showDialog: state.showDialog,
+      currentTaskId: state.currentTaskId,
+      dialogType: state.dialogType,
+      taskStage: state.taskStage,
+      toggleDialog: state.toggleDialog,
+      closeDialog: state.closeDialog,
+    }),
+    shallow
+  );
 
   const allTasksInStore = useTasksStore((state) => state.allTasks);
 

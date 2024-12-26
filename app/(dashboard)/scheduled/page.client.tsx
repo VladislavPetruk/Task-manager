@@ -13,9 +13,13 @@ import { TaskStage } from '@/shared/constants/task';
 import { useDialogsStore, useTasksStore } from '@/shared/stores';
 
 export default function FutureClient() {
-  const openDialog = useDialogsStore((state) => state.openDialog);
+  const { openDialog } = useDialogsStore(
+    (state) => ({
+      openDialog: state.openDialog,
+    }),
+    shallow
+  );
 
-  const { data: futuredTasks, isLoading } = useGetFutureTasks();
   const { setFutureTasksInStore } = useTasksStore(
     (state) => ({
       // completedTasksInStore: state.completedTasks,
@@ -23,6 +27,8 @@ export default function FutureClient() {
     }),
     shallow
   );
+
+  const { data: futuredTasks, isLoading } = useGetFutureTasks();
 
   useEffect(() => {
     if (futuredTasks) {

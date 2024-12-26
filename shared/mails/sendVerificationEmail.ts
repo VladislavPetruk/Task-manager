@@ -14,11 +14,32 @@ export async function sendVerificationEmail(
       to: email,
       from: emailFrom,
       subject: 'Account verification',
-      text: 'This is a sample email.',
+      text: `You have requested to account verification. Use the following link to verify your account: ${link}`,
       html: `
-            <h1>${userName.length > 0 ? `Hi ${userName}. ` : ''}Verify your email address</h1>
-            <p>Click the link below to verify your email address</p>
-            <a href="${link}">Verify email</a>
+            <div style="width:600px;margin:auto;text-align:center">
+              <h1 style="color:black;text-decoration:none;text-decoration-line:none;">${userName.length > 0 ? `Hi ${userName}. ` : ''}<br />Verify your email address</h1>
+              <p style="font-size:16px;">
+                Click the link below to verify your email address
+              </p>
+              <a style="
+                  display: inline-block;
+                  background-color: #000000;
+                  font-weight: 500;
+                  font-size: 16px;
+                  text-align: center;
+                  color: #fff;
+                  text-decoration: none;
+                  text-decoration-line: none;
+                  border-style: solid;
+                  border-color: #000000;
+                  border-width: 12px 24px;
+                  border-radius: 100px;
+                "
+                href="${link}"
+                >
+                Verify email
+              </a>
+            </div>
         `,
     })
     .then(() => {

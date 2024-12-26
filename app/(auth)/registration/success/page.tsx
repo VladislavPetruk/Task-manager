@@ -11,7 +11,8 @@ export default function RegistrationSuccessPage() {
       <p className="mt-4 text-muted-foreground">
         Congratulations, your account has been successfully created. Now, check
         your email for the confirmation letter we’ve recently sent you, please
-        follow the link from the letter to complete registration and sign in.
+        <strong> follow the link</strong> from the letter to complete
+        registration and sign in.
       </p>
       <Link
         href="/login"

@@ -1,6 +1,6 @@
 import { DialogType } from '@/shared/constants/other';
 import { TaskStage } from '@/shared/constants/task';
-import { create } from 'zustand';
+import { createWithEqualityFn as create } from 'zustand/traditional'; // use with shallow
 import { devtools } from 'zustand/middleware';
 
 type TasksStoreState = {

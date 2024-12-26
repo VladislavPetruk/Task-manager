@@ -45,7 +45,13 @@ const boards: TaskStatus[] = [
 ];
 
 export default function HomeClient() {
-  const openDialog = useDialogsStore((state) => state.openDialog);
+  const { openDialog } = useDialogsStore(
+    (state) => ({
+      openDialog: state.openDialog,
+    }),
+    shallow
+  );
+
   const { setActiveTasks } = useTasksStore(
     (state) => ({
       setActiveTasks: state.setActiveTasks,
@@ -259,7 +265,12 @@ interface ColumnHeaderProps {
 }
 
 const ColumnHeader = ({ board, count }: ColumnHeaderProps) => {
-  const openDialog = useDialogsStore((state) => state.openDialog);
+  const { openDialog } = useDialogsStore(
+    (state) => ({
+      openDialog: state.openDialog,
+    }),
+    shallow
+  );
 
   return (
     <div className="flex items-center justify-between font-medium">

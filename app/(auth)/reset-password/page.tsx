@@ -51,7 +51,7 @@ export default function ResetPassword({
 
   return (
     <div className="max-w-md">
-      <p className="mb-8 text-center text-2xl text-muted-foreground">
+      <p className="mb-8 text-center text-2xl font-medium text-foreground">
         Please, enter a new password.
       </p>
       <Form {...form}>

@@ -15,9 +15,12 @@ export default async function VerifyEmailPage({
 
   return (
     <div className="mx-auto max-w-md text-center">
-      {result.status == 'success' ? (
+      {result.status === 'success' ? (
         <>
           <CircleCheck className="mx-auto mb-4 text-green-500" size={48} />
+          <h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground">
+            Account confirmed!
+          </h1>
           <p className="mt-4 text-center text-muted-foreground">
             Congratulations, you successfully confirm your account. Now, you can
             sign in to Dashboard.
@@ -32,7 +35,7 @@ export default async function VerifyEmailPage({
       ) : (
         <>
           <CircleAlert className="mx-auto mb-4 text-red-500" size={48} />
-          <p className="mb-6 mt-4 text-center text-2xl font-medium text-muted-foreground">
+          <p className="my-4 text-3xl font-bold tracking-tight text-foreground">
             {result.error as string}
           </p>
           <p className="mb-6 text-center text-muted-foreground">
